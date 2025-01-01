@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
+import {} from '../src'
 
-describe('should', () => {
-  it('exported', () => {
-    expect(1).toEqual(1)
+describe('packageName', () => {
+  it.todo('pass', () => {
+    expect(true).toBe(true)
   })
 })

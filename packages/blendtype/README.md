@@ -1,37 +1,97 @@
-# pkg-placeholder
+# packageName
 
-[![npm version][npm-version-src]][npm-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![bundle][bundle-src]][bundle-href]
-[![JSDocs][jsdocs-src]][jsdocs-href]
-[![License][license-src]][license-href]
+<!-- automd:badges color=yellow -->
 
-_description_
+[![npm version](https://img.shields.io/npm/v/packageName?color=yellow)](https://npmjs.com/package/packageName)
+[![npm downloads](https://img.shields.io/npm/dm/packageName?color=yellow)](https://npm.chart.dev/packageName)
 
-> **Note**:
-> Replace `pkg-placeholder`, `_description_` and `antfu` globally to use this template.
+<!-- /automd -->
 
-## Sponsors
+This is my package description.
 
-<p align="center">
-  <a href="https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg">
-    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg'/>
-  </a>
-</p>
+## Usage
+
+Install package:
+
+<!-- automd:pm-install -->
+
+```sh
+# ✨ Auto-detect
+npx nypm install packageName
+
+# npm
+npm install packageName
+
+# yarn
+yarn add packageName
+
+# pnpm
+pnpm install packageName
+
+# bun
+bun install packageName
+
+# deno
+deno install packageName
+```
+
+<!-- /automd -->
+
+Import:
+
+<!-- automd:jsimport cjs cdn name="pkg" -->
+
+**ESM** (Node.js, Bun, Deno)
+
+```js
+import { GalaxyClient } from 'blendtype'
+```
+
+**CommonJS** (Legacy Node.js)
+
+```js
+const { GalaxyClient } = require('blendtype')
+```
+
+**CDN** (Deno, Bun and Browsers)
+
+```js
+import {} from 'https://esm.sh/pkg'
+```
+
+<!-- /automd -->
+
+## Development
+
+<details>
+
+<summary>local development</summary>
+
+- Clone this repository
+- Install latest LTS version of [Node.js](https://nodejs.org/en/)
+- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
+- Install dependencies using `pnpm install`
+- Run interactive tests using `pnpm dev`
+
+</details>
 
 ## License
 
-[MIT](./LICENSE) License © 2024-PRESENT [Anthony Fu](https://github.com/antfu)
+<!-- automd:contributors license=MIT -->
 
-<!-- Badges -->
+Published under the [MIT](https://github.com/unjs/packageName/blob/main/LICENSE) license.
+Made by [community](https://github.com/unjs/packageName/graphs/contributors) 💛
+<br><br>
+<a href="https://github.com/unjs/packageName/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=unjs/packageName" />
+</a>
 
-[npm-version-src]: https://img.shields.io/npm/v/pkg-placeholder?style=flat&colorA=080f12&colorB=1fa669
-[npm-version-href]: https://npmjs.com/package/pkg-placeholder
-[npm-downloads-src]: https://img.shields.io/npm/dm/pkg-placeholder?style=flat&colorA=080f12&colorB=1fa669
-[npm-downloads-href]: https://npmjs.com/package/pkg-placeholder
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/pkg-placeholder?style=flat&colorA=080f12&colorB=1fa669&label=minzip
-[bundle-href]: https://bundlephobia.com/result?p=pkg-placeholder
-[license-src]: https://img.shields.io/github/license/antfu/pkg-placeholder.svg?style=flat&colorA=080f12&colorB=1fa669
-[license-href]: https://github.com/antfu/pkg-placeholder/blob/main/LICENSE
-[jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
-[jsdocs-href]: https://www.jsdocs.io/package/pkg-placeholder
+<!-- /automd -->
+
+<!-- automd:with-automd -->
+
+---
+
+_🤖 auto updated with [automd](https://automd.unjs.io)_
+
+<!-- /automd -->
