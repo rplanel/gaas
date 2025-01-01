@@ -2,7 +2,7 @@ import type { GalaxyClient } from './GalaxyClient'
 import type { GalaxyHistoryDetailed, GalaxyUploadedDataset, HDASummary } from './types'
 
 import { createError } from 'h3'
-import { getErrorMessage, getStatusCode } from './errors'
+import { getErrorMessage } from './errors'
 import { delay } from './helpers'
 
 import { DatasetsTerminalStates } from './types'
@@ -24,39 +24,21 @@ export class Histories {
   }
 
   public async createHistory(name: string): Promise<GalaxyHistoryDetailed> {
-    try {
-      return await this.#client.api(
-        'api/histories',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `name=${name}`,
-        },
-      )
-    }
-    catch (error) {
-      // console.error(error)
-      throw createError({
-        statusCode: 500,
-        statusMessage: getErrorMessage(error),
-      })
-    }
+    return this.#client.api(
+      'api/histories',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `name=${name}`,
+      },
+    )
   }
 
   public async deleteHistory(historyId: string): Promise<GalaxyHistoryDetailed> {
-    try {
-      const galaxyHistory = await this.#client.api(`api/histories/${historyId}`, {
-        method: 'DELETE',
-        body: { purge: true },
-      })
-      return galaxyHistory
-    }
-    catch (error) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: getErrorMessage(error),
-      })
-    }
+    return this.#client.api(`api/histories/${historyId}`, {
+      method: 'DELETE',
+      body: { purge: true },
+    })
   }
 
   public async getHistories(): Promise<GalaxyHistoryDetailed[]> {
@@ -75,35 +57,12 @@ export class Histories {
   }
 
   public async getHistory(historyId: string): Promise<GalaxyHistoryDetailed> {
-    try {
-      const galaxyHistory = await this.#client.api(`api/histories/${historyId}`, {
-        method: 'GET',
-      })
-      return galaxyHistory
-    }
-    catch (error) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: getErrorMessage(error),
-      })
-    }
+    return this.#client.api(`api/histories/${historyId}`, {
+      method: 'GET',
+    })
   }
 
   public async uploadFile(historyId: string, srcUrl: string): Promise<GalaxyUploadedDataset> {
-    // const formData = new FormData()
-    // formData.append('history_id', historyId)
-    // formData.append('targets', JSON.stringify([{
-    //   destination: { type: 'hdas' },
-    //   elements: [{
-    //     src: 'url',
-    //     url: srcUrl,
-    //     name: null,
-    //     dbkey: '?',
-    //     ext: 'auto',
-    //     space_to_tab: false,
-    //     to_posix_lines: true,
-    //   }],
-    // }]))
     const payload: Record<string, unknown> = {
       history_id: historyId,
       targets: [{
@@ -121,30 +80,14 @@ export class Histories {
       auto_decompress: true,
       files: [],
     }
-    // const keys = Object.keys(payload)
-    // keys.forEach((key) => {
-    //   formData.append(key, payload[key])
-    // })
-    // console.log(payload)
 
-    try {
-      const galaxyDataset: GalaxyUploadedDataset = await this.#client.api(
-        'api/tools/fetch',
-        {
-          method: 'POST',
-          body: JSON.stringify(payload),
-          // headers: { accept: '*/*' },
-
-        },
-      )
-      return galaxyDataset
-    }
-    catch (error) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: getErrorMessage(error),
-      })
-    }
+    return this.#client.api(
+      'api/tools/fetch',
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+    )
   }
 
   public async getListDatasets(historyId: string): Promise<HDASummary[] | undefined> {
@@ -152,56 +95,33 @@ export class Histories {
     let terminalState = false
 
     while (!terminalState) {
-      try {
-        const datasets: HDASummary[] = await this.#client.api(
-          `api/histories/${historyId}/contents`,
-          {
-            method: 'GET',
-            params: {
-              V: 'dev',
-            },
+      const datasets: HDASummary[] = await this.#client.api(
+        `api/histories/${historyId}/contents`,
+        {
+          method: 'GET',
+          params: {
+            V: 'dev',
           },
-        )
-        terminalState = datasets
-          .map(d => d.state)
-          .every(state => terminalStatesSet.has(state))
-        if (terminalState)
-          return datasets
-        await delay(3000)
-      }
-      catch (error) {
-        throw createError({
-          statusCode: 500,
-          statusMessage: getErrorMessage(error),
-        })
-      }
+        },
+      )
+      terminalState = datasets
+        .map(d => d.state)
+        .every(state => terminalStatesSet.has(state))
+      if (terminalState)
+        return datasets
+      await delay(3000)
     }
   }
 
   public async downloadDataset(historyId: string, datasetId: string): Promise<Blob | undefined> {
-    // /api/histories/{history_id}/contents/{history_content_id}/display
-    try {
-      const datasetDescription = await this.#client.datasets().getDataset(datasetId, historyId)
-
-      if (datasetDescription.file_size === 0)
-        return new Blob([])
-
-      const dataset: Blob = await this.#client.api(
-        `api/histories/${historyId}/contents/${datasetId}/display`,
-        {
-          method: 'GET',
-        },
-      )
-      return dataset
-    }
-    catch (error) {
-      const statusCode = getStatusCode(error)
-      if (statusCode === 404)
-        return undefined
-      throw createError({
-        statusCode,
-        statusMessage: getErrorMessage(error),
-      })
-    }
+    const datasetDescription = await this.#client.datasets().getDataset(datasetId, historyId)
+    if (datasetDescription.file_size === 0)
+      return new Blob([])
+    return this.#client.api(
+      `api/histories/${historyId}/contents/${datasetId}/display`,
+      {
+        method: 'GET',
+      },
+    )
   }
 }
