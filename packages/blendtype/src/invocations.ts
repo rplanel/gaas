@@ -2,10 +2,6 @@ import type { GalaxyClient } from './GalaxyClient'
 
 import type { GalaxyInvocation } from './types'
 
-import { createError } from 'h3'
-
-import { getErrorMessage, getStatusCode } from './errors'
-
 export class Invocations {
   #client: GalaxyClient
   private static instance: Invocations
@@ -23,20 +19,11 @@ export class Invocations {
   }
 
   public async getInvocation(invocationId: string): Promise<GalaxyInvocation> {
-    try {
-      const invocation = await this.#client.api(
-        `api/invocations/${invocationId}`,
-        {
-          method: 'GET',
-        },
-      )
-      return invocation
-    }
-    catch (error) {
-      throw createError({
-        statusCode: getStatusCode(error),
-        statusMessage: `${getErrorMessage(error)}\nUnable to get invocation ${invocationId}`,
-      })
-    }
+    return this.#client.api(
+      `api/invocations/${invocationId}`,
+      {
+        method: 'GET',
+      },
+    )
   }
 }
