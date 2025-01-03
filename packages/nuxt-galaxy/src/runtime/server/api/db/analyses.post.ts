@@ -53,5 +53,8 @@ export default defineEventHandler<{ body: AnalysisBody }>(
         )
       }
     }
+    else {
+      throw new Error('Supabase context is undefined')
+    }
   },
 )

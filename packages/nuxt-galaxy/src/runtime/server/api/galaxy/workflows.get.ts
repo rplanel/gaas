@@ -8,6 +8,6 @@ export default defineEventHandler(async (event) => {
     return await $galaxy.workflows().getWorkflows()
   }
   else {
-    throw createError({ statusCode: 500, statusMessage: 'Could not get the list of workflows on Galaxy server' })
+    throw createError({ statusCode: 500, statusMessage: 'Galaxy context is undefined' })
   }
 })

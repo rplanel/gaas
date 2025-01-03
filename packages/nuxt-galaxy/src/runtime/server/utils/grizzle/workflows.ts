@@ -18,16 +18,21 @@ export async function getCurrentGalaxyWorkflow(): Promise<typeof workflows.$infe
 
 export async function getWorkflow(workflowId: number): Promise<typeof workflows.$inferSelect | undefined> {
   const { public: { galaxy: { url } }, galaxy: { email } } = useRuntimeConfig()
-  const currentUser = await getCurrentUser(url, email)
-  if (currentUser) {
-    const { user } = currentUser
-    const galaxyWorkflows = await useDrizzle()
-      .select()
-      .from(workflows)
-      .where(
-        eq(workflows.id, workflowId),
-      )
-      .then(takeUniqueOrThrow)
-    return galaxyWorkflows.userId === user.id ? galaxyWorkflows : undefined
+  try {
+    const currentUser = await getCurrentUser(url, email)
+    if (currentUser) {
+      const { user } = currentUser
+      const galaxyWorkflows = await useDrizzle()
+        .select()
+        .from(workflows)
+        .where(
+          eq(workflows.id, workflowId),
+        )
+        .then(takeUniqueOrThrow)
+      return galaxyWorkflows.userId === user.id ? galaxyWorkflows : undefined
+    }
+  }
+  catch {
+    throw new Error('User not found')
   }
 }

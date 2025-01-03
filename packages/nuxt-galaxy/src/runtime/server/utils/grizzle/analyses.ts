@@ -64,9 +64,9 @@ export async function runAnalysis(
       insertedId: analyses.id,
     })
     .then(takeUniqueOrThrow)
-
   if (analsysis) {
     const { insertedId: insertedAnalysisId } = analsysis
+    results.id = insertedAnalysisId
     const inputsIds = await Promise.all(
       Object.entries(inputs).map(([_step, { dbid, id: galaxyDatasetId }]) => {
         if (dbid) {
