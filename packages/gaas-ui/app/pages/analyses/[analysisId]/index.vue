@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Database } from '#build/types/database'
-import type { AnalysisDetail, AnalysisOutputsWithDatasets, RowAnalysisJob } from '#build/types/nuxt-galaxy'
+import type { SupabaseTypes } from '#build/types/database'
+import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
 import type { AccordionItem, BreadcrumbItem } from '@nuxt/ui'
 import type { GalaxyTool, GalaxyToolParameters } from 'blendtype'
 import GalaxyStatus from '../../../components/galaxy/GalaxyStatus.vue'
@@ -9,6 +9,11 @@ import {
   type GalaxyToolInputComponent,
   useGalaxyToolInputComponent,
 } from '../../../composables/galaxy/useGalaxyToolInputComponent'
+
+type Database = SupabaseTypes.Database
+type AnalysisDetail = GalaxyTypes.AnalysisDetail
+type AnalysisOutputsWithDatasets = GalaxyTypes.AnalysisOutputsWithDatasets
+type RowAnalysisJob = GalaxyTypes.RowAnalysisJob
 
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined

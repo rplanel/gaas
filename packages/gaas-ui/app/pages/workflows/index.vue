@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Database } from '#build/types/database'
-import type { RoleType } from '#build/types/nuxt-galaxy'
+import type { SupabaseTypes } from '#build/types/database'
+import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
 import type { BreadcrumbItem } from '@nuxt/ui'
 import {
   definePageMeta,
@@ -13,6 +13,8 @@ import {
 import { jwtDecode, type JwtPayload } from 'jwt-decode'
 import { toValue } from 'vue'
 
+type Database = SupabaseTypes.Database
+type RoleType = GalaxyTypes.RoleType
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
 }

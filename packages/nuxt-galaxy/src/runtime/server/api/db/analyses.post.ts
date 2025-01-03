@@ -1,5 +1,5 @@
-import type { AnalysisBody } from '#build/types/nuxt-galaxy'
 import type { GalaxyWorkflowInput } from 'blendtype'
+import type { AnalysisBody } from '../../../types/nuxt-galaxy.js'
 import { defineEventHandler, readBody } from 'h3'
 import { runAnalysis } from '../../utils/grizzle/analyses.js'
 import { uploadDatasets } from '../../utils/grizzle/datasets'

@@ -1,8 +1,7 @@
 <!-- eslint-disable ts/no-use-before-define -->
 <script setup lang="ts">
-import type { Database } from '#build/types/database'
-// import type { UploadedDatasetDb } from '#build/types/nuxt-galaxy'
-import type { AccordionItem } from '@nuxt/ui-pro'
+import type { SupabaseTypes } from '#build/types/database'
+import type { AccordionItem } from '@nuxt/ui'
 import type { Props as WorkflowStepProps } from '../../../components/galaxy/workflow/Step.vue'
 import { computed, onMounted, ref, toValue, useFetch } from '#imports'
 import {
@@ -20,6 +19,7 @@ import {
   useGalaxyToolInputComponent,
 } from '../../../composables/galaxy/useGalaxyToolInputComponent'
 
+type Database = SupabaseTypes.Database
 export type UploadedDatasetDb = Database['galaxy']['Tables']['uploaded_datasets']['Row']
 
 export interface Props {
@@ -118,6 +118,7 @@ const workflowSteps = computed(() => {
 
 const workflowStepsItems = computed<AccordionItem[] | undefined>(() => {
   const workflowStepsVal = toValue(workflowSteps)
+
   if (workflowStepsVal) {
     return Object.entries(workflowStepsVal)
       .filter(([_, step]) => step.type === 'tool' && step.tool_id !== null)

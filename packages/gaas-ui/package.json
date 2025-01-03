@@ -17,7 +17,7 @@
     "@iconify-json/material-symbols": "^1.2.12",
     "@iconify-json/tabler": "^1.2.13",
     "@nuxt/eslint": "latest",
-    "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@9a36879",
+    "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@364cc97",
     "@tailwindcss/typography": "^0.5.15",
     "@vueuse/core": "^12.3.0",
     "drizzle-kit": "^0.30.1",

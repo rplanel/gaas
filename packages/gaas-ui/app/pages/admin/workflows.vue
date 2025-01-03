@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Database } from '#build/types/database'
+import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem, TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 
@@ -8,6 +8,8 @@ import {
   getErrorMessage,
   getStatusCode,
 } from 'blendtype'
+
+type Database = SupabaseTypes.Database
 
 type GalaxyInstanceRow = Database['galaxy']['Tables']['instances']['Row']
 interface Props {

@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { Database } from '#build/types/database'
+import type { SupabaseTypes } from '#build/types/database'
 import type { InputDatasets, OutputDatasets } from '../../../pages/analyses/[analysisId]/index.vue'
 
 export interface Props {
   items: InputDatasets | OutputDatasets | undefined
 }
-const props = withDefaults(defineProps<Props>(), {})
+
+type Database = SupabaseTypes.Database
+const props = withDefaults(defineProps<Props>(), { items: undefined })
 const supabase = useSupabaseClient<Database>()
 const { items } = toRefs(props)
 

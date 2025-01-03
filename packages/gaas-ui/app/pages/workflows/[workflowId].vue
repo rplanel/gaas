@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { Database } from '#build/types/database'
+import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem } from '@nuxt/ui'
+
+type Database = SupabaseTypes.Database
 
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined

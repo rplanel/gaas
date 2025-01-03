@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { Database } from '#build/types/database'
+import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem, TableColumn } from '@nuxt/ui'
 import { h, resolveComponent } from 'vue'
 import { z } from 'zod'
+
+type Database = SupabaseTypes.Database
 
 const props = withDefaults(defineProps<Props>(), {
   breadcrumbsItems: undefined,
