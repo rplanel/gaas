@@ -1,0 +1,65 @@
+<script setup lang="ts">
+import type { Database } from '#build/types/database'
+import type { BreadcrumbItem } from '@nuxt/ui'
+
+const props = withDefaults(defineProps<Props>(), { breadcrumbsItems: undefined })
+
+definePageMeta({
+  middleware: 'auth',
+})
+
+interface Props {
+  breadcrumbsItems?: BreadcrumbItem[] | undefined
+}
+const { breadcrumbsItems } = toRefs(props)
+const router = useRouter()
+const supabase = useSupabaseClient<Database>()
+
+const { userRole } = useUserRole(supabase)
+
+const adminItems = ref([
+  {
+    label: 'Workflows',
+    icon: 'i-lucide:workflow',
+    id: 'workflows',
+    description: 'Manage galaxy workflows',
+  },
+  {
+    label: 'Users',
+    id: 'users',
+    icon: 'i-lucide:user',
+    description: 'Manage application users',
+  },
+])
+
+function goToAdminPanel(name: string) {
+  router.push(`/admin/${name}`)
+}
+</script>
+
+<template>
+  <div>
+    <div v-if="userRole === 'admin'">
+      <PageHeader title="Admin panel" description="Manage your web application" :breadcrumbs-items="breadcrumbsItems" />
+
+      <div class="grid grid-flow-col gap-5 p-2">
+        <UCard
+          v-for="item in adminItems" :key="item.id"
+          class="hover:bg-[var(--ui-bg-elevated)] divide-y-0 border-l-6 border-[var(--ui-primary)]"
+          @click="goToAdminPanel(item.id)"
+        >
+          <template #header>
+            {{ item.label }}
+          </template>
+          {{ item.description }}
+          <!-- <template #footer>
+            <UButton color="primary" variant="subtle" icon="i-lucide:eye"></UButton>
+          </template> -->
+        </UCard>
+      </div>
+    </div>
+    <div v-else class="my-5">
+      <UAlert variant="subtle" color="error" title="Admin section" description="You don't have the admin permission" />
+    </div>
+  </div>
+</template>

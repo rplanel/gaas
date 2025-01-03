@@ -1,0 +1,77 @@
+<script setup lang="ts">
+import type { GalaxyState } from 'blendtype'
+
+interface Props {
+  state: GalaxyState | undefined
+  size?: number | string
+}
+const props = withDefaults(defineProps<Props>(), {
+  state: undefined,
+  size: '18',
+})
+
+const excludeStates = ['setting_metadata', 'failed_metadata'] as const
+
+type ExcludeState = (typeof excludeStates)[number]
+
+const { state, size } = toRefs(props)
+
+const galaxyStateToIcon: Record<
+  Exclude<GalaxyState, ExcludeState>,
+  { icon: string, color: string }
+> = {
+  running: { icon: 'i-svg-spinners:bars-scale', color: 'text-[var(--ui-primary)]' },
+  error: { icon: 'i-mdi:alert-circle', color: 'text-[var(--ui-error)]' },
+  ok: { icon: 'i-mdi:check-circle', color: 'text-[var(--ui-success)]' },
+  new: { icon: 'i-mdi:new-box', color: 'text-[var(--ui-secondary)]' },
+  queued: { icon: 'i-mdi:tray-full', color: 'text-[var(--ui-primary)]' },
+  cancelled: { icon: 'i-mdi:cancel', color: 'text-[var(--ui-warning)]' },
+  cancelling: { icon: 'i-mdi:cancel', color: 'text-[var(--ui-warning)]' },
+  deferred: { icon: '', color: '' },
+  deleted: { icon: '', color: '' },
+  deleting: { icon: '', color: '' },
+  discarded: { icon: '', color: '' },
+  empty: { icon: '', color: '' },
+  failed: { icon: 'i-mdi:alert-circle', color: 'text-[var(--ui-error)]' },
+  paused: { icon: 'i-mdi:pause', color: 'text-[var(--ui-primary)]' },
+  ready: { icon: '', color: '' },
+  resubmitted: { icon: '', color: '' },
+  scheduled: {
+    icon: 'i-material-symbols:schedule',
+    color: 'text-[var(--ui-success)]',
+  },
+  skipped: { icon: '', color: '' },
+  stop: { icon: '', color: '' },
+  stopped: { icon: '', color: '' },
+  upload: { icon: '', color: '' },
+  waiting: { icon: '', color: '' },
+}
+
+const currentState = computed(() => {
+  const galaxyStateToIconVal = toValue(galaxyStateToIcon)
+  const stateVal = toValue(state)
+  if (
+    stateVal
+    && excludeStates.find(exState => exState === stateVal) === undefined
+  ) {
+    const s = stateVal as Exclude<GalaxyState, ExcludeState>
+    return galaxyStateToIconVal[s]
+  }
+  return undefined
+})
+</script>
+
+<template>
+  <div v-if="state">
+    <span
+      v-if="currentState"
+      :class="currentState.color"
+    >
+      <UIcon
+        :name="currentState.icon"
+        :size
+      />
+    </span>
+    <span v-else>{{ state }}</span>
+  </div>
+</template>

@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+@import '@nuxt/ui-pro';
+
+@theme {
+  --container-8xl: 90rem;
+  --header-height: 5rem;
+}
+
+:root {
+  --ui-container: var(--container-7xl);
+}
+
+@plugin "@tailwindcss/typography";
