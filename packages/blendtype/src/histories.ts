@@ -1,8 +1,5 @@
 import type { GalaxyClient } from './GalaxyClient'
 import type { GalaxyHistoryDetailed, GalaxyUploadedDataset, HDASummary } from './types'
-
-import { createError } from 'h3'
-import { getErrorMessage } from './errors'
 import { delay } from './helpers'
 
 import { DatasetsTerminalStates } from './types'
@@ -42,18 +39,9 @@ export class Histories {
   }
 
   public async getHistories(): Promise<GalaxyHistoryDetailed[]> {
-    try {
-      const galaxyHistories = await this.#client.api('api/histories', {
-        method: 'GET',
-      })
-      return galaxyHistories
-    }
-    catch (error) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: getErrorMessage(error),
-      })
-    }
+    return this.#client.api('api/histories', {
+      method: 'GET',
+    })
   }
 
   public async getHistory(historyId: string): Promise<GalaxyHistoryDetailed> {
