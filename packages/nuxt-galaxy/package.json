@@ -29,6 +29,7 @@
     "release:publish": "pnpm publish --access public",
     "lint": "eslint .",
     "test": "vitest run",
+    "typecheck": "vue-tsc --noEmit",
     "test:watch": "vitest watch",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "supabase:status": "pnpm supabase --workdir src/runtime status",

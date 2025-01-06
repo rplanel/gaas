@@ -36,7 +36,7 @@
     "play": "jiti playground",
     "release:publish": "pnpm publish --access public",
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
-    "test:types": "tsc --noEmit --skipLibCheck"
+    "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
     "h3": "^1.13.0",

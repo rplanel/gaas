@@ -15,7 +15,7 @@ export interface WorkflowConditionalParametersValue {
 export type WorkflowParameterValue = string | string[] | WorkflowConditionalParametersValue
 
 export function useGalaxyDecodeParameters(galaxyWorkflowParameters: MaybeRef<EncodedGalaxyWorkflowParameter>): { decodedParameters: ComputedRef<WorkflowParametersModel | undefined> } {
-  const decodedParameters = computed<WorkflowParametersModel>(() => {
+  const decodedParameters = computed<WorkflowParametersModel | undefined>(() => {
     const galaxyWorkflowParametersVal = toValue(galaxyWorkflowParameters)
     if (galaxyWorkflowParametersVal) {
       const inputParameters: WorkflowParametersModel = {}

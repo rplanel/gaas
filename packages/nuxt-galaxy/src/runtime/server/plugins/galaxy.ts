@@ -1,5 +1,6 @@
-import { defineNitroPlugin, useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from '#imports'
 import { GalaxyClient } from 'blendtype'
+import { defineNitroPlugin } from 'nitropack/runtime'
 
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook('request', (event) => {
