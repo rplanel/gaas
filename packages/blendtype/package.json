@@ -38,6 +38,11 @@
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
     "test:types": "tsc --noEmit --skipLibCheck"
   },
+  "dependencies": {
+    "h3": "^1.13.0",
+    "ofetch": "1.4.1",
+    "ufo": "^1.5.4"
+  },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@vitest/coverage-v8": "^2.1.8",
@@ -45,9 +50,7 @@
     "changelogen": "^0.5.7",
     "eslint": "^9.17.0",
     "eslint-config-unjs": "^0.4.2",
-    "h3": "^1.13.0",
     "jiti": "^2.4.2",
-    "ofetch": "1.4.1",
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.7.2",
     "unbuild": "^3.0.1",

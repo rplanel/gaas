@@ -1,7 +1,7 @@
 import type { GalaxyClient } from './GalaxyClient'
 import type { GalaxyHistoryDetailed, GalaxyUploadedDataset, HDASummary } from './types'
+import { parseFilename } from 'ufo'
 import { delay } from './helpers'
-
 import { DatasetsTerminalStates } from './types'
 
 export class Histories {
@@ -58,7 +58,7 @@ export class Histories {
         elements: [{
           src: 'url',
           url: srcUrl,
-          name: null,
+          name: parseFilename(srcUrl, { strict: false }),
           dbkey: '?',
           ext: 'auto',
           space_to_tab: false,
