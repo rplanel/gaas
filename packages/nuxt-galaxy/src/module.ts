@@ -1,3 +1,4 @@
+import process from 'node:process'
 import {
   addImportsDir,
   addRouteMiddleware,
@@ -10,6 +11,7 @@ import {
   installModule,
   logger,
 } from '@nuxt/kit'
+
 import { defu } from 'defu'
 
 const log = logger.withTag('nuxt-galaxy')

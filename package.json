@@ -1,6 +1,7 @@
 {
   "name": "gaas",
   "version": "0.0.0",
+  "private": true,
   "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321",
   "description": "",
   "author": "",
@@ -17,14 +18,15 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.12.1",
-    "h3": "^1.13.0",
+    "eslint": "^9.17.0",
+    "eslint-plugin-format": "^0.1.3",
     "lint-staged": "^15.3.0",
-    "ofetch": "1.4.1",
     "simple-git-hooks": "^2.11.1"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
   },
+
   "lint-staged": {
     "*": "eslint --fix"
   }

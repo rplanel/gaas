@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { config } from 'dotenv'
 import { defineConfig } from 'drizzle-kit'
 

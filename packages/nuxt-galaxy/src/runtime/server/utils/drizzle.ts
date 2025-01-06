@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { config } from 'dotenv'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
@@ -21,7 +22,7 @@ export { and, eq, or, sql } from 'drizzle-orm'
 config({ path: '.env' })
 
 const client = postgres(process.env.DATABASE_URL!)
-// eslint-disable-next-line ts/explicit-function-return-type
+
 export function useDrizzle() {
   return drizzle(client, {
     schema: {
