@@ -4,7 +4,6 @@ import type {
   GalaxySingleSelectToolParameter,
 } from 'blendtype'
 import { computed } from '#imports'
-import { useGalaxyHint } from '../../composables/galaxy/useGalaxyHint'
 
 export interface GalaxyMultipleSelectToolParameterProps
   extends GalaxyMultipleSelectToolParameter {

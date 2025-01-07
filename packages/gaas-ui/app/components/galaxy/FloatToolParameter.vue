@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { GalaxyFloatToolParameter } from 'blendtype'
 import { useVModel } from '@vueuse/core'
-import { useGalaxyHint } from '../../composables/galaxy/useGalaxyHint'
 
 export interface GalaxyFloatToolParameterProps
   extends GalaxyFloatToolParameter {

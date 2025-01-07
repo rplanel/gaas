@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { GalaxyConditionalParameter } from 'blendtype'
-import { useGalaxyHint } from '../../composables/galaxy/useGalaxyHint'
 import { useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 
 export interface GalaxyConditionalParameterProps

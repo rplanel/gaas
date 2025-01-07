@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { GalaxyBooleanToolParameter } from 'blendtype'
-import { useGalaxyHint } from '../../composables/galaxy/useGalaxyHint'
 
 export interface GalaxyBooleanToolParameterProps
   extends GalaxyBooleanToolParameter {
