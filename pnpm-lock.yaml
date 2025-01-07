@@ -167,6 +167,9 @@ importers:
       drizzle-orm:
         specifier: ^0.38.3
         version: 0.38.3(postgres@3.4.5)
+      jwt-decode:
+        specifier: ^4.0.0
+        version: 4.0.0
       postgres:
         specifier: ^3.4.5
         version: 3.4.5
