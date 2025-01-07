@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@364cc97",
+    "@nuxt/ui-pro": "3.0.0-alpha.10",
     "@tailwindcss/typography": "^0.5.15",
     "@vueuse/core": "^12.3.0",
     "drizzle-kit": "^0.30.1",
