@@ -5,7 +5,8 @@ import { useState, useSupabaseClient } from '#imports'
 const supabase = useSupabaseClient()
 const { userRole } = useUserRole(supabase)
 
-const { navigationMenuItems, toaster } = useAppConfig()
+const { gaasUi: { navigationMenuItems }, toaster } = useAppConfig()
+
 const items = ref<OrderedNavigationMenuItem[]>(navigationMenuItems)
 
 const computedItems = computed<OrderedNavigationMenuItem[]>(() => {
