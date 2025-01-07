@@ -7,9 +7,6 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
-  runtimeConfig: {
-    authTokenName: 'sb-eazhbrrdowqbzbbfjgxa-auth-token',
-  },
   css: ['../app/assets/css/main.css'],
 
 })
