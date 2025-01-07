@@ -3,7 +3,7 @@ import type { Datamap, DatasetState, DatasetTerminalState } from 'blendtype'
 import type { Database } from '~/src/runtime/types/database.js'
 import { useRuntimeConfig } from '#imports'
 import { DatasetsTerminalStates, GalaxyClient } from 'blendtype'
-import { parseURL, stringifyParsedURL, withoutProtocol } from 'ufo'
+import { parseFilename, parseURL, stringifyParsedURL, withoutProtocol } from 'ufo'
 import { datasets } from '../../db/schema/galaxy/datasets.js'
 import { objects } from '../../db/schema/storage/objects.js'
 import { eq, useDrizzle } from '../drizzle.js'
@@ -40,15 +40,16 @@ export async function uploadDatasets(
             const { signedUrl }
               = data
             let sanitizedSignedUrl = signedUrl
-
             if (localDocker) {
               const parsedSignedUrl = parseURL(signedUrl)
               parsedSignedUrl.host = 'host.docker.internal'
               sanitizedSignedUrl = withoutProtocol(stringifyParsedURL(parsedSignedUrl))
             }
+            const filename = parseFilename(sanitizedSignedUrl, { strict: false })
             return galaxyClient.histories().uploadFile(
               galaxyHistoryId,
               sanitizedSignedUrl,
+              filename,
             ).then((datasetHistory) => {
               return {
                 step,

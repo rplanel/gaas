@@ -1,6 +1,5 @@
 import type { GalaxyClient } from './GalaxyClient'
 import type { GalaxyHistoryDetailed, GalaxyUploadedDataset, HDASummary } from './types'
-import { parseFilename } from 'ufo'
 import { delay } from './helpers'
 import { DatasetsTerminalStates } from './types'
 
@@ -50,7 +49,7 @@ export class Histories {
     })
   }
 
-  public async uploadFile(historyId: string, srcUrl: string): Promise<GalaxyUploadedDataset> {
+  public async uploadFile(historyId: string, srcUrl: string, name: string | undefined): Promise<GalaxyUploadedDataset> {
     const payload: Record<string, unknown> = {
       history_id: historyId,
       targets: [{
@@ -58,7 +57,7 @@ export class Histories {
         elements: [{
           src: 'url',
           url: srcUrl,
-          name: parseFilename(srcUrl, { strict: false }),
+          name,
           dbkey: '?',
           ext: 'auto',
           space_to_tab: false,
