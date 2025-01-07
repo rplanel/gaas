@@ -33,7 +33,7 @@ jobs:
         run:
           >
             npx pkg-pr-new publish
-            --compact --no-template --pnpm
+            --no-template --pnpm
             './packages/blendtype'
             './packages/nuxt-galaxy'
             './packages/gaas-ui'
