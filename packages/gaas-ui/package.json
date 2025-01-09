@@ -11,7 +11,8 @@
     "preview": "nuxt preview .playground",
     "lint": "eslint .",
     "release:publish": "pnpm publish --access public",
-    "typecheck": "tsc --noEmit --skipLibCheck"
+    "typecheck": "tsc --noEmit --skipLibCheck",
+    "cleandep": "rm -rf node_modules && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules"
   },
   "dependencies": {
     "@nuxt/ui-pro": "3.0.0-alpha.10",
