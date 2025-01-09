@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "cleandep": "rm -rf node_modules && rm -rf pnpm-lock.yaml && pnpm --filter '**' run cleandep",
     "build": "pnpm --filter './packages/**' prepack",
+    "dev:prepare": "pnpm --filter './packages/**' run dev:prepare",
     "typecheck": "pnpm --filter './packages/**' run typecheck",
     "release": "pnpm run lint && pnpm run typecheck && pnpm run test && changelogen --output CHANGELOG.md && jiti scripts/release.ts && pnpm -r run release:publish && git push --follow-tags"
   },
@@ -20,15 +21,15 @@
     "blendtype": "workspace:*"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.12.1",
-    "bumpp": "^9.9.2",
-    "changelogen": "^0.5.7",
-    "eslint": "^9.17.0",
-    "eslint-plugin-format": "^0.1.3",
-    "fs-extra": "^11.2.0",
-    "jiti": "^2.4.2",
-    "lint-staged": "^15.3.0",
-    "simple-git-hooks": "^2.11.1"
+    "@antfu/eslint-config": "catalog:",
+    "bumpp": "catalog:",
+    "changelogen": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-format": "catalog:",
+    "fs-extra": "catalog:",
+    "jiti": "catalog:",
+    "lint-staged": "catalog:",
+    "simple-git-hooks": "catalog:"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"

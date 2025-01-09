@@ -40,22 +40,22 @@
     "cleandep": "rm -rf node_modules && rm -rf dist"
   },
   "dependencies": {
-    "h3": "^1.13.0",
-    "ofetch": "1.4.1",
-    "ufo": "^1.5.4"
+    "h3": "catalog:",
+    "ofetch": "catalog:",
+    "ufo": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
-    "@vitest/coverage-v8": "^2.1.8",
-    "automd": "^0.3.12",
-    "changelogen": "^0.5.7",
-    "eslint": "^9.17.0",
-    "eslint-config-unjs": "^0.4.2",
-    "jiti": "^2.4.2",
-    "simple-git-hooks": "^2.11.1",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "automd": "catalog:",
+    "changelogen": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-unjs": "catalog:",
+    "jiti": "catalog:",
+    "simple-git-hooks": "catalog:",
     "typescript": "^5.7.2",
-    "unbuild": "^3.0.1",
-    "vitest": "^2.1.8"
+    "unbuild": "catalog:",
+    "vitest": "catalog:"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
