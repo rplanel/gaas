@@ -1,27 +1,22 @@
-import type { WorkflowParametersModel } from './useGalaxyDecodeParameters'
+import type { ComputedRef, MaybeRef } from 'vue'
+import type { WorkflowParametersModel, WorkflowParametersTool } from './useGalaxyDecodeParameters'
+import { computed, toValue } from 'vue'
 
-export type EncodedGalaxyWorkflowParameter = Record<string, Record<string, WorkflowParameterValue>>
-
-export type WorkflowParameterValue =
-  | string
-  | string[]
-  | Record<string | number, WorkflowParameterConditionalValue>
-
-interface WorkflowParameterConditionalValue {
-  [key: string]: WorkflowParameterValue
-}
+export type EncodedGalaxyWorkflowParameter = Record<string, WorkflowParametersTool>
 
 export function useGalaxyEncodeParameters(parameterModel: MaybeRef<WorkflowParametersModel>): { encodedParameters: ComputedRef<EncodedGalaxyWorkflowParameter> } {
   const encodedParameters = computed<EncodedGalaxyWorkflowParameter>(() => {
     const parametersVal = toValue(parameterModel)
-    const parameters: Record<string, Record<string, WorkflowParameterValue | undefined>> = {}
+    const parameters: EncodedGalaxyWorkflowParameter = {}
     if (parametersVal) {
       for (const [stepId, params] of Object.entries(parametersVal)) {
         parameters[stepId] = {}
         for (const [key, param] of Object.entries(params)) {
           if (typeof param === 'object' && !Array.isArray(param)) {
             for (const paramKey in param) {
-              parameters[stepId][`${key}|${paramKey}`] = param[paramKey]
+              if (param[paramKey]) {
+                parameters[stepId][`${key}|${paramKey}`] = param[paramKey]
+              }
             }
           }
           else {

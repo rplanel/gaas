@@ -77,20 +77,6 @@ export default defineNuxtModule<ModuleOptions>({
   async setup(moduleOptions, nuxt) {
     // We create the `experimental` object if it doesn't exist yet
     const resolver = createResolver(import.meta.url)
-    // resolver.resolvePath('/runtime',{})
-    // nuxt.options.alias['#galaxy'] = resolver.resolve(
-    //   './runtime/types/index',
-    // )
-
-    // const supabaseModule = '@nuxt/supabase'
-    // // Check Content module is installed
-    // if (
-    //   !nuxt.options.runtimeConfig.content
-    //   && !nuxt.options.modules.includes(supabaseModule)
-    // ) {
-    //   log.warn('Could not find `@nuxt/supabase` module. Please install it.')
-    //   return
-    // }
 
     // public runtime
     // Leftmost arguments have more priority when assigning defaults.
@@ -122,7 +108,6 @@ export default defineNuxtModule<ModuleOptions>({
     if (!nuxt.options.runtimeConfig.galaxy.email) {
       log.warn('Missing galaxy email, set it either in `nuxt.config.js` or via env variable')
     }
-    // const runtimeDir = resolver.resolve('./runtime')
 
     await installModule('@nuxtjs/supabase', {
       // module configuration
@@ -140,8 +125,6 @@ export default defineNuxtModule<ModuleOptions>({
       },
       types: './runtime/types/supabase',
     })
-
-    // nuxt.options.build.transpile.push(runtimeDir)
 
     // From the runtime directory
     addImportsDir(resolver.resolve('./runtime/app/composables'))
@@ -241,10 +224,6 @@ export default defineNuxtModule<ModuleOptions>({
     // Add server plugin
     /*********************/
     addServerPlugin(resolver.resolve('./runtime/server/plugins/galaxy'))
-    // addServerHandler({
-    //   handler: resolver.resolve('./runtime/server/middleware/galaxy'),
-    //   middleware: true,
-    // })
 
     // Types
 
@@ -299,3 +278,19 @@ export { SupabaseTypes }
     // nuxt.options.alias['#galaxy'] = resolver.resolve('./runtime')
   },
 })
+
+declare module '@nuxt/schema' {
+
+  interface PublicRuntimeConfig {
+    galaxy: {
+      url: string
+    }
+  }
+  interface RuntimeConfig {
+    galaxy: {
+      apiKey: string
+      email: string
+      localDocker: boolean
+    }
+  }
+}

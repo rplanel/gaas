@@ -1,11 +1,13 @@
+import type { ComputedRef, MaybeRef } from 'vue'
 import type { EncodedGalaxyWorkflowParameter } from './useGalaxyEncodeParameters'
+import { computed, toValue } from 'vue'
 
 export interface WorkflowParametersModel {
   [stepId: string]: WorkflowParametersTool
 }
 
 export interface WorkflowParametersTool {
-  [paramName: string]: string | string[] | WorkflowConditionalParametersValue
+  [paramName: string]: WorkflowParameterValue
 }
 
 export interface WorkflowConditionalParametersValue {
@@ -24,7 +26,7 @@ export function useGalaxyDecodeParameters(galaxyWorkflowParameters: MaybeRef<Enc
 
         for (const paramName in galaxyWorkflowParametersVal[stepId]) {
           const splittedParamName = paramName.split('|')
-          if (splittedParamName.length === 1) {
+          if (splittedParamName.length === 1 && galaxyWorkflowParametersVal[stepId][paramName]) {
             inputParameters[stepId][paramName]
               = galaxyWorkflowParametersVal[stepId][paramName]
           }
@@ -33,21 +35,26 @@ export function useGalaxyDecodeParameters(galaxyWorkflowParameters: MaybeRef<Enc
             const parentParam = splittedParamName.slice(0, -1)
             const childParam = splittedParamName.slice(-1)
 
-            let currParamVisit = inputParameters[stepId]
+            let currParamVisit: WorkflowParametersTool | WorkflowConditionalParametersValue = inputParameters[stepId]
+
+            // we are creating the object structure.
+            // each parent param should correspond to a WorkflowConditionalParametersValue type
+
             for (const param of parentParam) {
               if (!currParamVisit?.[param]) {
                 inputParameters[stepId][param] = {}
               }
-              currParamVisit = inputParameters[stepId][param]
+              currParamVisit = inputParameters[stepId][param] as WorkflowConditionalParametersValue || {}
             }
-            currParamVisit[childParam[0]]
+            if (childParam.length >= 1 && childParam[0] && galaxyWorkflowParametersVal[stepId][paramName]) {
+              currParamVisit[childParam[0]]
               = galaxyWorkflowParametersVal[stepId][paramName]
+            }
           }
         }
       }
       return inputParameters
     }
   })
-
   return { decodedParameters }
 }

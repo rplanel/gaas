@@ -1,5 +1,3 @@
-import type { NavigationMenuItem } from '#ui/types'
-
 export default defineAppConfig({
   gaasUi: {
     name: 'Hello from Nuxt layer',
@@ -32,8 +30,12 @@ export default defineAppConfig({
 
 })
 
-export interface OrderedNavigationMenuItem extends NavigationMenuItem {
+// should use extends NavigationMenuItem from @nuxt/ui but it is not working right now
+export interface OrderedNavigationMenuItem {
   order: number
+  label: string
+  icon: string
+  to: string
 }
 declare module '@nuxt/schema' {
   interface AppConfigInput {

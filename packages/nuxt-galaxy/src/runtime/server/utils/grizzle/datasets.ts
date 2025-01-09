@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Datamap, DatasetState, DatasetTerminalState } from 'blendtype'
-import type { Database } from '~/src/runtime/types/database.js'
+import type { Database } from '../../../types/database'
 import { useRuntimeConfig } from '#imports'
 import { DatasetsTerminalStates, GalaxyClient } from 'blendtype'
 import { parseFilename, parseURL, stringifyParsedURL, withoutProtocol } from 'ufo'
@@ -57,7 +57,7 @@ export async function uploadDatasets(
                 uploadedDatasets: datasetHistory.outputs,
               }
             }).then(async ({ uploadedDatasets }) => {
-              if (uploadedDatasets.length === 1) {
+              if (uploadedDatasets.length === 1 && uploadedDatasets[0]) {
                 const { id: uploadedGalaxyId, name, uuid, file_ext: extension, file_size: fileSize, create_time: createdAt } = uploadedDatasets[0]
                 if (storageObjectId) {
                   return useDrizzle()
