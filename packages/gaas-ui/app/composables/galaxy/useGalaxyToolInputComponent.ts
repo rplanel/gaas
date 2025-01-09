@@ -1,4 +1,5 @@
 import type { GalaxyToolParameters } from 'blendtype'
+import type { ComputedRef, MaybeRef } from 'vue'
 import {
   GalaxyBooleanToolParameter,
   GalaxyConditional,
@@ -7,6 +8,7 @@ import {
   GalaxyIntegerToolParameter,
   GalaxySelectToolParameter,
 } from '#components'
+import { computed, ref, toValue } from 'vue'
 
 export interface GalaxyToolInputComponent {
   component: any

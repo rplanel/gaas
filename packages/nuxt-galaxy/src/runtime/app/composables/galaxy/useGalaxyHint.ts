@@ -1,4 +1,4 @@
-import type { MaybeRef } from '#imports'
+import type { ComputedRef, MaybeRef } from '#imports'
 import { computed, toValue } from '#imports'
 
 export function useGalaxyHint(help: MaybeRef<string | null> = null, argument: MaybeRef<string | null> = null): { hint: ComputedRef<string> } {
