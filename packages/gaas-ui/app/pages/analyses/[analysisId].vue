@@ -17,7 +17,7 @@ const analysisId = computed(() => {
   const analysisId = route?.params?.analysisId
   if (Array.isArray(analysisId))
     return 0
-  if (analysisId) {
+  if (analysisId !== undefined) {
     return Number.parseInt(analysisId)
   }
   return analysisId
@@ -28,28 +28,42 @@ const { data: analysis } = await useAsyncData(
   async () => {
     const analysisIdVal = toValue(analysisId)
     const userVal = toValue(user)
-    if (userVal && analysisIdVal) {
-      const { data, error } = await supabase
-        .schema('galaxy')
-        .from('analyses')
-        .select()
-        .eq('id', analysisIdVal)
-        .limit(1)
-        .returns<Database['galaxy']['Tables']['analyses']['Row'][]>()
 
-      if (error) {
-        throw createError({
-          statusMessage: error.message,
-          statusCode: Number.parseInt(error.code),
-        })
-      }
-      if (data === null)
-        return null
-
-      return data[0]
+    if (userVal === null) {
+      throw createError({
+        statusMessage: 'User not found',
+        statusCode: 404,
+      })
     }
-    return false
+    if (analysisIdVal === undefined) {
+      throw createError({
+        statusMessage: 'Analysis not found',
+        statusCode: 404,
+      })
+    }
+    const { data, error } = await supabase
+      .schema('galaxy')
+      .from('analyses')
+      .select()
+      .eq('id', analysisIdVal)
+      .limit(1)
+      .returns<Database['galaxy']['Tables']['analyses']['Row'][]>()
+
+    if (error) {
+      throw createError({
+        statusMessage: error.message,
+        statusCode: Number.parseInt(error.code),
+      })
+    }
+    if (data === null) {
+      throw createError({
+        statusMessage: '',
+        statusCode: 500,
+      })
+    }
+    return data[0]
   },
+
 )
 
 const computedBreadcrumbsItems = computed(() => {

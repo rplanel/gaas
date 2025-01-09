@@ -65,30 +65,35 @@ const { data: analyses, refresh: refreshAnalyses } = await useAsyncData(
   'analyses',
   async () => {
     const userVal = toValue(user)
-    if (userVal) {
-      const { data, error } = await supabase
-        .schema('galaxy')
-        .from('analyses')
-        .select(
-          `
+
+    if (userVal === null) {
+      throw createError({
+        statusMessage: 'User not found',
+        statusCode: 404,
+      })
+    }
+
+    const { data, error } = await supabase
+      .schema('galaxy')
+      .from('analyses')
+      .select(
+        `
         id,
         name,
         state,
         workflows(*),
         histories(state, is_sync)
         `,
-        )
-        .order('id', { ascending: true })
-        .returns<AnalysisWithWorkflow[]>()
-      if (error) {
-        throw createError({
-          statusMessage: error.message,
-          statusCode: Number.parseInt(error.code),
-        })
-      }
-      return data
+      )
+      .order('id', { ascending: true })
+      .returns<AnalysisWithWorkflow[]>()
+    if (error) {
+      throw createError({
+        statusMessage: error.message,
+        statusCode: Number.parseInt(error.code),
+      })
     }
-    return false
+    return data
   },
 )
 
