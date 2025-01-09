@@ -1,7 +1,7 @@
 {
   "name": "blendtype",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.3-alpha.5",
   "packageManager": "pnpm@9.15.1",
   "description": "",
   "author": "Rémi Planel <rplanel@pasteur.fr>",
@@ -35,7 +35,7 @@
     "prepack": "pnpm build",
     "play": "jiti playground",
     "release:publish": "pnpm publish --access public",
-    "test": "pnpm lint && pnpm test:types && vitest run --coverage",
+    "test": "pnpm lint && pnpm typecheck && vitest run --coverage",
     "typecheck": "tsc --noEmit --skipLibCheck",
     "cleandep": "rm -rf node_modules && rm -rf dist"
   },

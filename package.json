@@ -1,6 +1,6 @@
 {
   "name": "gaas",
-  "version": "0.0.0",
+  "version": "0.0.3-alpha.5",
   "private": true,
   "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321",
   "description": "",
@@ -8,7 +8,7 @@
   "license": "ISC",
   "keywords": [],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "pnpm --filter './packages/**' test",
     "dev": "pnpm --filter ./playground dev",
     "lint": "eslint .",
     "cleandep": "rm -rf node_modules && rm -rf pnpm-lock.yaml && pnpm --filter '**' run cleandep",
