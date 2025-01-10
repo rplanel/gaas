@@ -42,7 +42,8 @@
   "dependencies": {
     "h3": "catalog:",
     "ofetch": "catalog:",
-    "ufo": "catalog:"
+    "ufo": "catalog:",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "catalog:",

@@ -146,36 +146,107 @@ export interface WorkflowStepToolExport extends WorkflowStepRun {
 }
 
 export interface WorkflowStepExport {
+  annotation: string
+  id: number
+  name: string
+  content_id: string | null
+  label: string | null
+  tool_id: string | null
+  type: WorkflowStepType
+  uuid: string
+  tool_state: string
+  tool_version: string | null
+  input_connections: {
+    input?: {
+      id: number
+      output_name: string
+    }
+  }
+  inputs: Array<{
+    description: string
+    name: string
+  }>
+  outputs: Array<{
+    name: string
+    type: string
+  }>
+  tool_shed_repository?: {
+    changeset_revision: string
+    name: string
+    owner: string
+    tool_shed: string
+  }
+  workflow_outputs: Array<{
+    label: string
+    output_name: string
+    uuid: string
+  } | undefined>
 
 }
-export const WorkflowStepExportSchema = z.object({
-  annotation: z.optional(z.string()),
-  step_index: z.number(),
-  step_label: z.string(),
-  step_name: z.string(),
-  step_version: z.string(),
-  step_type: z.enum(workflowStepTypes),
+export const workflowStepExportSchema = z.object({
+  annotation: z.string(),
+  id: z.number(),
+  name: z.string(),
+  content_id: z.string().nullable(),
+  label: z.string().nullable(),
+  tool_id: z.string().nullable(),
+  type: z.enum(workflowStepTypes),
+  uuid: z.string(),
+  tool_state: z.string(),
+  tool_version: z.string().nullable(),
+  input_connections: z.object({
+    input: z.optional(z.object({
+      id: z.number(),
+      output_name: z.string(),
+    })),
+  }),
+  inputs: z.array(
+    z.object({
+      description: z.string(),
+      name: z.string(),
+    }),
+  ),
+  outputs: z.array(
+    z.object({
+      name: z.string(),
+      type: z.string(),
+    }),
+  ),
+  tool_shed_repository: z.optional(z.object({
+    changeset_revision: z.string(),
+    name: z.string(),
+    owner: z.string(),
+    tool_shed: z.string(),
+  })),
+  workflow_outputs:
+    z.object({
+      label: z.string(),
+      output_name: z.string(),
+      uuid: z.string(),
+    }).optional().array().catch([]),
+
 })
-export interface RawGalaxyWorkflowExport {
+
+export interface rawGalaxyWorkflowExport {
   'a_galaxy_workflow': string
   'format-version': string
   'name': string
   'tags': TagCollection
   'annotation': string
-  // 'steps': { [key: string]: WorkflowStepExport }
+  'steps': { [key: string]: WorkflowStepExport }
   'version': number
 }
 
-export interface GalaxyWorkflowExport extends Omit<RawGalaxyWorkflowExport, 'a_galaxy_workflow'> {
+export interface GalaxyWorkflowExport extends Omit<rawGalaxyWorkflowExport, 'a_galaxy_workflow'> {
   a_galaxy_workflow: boolean
 }
 
-export const GalaxyWorkflowExportSchema = z.object({
+export const galaxyWorkflowExportSchema = z.object({
   'a_galaxy_workflow': z.coerce.boolean(),
   'format-version': z.string(),
   'name': z.string(),
   'tags': z.array(z.string()),
   'annotation': z.string(),
   'version': z.number(),
-  // 'steps': z.record(z.string(), WorkflowStepExportSchema),
+  'steps': z.record(z.string(), workflowStepExportSchema),
 })

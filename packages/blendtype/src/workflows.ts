@@ -1,5 +1,5 @@
 import type { GalaxyClient } from './GalaxyClient'
-import type { GalaxyInvoke, GalaxyWorkflow, GalaxyWorkflowExport, GalaxyWorkflowInput, GalaxyWorkflowParameters, GalaxyWorkflowsItem } from './types'
+import { type GalaxyInvoke, type GalaxyWorkflow, type GalaxyWorkflowExport, galaxyWorkflowExportSchema, type GalaxyWorkflowInput, type GalaxyWorkflowParameters, type GalaxyWorkflowsItem, type rawGalaxyWorkflowExport } from './types'
 
 export class Workflows {
   #client: GalaxyClient
@@ -26,7 +26,7 @@ export class Workflows {
   }
 
   public async exportWorkflow(workflowId: string, style: 'export' | 'run' | 'editor' | 'instance' = 'export'): Promise<GalaxyWorkflowExport> {
-    return this.#client.api<GalaxyWorkflowExport>(
+    return this.#client.api<rawGalaxyWorkflowExport>(
       `api/workflows/${workflowId}/download?style=${style}`,
       {
         credentials: 'include',
@@ -35,7 +35,9 @@ export class Workflows {
         },
         method: 'GET',
       },
-    )
+    ).then((wf) => {
+      return galaxyWorkflowExportSchema.passthrough().parse(wf) as GalaxyWorkflowExport
+    })
   }
 
   public async getWorkflows(): Promise<GalaxyWorkflowsItem[]> {
