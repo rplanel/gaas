@@ -195,12 +195,6 @@ export default defineNuxtModule<ModuleOptions>({
       method: 'get',
     })
 
-    addServerHandler({
-      route: '/api/galaxy/workflows/:workflowId/export-run',
-      handler: resolver.resolve('./runtime/server/api/galaxy/workflows/[workflowId]/export-run.get'),
-      method: 'get',
-    })
-
     // db
     addServerHandler({
       route: '/api/db/analyses',

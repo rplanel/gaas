@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   const workflowId = getRouterParam(event, 'workflowId')
   if (workflowId) {
     const $galaxy: GalaxyClient = event.context?.galaxy
-    const galaxyWorkflow = await $galaxy.workflows().getWorkflow(workflowId)
-    return galaxyWorkflow
+    return $galaxy.workflows().getWorkflow(workflowId)
   }
 })

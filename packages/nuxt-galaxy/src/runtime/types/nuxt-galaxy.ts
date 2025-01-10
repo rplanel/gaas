@@ -101,3 +101,9 @@ export interface HistoryWithAnalysisDB {
   histories: HistoryDb
   analyses: RowAnalysis
 }
+
+export interface GalaxyInstanceDetails {
+  version_major: string
+  version_minor: string
+  url: string
+}
