@@ -1,5 +1,6 @@
 import type { TagCollection } from './tag'
 import type { GalaxyToolParameters, GalaxyToolParameterValue } from './tool'
+import { z } from 'zod'
 
 export type SrcInput = 'hda' | 'ldda' | 'ld' | 'hdca'
 
@@ -13,7 +14,9 @@ export type GalaxyWorkflowInput = Record<
   }
 >
 
-export type WorkflowStepType = 'data_input' | 'parameter_input' | 'data_collection_input' | 'tool'
+const workflowStepTypes = ['data_input', 'parameter_input', 'data_collection_input', 'tool'] as const
+
+export type WorkflowStepType = typeof workflowStepTypes[number]
 
 export interface WorkflowInput {
   label: string
@@ -70,7 +73,7 @@ export interface GalaxyWorkflow {
   importable: boolean
   deleted: boolean
   hidden: boolean
-  tags: any[]
+  tags: TagCollection
   latest_workflow_uuid: string
   url: string
   owner: string
@@ -83,7 +86,7 @@ export interface GalaxyWorkflow {
   version: number
 }
 
-export interface WorkflowStepExport {
+export interface WorkflowStepRun {
   annotation?: string
   step_index: number
   step_label: string
@@ -92,18 +95,18 @@ export interface WorkflowStepExport {
   step_type: WorkflowStepType
 }
 
-export interface WorkflowStepDataExport extends WorkflowStepExport {
+export interface WorkflowStepDataExport extends WorkflowStepRun {
   step_type: Extract<WorkflowStepType, 'data_input'>
 }
 // parameter_input
-export interface WorkflowStepParameterExport extends WorkflowStepExport {
+export interface WorkflowStepParameterExport extends WorkflowStepRun {
   step_type: Extract<WorkflowStepType, 'parameter_input'>
 }
-export interface WorkflowStepDataCollectionExport extends WorkflowStepExport {
+export interface WorkflowStepDataCollectionExport extends WorkflowStepRun {
   step_type: Extract<WorkflowStepType, 'data_collection_input'>
 }
 
-export interface WorkflowStepToolExport extends WorkflowStepExport {
+export interface WorkflowStepToolExport extends WorkflowStepRun {
   id: string
   step_type: Extract<WorkflowStepType, 'tool'>
   action: string
@@ -142,14 +145,37 @@ export interface WorkflowStepToolExport extends WorkflowStepExport {
 
 }
 
-export interface GalaxyWorkflowExport {
-  'a_galaxy_workflow': boolean
-  'format-version': string
-  'id': string
-  'name': string
-  'tags': any[]
-  'annotation': string
-  'steps': { [key: string]: WorkflowStepExport }
-  'version': number
+export interface WorkflowStepExport {
 
 }
+export const WorkflowStepExportSchema = z.object({
+  annotation: z.optional(z.string()),
+  step_index: z.number(),
+  step_label: z.string(),
+  step_name: z.string(),
+  step_version: z.string(),
+  step_type: z.enum(workflowStepTypes),
+})
+export interface RawGalaxyWorkflowExport {
+  'a_galaxy_workflow': string
+  'format-version': string
+  'name': string
+  'tags': TagCollection
+  'annotation': string
+  // 'steps': { [key: string]: WorkflowStepExport }
+  'version': number
+}
+
+export interface GalaxyWorkflowExport extends Omit<RawGalaxyWorkflowExport, 'a_galaxy_workflow'> {
+  a_galaxy_workflow: boolean
+}
+
+export const GalaxyWorkflowExportSchema = z.object({
+  'a_galaxy_workflow': z.coerce.boolean(),
+  'format-version': z.string(),
+  'name': z.string(),
+  'tags': z.array(z.string()),
+  'annotation': z.string(),
+  'version': z.number(),
+  // 'steps': z.record(z.string(), WorkflowStepExportSchema),
+})
