@@ -1,10 +1,11 @@
 import type { DatasetState } from 'blendtype'
 import { relations } from 'drizzle-orm'
-import { integer, serial, unique } from 'drizzle-orm/pg-core'
+import { integer, primaryKey, serial, unique } from 'drizzle-orm/pg-core'
 import { datasetStateEnum, galaxy } from '../galaxy'
 import { analyses } from './analyses'
 import { datasets } from './datasets'
 import { jobs } from './jobs'
+import { tags } from './tags'
 
 export const analysisOutputs = galaxy.table('analysis_outputs', {
   id: serial('id').primaryKey(),
@@ -16,7 +17,18 @@ export const analysisOutputs = galaxy.table('analysis_outputs', {
   unique: unique().on(t.datasetId, t.jobId),
 }))
 
-export const analysisOutputsRelations = relations(analysisOutputs, ({ one }) => {
+/**
+ * outputAnalysis tags
+ */
+
+export const analysisOutputsToTags = galaxy.table('analysis_outputs_to_tags', {
+  analysisOutputId: integer('analysis_output_id').notNull().references(() => analysisOutputs.id),
+  tagId: integer('tag_id').notNull().references(() => tags.id),
+}, t => ({
+  pk: primaryKey({ columns: [t.analysisOutputId, t.tagId] }),
+}))
+
+export const analysisOutputsRelations = relations(analysisOutputs, ({ one, many }) => {
   return {
     dataset: one(datasets, {
       fields: [analysisOutputs.datasetId],
@@ -30,5 +42,6 @@ export const analysisOutputsRelations = relations(analysisOutputs, ({ one }) => 
       fields: [analysisOutputs.jobId],
       references: [jobs.id],
     }),
+    analysisOutputsTags: many(analysisOutputsToTags),
   }
 })

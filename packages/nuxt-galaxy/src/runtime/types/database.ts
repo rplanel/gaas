@@ -171,6 +171,36 @@ export interface Database {
           },
         ]
       }
+      analysis_outputs_to_tags: {
+        Row: {
+          analysis_output_id: number
+          tag_id: number
+        }
+        Insert: {
+          analysis_output_id: number
+          tag_id: number
+        }
+        Update: {
+          analysis_output_id?: number
+          tag_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'analysis_outputs_to_tags_analysis_output_id_analysis_outputs_id'
+            columns: ['analysis_output_id']
+            isOneToOne: false
+            referencedRelation: 'analysis_outputs'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_outputs_to_tags_tag_id_tags_id_fk'
+            columns: ['tag_id']
+            isOneToOne: false
+            referencedRelation: 'tags'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       datasets: {
         Row: {
           annotation: string | null

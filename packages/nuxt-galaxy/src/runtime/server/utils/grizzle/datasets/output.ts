@@ -1,10 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createError, useRuntimeConfig } from '#imports'
 import { GalaxyClient } from 'blendtype'
-import { and, eq } from 'drizzle-orm'
-import { analysisOutputs } from '../../../db/schema/galaxy/analysisOutputs'
+import { and, eq, sql } from 'drizzle-orm'
+import { analysisOutputs, analysisOutputsToTags } from '../../../db/schema/galaxy/analysisOutputs'
 import { datasets } from '../../../db/schema/galaxy/datasets'
 import { histories } from '../../../db/schema/galaxy/histories'
+import { tags } from '../../../db/schema/galaxy/tags'
 import { useDrizzle } from '../../drizzle'
 import { isDatasetTerminalState } from '../datasets'
 import { takeUniqueOrThrow } from '../helper'
@@ -93,6 +94,23 @@ export async function getOrCreateOutputDataset(
                 .returning()
                 .onConflictDoNothing()
                 .then(takeUniqueOrThrow)
+            }
+          })
+          .then((analysisOutputDb) => {
+            if (analysisOutputDb) {
+              return useDrizzle()
+                .insert(tags)
+                .values(galaxyDataset.tags.map(label => ({ label })))
+                .onConflictDoUpdate({ target: tags.label, set: { label: sql`excluded.label` } })
+                .returning()
+                .then((tagsDb) => {
+                  return useDrizzle()
+                    .insert(analysisOutputsToTags)
+                    .values(tagsDb.map(tagDb => ({ tagId: tagDb.id, analysisOutputId: analysisOutputDb.id })))
+                })
+                .then(() => {
+                  return analysisOutputDb
+                })
             }
           })
       }
