@@ -53,7 +53,7 @@ const galaxyAnalysesColumns = ref<TableColumn<SanitizedAnalysis>[]>([
     header: 'Name',
   },
   { header: 'State', accessorKey: 'histories.state', id: 'historiesState' },
-  { header: 'Workflow', accessorKey: 'workflows.name' },
+  { header: 'Workflow', accessorKey: 'workflows' },
   {
     id: 'actions',
   },
@@ -97,12 +97,19 @@ const { data: analyses, refresh: refreshAnalyses } = await useAsyncData(
   },
 )
 
-const sanitizedAnalyses = computed<AnalysisWithWorkflow[]>(() => {
+const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {
   const analysesVal = toValue(analyses)
   if (analysesVal && Array.isArray(analysesVal)) {
-    return analysesVal?.map(a => ({
-      ...a,
-    }))
+    return analysesVal?.map((a) => {
+      const { id, name, state, is_sync } = a
+      return {
+        id,
+        name,
+        state,
+        is_sync,
+        workflows: a.workflows.name,
+      }
+    })
   }
   return []
 })

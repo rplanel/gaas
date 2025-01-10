@@ -141,7 +141,7 @@ async function addToDb(workflow: { id: string }) {
   }
 }
 
-const { data: allWorkflows, error: errorWorklows } = await useFetch('/api/galaxy/workflows')
+const { data: allWorkflows, error: errorWorklows } = await useFetch<GalaxyWorkflowsItem[]>('/api/galaxy/workflows')
 if (toValue(errorWorklows)) {
   const { errorStatus } = useErrorStatus(errorWorklows)
   const { errorMessage } = useErrorMessage(errorWorklows)
@@ -198,11 +198,7 @@ const { data: galaxyInstance } = await useAsyncData(
       <UTable
         v-if="allWorkflows" sticky :data="allWorkflows" :columns="galaxyWorkflowGalaxyColumns"
         class="flex-1 max-h-[500px] ring ring-[var(--ui-border-muted)] rounded-[calc(var(--ui-radius)*1.5)]"
-      >
-        <template #[`item.actions`]="{ item }">
-          <UIcon name="i-mdi:plus" class="me-2" size="small" @click="addToDb(item)" />
-        </template>
-      </UTable>
+      />
     </div>
     <div v-else>
       <UAlert title="tettee" />

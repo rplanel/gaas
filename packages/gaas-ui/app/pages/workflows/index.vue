@@ -10,8 +10,11 @@ import {
   useSupabaseClient,
   useSupabaseUser,
 } from '#imports'
+import { galaxyWorkflowExportSchema, getErrorMessage, getStatusCode } from 'blendtype'
 import { jwtDecode, type JwtPayload } from 'jwt-decode'
 import { toValue } from 'vue'
+import { z } from 'zod'
+import { fromError } from 'zod-validation-error'
 
 type Database = SupabaseTypes.Database
 type RoleType = GalaxyTypes.RoleType
@@ -43,25 +46,12 @@ supabase.auth.onAuthStateChange(async (event, session) => {
   }
 })
 
-// const breadcrumbsItems = ref([
-//   {
-//     label: 'Home',
-//     disabled: false,
-//     to: '/',
-//   },
-//   {
-//     label: 'Workflows',
-//     disabled: true,
-//     to: '/workflows',
-//   },
-// ])
-
 function runWorkflowPage(workflowId: number) {
   router.push(`/workflows/${workflowId}/run`)
 }
 
 async function resetError(error: Ref<null | unknown >) {
-  await router.push('/workflows')
+  await router.push('/')
   error.value = null
 }
 
@@ -75,6 +65,30 @@ const { data: dbWorkflows } = await useAsyncData('workflows-auth', async () => {
       .returns<WorkflowDbItem[]>()
     return data
   }
+})
+
+const sanitizedDbWorkflows = computed(() => {
+  const dbWorkflowsVal = toValue(dbWorkflows)
+  if (dbWorkflowsVal) {
+    return dbWorkflowsVal.map((wf) => {
+      try {
+        const definition = galaxyWorkflowExportSchema.passthrough().parse(wf.definition)
+        return { ...wf, definition }
+      }
+      catch (err) {
+        if (err instanceof z.ZodError) {
+          const sanitizedErr = fromError(err)
+
+          throw createError({ statusMessage: sanitizedErr.message, cause: sanitizedErr.cause, stack: sanitizedErr.stack, name: sanitizedErr.name })
+        }
+        throw createError({
+          statusCode: getStatusCode(err),
+          statusMessage: getErrorMessage(err),
+        })
+      }
+    })
+  }
+  return null
 })
 
 definePageMeta({
@@ -92,53 +106,56 @@ definePageMeta({
 
       <div class="grid grid-flow-row auto-rows-max gap-6">
         <div>
-          <!-- <h2 class="text-xl font-bold mb-2 mt-4">Web application</h2> -->
           <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
-            <div v-for="(workflow, i) in dbWorkflows" :key="workflow.id">
-              <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
-                <div>
-                  <div class="grid grid-flow-col auto-cols-max items-center justify-between">
-                    <div class="grid grid-flow-col auto-cols-max items-center place-items-start">
-                      <span class="mr-3">
-                        <UAvatar :text="String(i + 1)" />
-                      </span>
-                      <div class="grid grid-flow-row auto-rows-max">
-                        <div>
-                          <span class="font-bold text-lg">{{
-                            workflow.name
-                          }}</span>
-                        </div>
-                        <div>
-                          <span class="font-medium text-sm opacity-60">{{
-                            workflow.definition.annotation
-                          }}</span>
+            <NuxtErrorBoundary>
+              <div v-for="(workflow, i) in sanitizedDbWorkflows" :key="workflow.id">
+                <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
+                  <div>
+                    <div class="grid grid-flow-col auto-cols-max items-center justify-between">
+                      <div class="grid grid-flow-col auto-cols-max items-center place-items-start">
+                        <span class="mr-3">
+                          <UAvatar :text="String(i + 1)" />
+                        </span>
+                        <div class="grid grid-flow-row auto-rows-max">
+                          <div>
+                            <span class="font-bold text-lg">{{
+                              workflow.name
+                            }}</span>
+                          </div>
+                          <div v-if="workflow?.definition">
+                            <span class="font-medium text-sm opacity-60">{{
+                              workflow.definition.annotation
+                            }}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="place-items-end">
-                      <VersionBadge :version="workflow.version.toString()" />
+                      <div class="place-items-end">
+                        <VersionBadge :version="workflow.version.toString()" />
+                      </div>
                     </div>
                   </div>
-                </div>
                 <!-- <USeparator orientation="horizontal" type="dashed" class="my-5" /> -->
-              </UCard>
-            </div>
+                </UCard>
+              </div>
+            </NuxtErrorBoundary>
           </div>
         </div>
       </div>
 
       <template #error="{ error }">
-        <UAlert
-          color="error" variant="soft" title="Error" :description="error" icon="i-material-symbols:error"
-          :actions="[
-            {
-              label: 'go to list workfows',
-              onClick(event) {
-                resetError(error);
+        <div>
+          <UAlert
+            color="error" variant="soft" title="Error" :description="error" icon="i-material-symbols:error"
+            :actions="[
+              {
+                label: 'home',
+                onClick() {
+                  resetError(error);
+                },
               },
-            },
-          ]"
-        />
+            ]" class="my-4"
+          />
+        </div>
       </template>
     </NuxtErrorBoundary>
   </div>

@@ -25,6 +25,10 @@ const schema = z.object({
   file: z.any(),
 })
 
+const fileMetadataSchema = z.object({
+  size: z.number(),
+})
+
 type Schema = z.output<typeof schema>
 type DatasetColumn = Database['galaxy']['Tables']['datasets']['Row']
 const state = reactive<Partial<Schema>>({
@@ -57,23 +61,6 @@ const { data: storageObjects, refresh: refreshStorageObjects }
       return data
     }
   })
-
-const columns = ref<TableColumn<DatasetColumn>[]>([
-  {
-    accessorKey: 'name',
-    sortingFn: 'alphanumeric',
-    header: ({ column }) => {
-      return h(ColumnTableSort, { column, label: 'Name' })
-    },
-  },
-  {
-    accessorKey: 'rawSize',
-    sortingFn: 'basic',
-    header: ({ column }) => {
-      return h(ColumnTableSort, { column, label: 'Size' })
-    },
-  },
-])
 
 async function uploadFile(event: any) {
   const selectedFile = event.target.files?.[0]
@@ -124,7 +111,13 @@ const storageObjectsMap = computed(() => {
   return undefined
 })
 
-const datasets = computed(() => {
+interface Dataset {
+  name: string
+  size?: string
+  rawSize?: number
+}
+
+const datasets = computed<Dataset[] | undefined>(() => {
   const dataVal = toValue(data)
   const storageObjectsMapVal = toValue(storageObjectsMap)
   if (dataVal) {
@@ -135,23 +128,17 @@ const datasets = computed(() => {
         storageObjectsMapVal
         && storageObjectsMapVal.has(d.storage_object_id)
       ) {
-        const metadata = storageObjectsMapVal.get(
+        const metadata = fileMetadataSchema.passthrough().parse(storageObjectsMapVal.get(
           d.storage_object_id,
-        )?.metadata
-        if (
-          metadata
-          && typeof metadata === 'object'
-          && !Array.isArray(metadata)
-        ) {
-          rawSize = Number.parseInt(metadata.size)
-          if (rawSize) {
-            const { fileSize } = useFileSize(rawSize)
-            size = toValue(fileSize)
-          }
+        )?.metadata)
+        rawSize = metadata.size
+        if (rawSize) {
+          const { fileSize } = useFileSize(rawSize)
+          size = toValue(fileSize)
         }
       }
       return {
-        name: d.name,
+        name: d.dataset_name,
         size,
         rawSize,
       }
@@ -159,6 +146,23 @@ const datasets = computed(() => {
   }
   return undefined
 })
+
+const columns = ref<TableColumn<Dataset>[]>([
+  {
+    accessorKey: 'name',
+    sortingFn: 'alphanumeric',
+    header: ({ column }) => {
+      return h(ColumnTableSort, { column, label: 'Name' })
+    },
+  },
+  {
+    accessorKey: 'rawSize',
+    sortingFn: 'basic',
+    header: ({ column }) => {
+      return h(ColumnTableSort, { column, label: 'Size' })
+    },
+  },
+])
 </script>
 
 <template>
@@ -198,7 +202,7 @@ const datasets = computed(() => {
           </UForm>
         </div>
       </div>
-      <div class="mt-5">
+      <div v-if="datasets" class="mt-5">
         <!-- <h2 class="text-xl font-bold mb-3 mt-4">Datasets</h2> -->
         <UTable
           :data="datasets"

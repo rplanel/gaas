@@ -52,15 +52,11 @@ const inputConditionalComponents = computed(() => {
       }"
     >
       <template #default>
-        <template
-          v-if="inputTestParamComponents && props.test_param.name && inputTestParamComponents?.[props.test_param.name]?.component"
-        >
-          <component
-            :is="inputTestParamComponents[props.test_param.name].component"
-            v-model="conditionalModel[props.test_param.name]" v-bind="props.test_param" :hint :disabled="true"
-            variant="display"
-          />
-        </template>
+        <component
+          :is="inputTestParamComponents?.[props?.test_param.name]?.component"
+          v-model="conditionalModel[props.test_param.name]" v-bind="props.test_param" :hint :disabled="true"
+          variant="display"
+        />
       </template>
       <template #body>
         <div v-if="selectedInputs && inputConditionalComponents" class="mx-5 grid grid-flow-row gap-3">
@@ -69,7 +65,7 @@ const inputConditionalComponents = computed(() => {
             class="border-b border-[var(--ui-border)] last:border-none px-4 py-5 mx-5 w-full"
           >
             <component
-              :is="inputConditionalComponents[input.name].component" v-model="conditionalModel[input.name]"
+              :is="inputConditionalComponents?.[input?.name]?.component" v-model="conditionalModel[input.name]"
               :variant v-bind="input"
             />
           </div>

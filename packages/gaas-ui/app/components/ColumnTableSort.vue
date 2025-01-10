@@ -20,7 +20,7 @@ const items = computed<DropdownMenuItem[]>(() => {
   return [
     {
       label: 'Asc',
-      type: 'checkbox',
+      type: 'link',
       icon: 'i-lucide-arrow-up-narrow-wide',
       checked: isSortedVal === 'asc',
       onSelect: () => {
@@ -35,7 +35,7 @@ const items = computed<DropdownMenuItem[]>(() => {
     {
       label: 'Desc',
       icon: 'i-lucide-arrow-down-wide-narrow',
-      type: 'checkbox',
+      type: 'link',
       checked: isSortedVal === 'desc',
       onSelect: () => {
         if (isSortedVal === 'desc') {
