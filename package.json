@@ -18,6 +18,8 @@
     "release": "pnpm run lint && pnpm run typecheck && pnpm run test && changelogen --output CHANGELOG.md && jiti scripts/release.ts && pnpm -r run release:publish && git push --follow-tags"
   },
   "dependencies": {
+    "@nuxt/ui": "catalog:",
+    "@nuxt/ui-pro": "catalog:",
     "blendtype": "workspace:*"
   },
   "devDependencies": {

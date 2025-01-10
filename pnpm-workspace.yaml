@@ -49,3 +49,4 @@ catalog:
   vitest: ^2.1.8
   vue-tsc: ^2.2.0
   zod: ^3.24.1
+  zod-validation-error: ^3.4.0

@@ -11,7 +11,7 @@
     "preview": "nuxt preview .playground",
     "lint": "eslint .",
     "release:publish": "pnpm publish --access public",
-    "typecheck": "tsc --noEmit --skipLibCheck",
+    "typecheck": "vue-tsc --noEmit",
     "cleandep": "rm -rf node_modules && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules"
   },
   "dependencies": {
@@ -22,7 +22,8 @@
     "drizzle-kit": "catalog:",
     "jwt-decode": "catalog:",
     "nuxt-galaxy": "workspace:*",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "zod-validation-error": "catalog:"
   },
   "devDependencies": {
     "@iconify-json/ep": "catalog:",
@@ -38,6 +39,7 @@
     "eslint": "catalog:",
     "nuxt": "^3.15.0",
     "typescript": "^5.7.2",
-    "vue": "latest"
+    "vue": "latest",
+    "vue-tsc": "^2.2.0"
   }
 }
