@@ -312,6 +312,29 @@ const workflowDefinition = computed<GalaxyWorkflow | undefined>(() => {
   return definition as GalaxyWorkflow
 })
 
+const { data: datasets } = await useAsyncData(
+  'analysis-input-datasets',
+  async (): Promise<UploadedDatasetDb[]> => {
+    const userVal = toValue(user)
+    if (!userVal) {
+      throw createError({ statusMessage: 'No uploaded datasets', statusCode: 500 })
+    }
+    const { data, error } = await supabase
+      .schema('galaxy')
+      .from('uploaded_datasets')
+      .select()
+      .returns<UploadedDatasetDb[]>()
+
+    if (error) {
+      throw createError({ statusCode: getStatusCode(error), statusMessage: getErrorMessage(error) })
+    }
+    if (data === null) {
+      throw createError({ statusMessage: 'No uploaded datasets', statusCode: 500 })
+    }
+    return data
+  },
+)
+
 const { data: workflowRun, error } = await useFetch<{
   galaxyWorkflow: GalaxyWorkflow
   tools: Record<string, GalaxyTool>
@@ -320,26 +343,6 @@ const { data: workflowRun, error } = await useFetch<{
 if (error) {
   createError('There was an error fetching workflow inputs and parameters')
 }
-
-const { data: datasets } = await useAsyncData(
-  'analysis-input-datasets',
-  async () => {
-    const userVal = toValue(user)
-    if (userVal) {
-      const { data, error } = await supabase
-        .schema('galaxy')
-        .from('uploaded_datasets')
-        .select()
-        .returns<UploadedDatasetDb[]>()
-
-      if (error) {
-        createError({ statusCode: getStatusCode(error), statusMessage: getErrorMessage(error) })
-      }
-
-      return data
-    }
-  },
-)
 </script>
 
 <template>
@@ -456,7 +459,7 @@ const { data: datasets } = await useAsyncData(
                   class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]"
                 >
                   <GalaxyWorkflowStep
-                    v-if="stepId !== undefined"
+                    v-if="stepId !== undefined && galaxyWorkflowStepProps?.[stepId]"
                     v-bind="galaxyWorkflowStepProps[stepId]"
                     variant="form"
                   />

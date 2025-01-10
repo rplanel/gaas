@@ -100,18 +100,28 @@ const { data: analysis, refresh: refreshAnalysis } = await useAsyncData(
 
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
-  const workflowIdVal = toValue(analysis.value?.workflow_id)
-  if (userVal && workflowIdVal) {
-    const { data } = await supabase
-      .schema('galaxy')
-      .from('workflows')
-      .select('id, name, galaxy_id, definition')
-      .eq('id', workflowIdVal)
-      .limit(1)
-      .single()
-    return data
+  const analysisVal = toValue(analysis)
+  if (!userVal) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized: User not found',
+    })
   }
-  return false
+  if (!analysisVal) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Not Found: Analysis not found',
+    })
+  }
+  const workflowIdVal = toValue(analysisVal.workflow_id)
+  const { data } = await supabase
+    .schema('galaxy')
+    .from('workflows')
+    .select('id, name, galaxy_id, definition')
+    .eq('id', workflowIdVal)
+    .limit(1)
+    .single()
+  return data
 })
 
 const workflowGalaxyId = computed(() => {
@@ -170,15 +180,15 @@ const jobs = computed<RowAnalysisJob[] | undefined>(() => {
 })
 
 const jobsMap = computed(() => {
-  const jobsVal = toValue(jobs)
+  const jobsVal = toValue(jobs) as RowAnalysisJob[]
   if (jobsVal) {
-    const jobM: Record<number, RowAnalysisJob> = {}
+    const jobM: Record<string, RowAnalysisJob> = {}
     for (const job of jobsVal) {
-      jobM[job.step_id] = job
+      jobM[String(job.step_id)] = job
     }
     return jobM
   }
-  return undefined
+  return {}
 })
 
 const tools = computed(() => {
@@ -186,7 +196,15 @@ const tools = computed(() => {
   if (workflowRunVal?.tools) {
     return workflowRunVal.tools
   }
-  return undefined
+  return {}
+})
+
+const stepTools = computed(() => {
+  const workflowRunVal = toValue(workflowRun)
+  if (workflowRunVal?.stepToTool) {
+    return workflowRunVal.stepToTool
+  }
+  return {}
 })
 
 const jobsAccordionItems = computed<AccordionItem[] | undefined>(() => {
@@ -236,9 +254,11 @@ const sanitizedToolsParameters = computed(() => {
   if (workflowRunVal) {
     const toolsInputs: Record<string, GalaxyToolParameters[]> = {}
     for (const toolId in workflowRunVal.tools) {
-      toolsInputs[toolId] = workflowRunVal.tools[toolId].inputs.filter(
-        input => input.type !== 'data',
-      )
+      if (workflowRunVal.tools[toolId]?.inputs) {
+        toolsInputs[toolId] = workflowRunVal.tools[toolId]?.inputs.filter(
+          input => input.type !== 'data',
+        ) as GalaxyToolParameters[]
+      }
     }
     return toolsInputs
   }
@@ -259,9 +279,10 @@ const computedParameterInputComponentObject = computed(() => {
     return Object.entries(worklowRunVal.tools).reduce(
       (
         acc: Record<string, Record<string, GalaxyToolInputComponent>>,
-        [toolId, tool]: [string, GalaxyTool],
+        curr,
       ) => {
         // toolInput.
+        const [toolId, tool] = curr as [string, GalaxyTool]
         const { inputComponentsObject } = useGalaxyToolInputComponent(
           tool.inputs,
         )
@@ -274,6 +295,23 @@ const computedParameterInputComponentObject = computed(() => {
   }
   return undefined
 })
+
+function getToolParameters(stepId: string) {
+  const stepToolsVal = toValue(stepTools)
+  const sanitizedToolsParametersVal = toValue(sanitizedToolsParameters)
+  const toolName = stepToolsVal[stepId]
+  if (toolName && sanitizedToolsParametersVal) {
+    return sanitizedToolsParametersVal[toolName]
+  }
+}
+
+function getParametersInputComponent(stepId: string) {
+  const toolName = toValue(stepTools)[stepId]
+  const computedParameterInputComponentObjectVal = toValue(computedParameterInputComponentObject)
+  if (toolName && computedParameterInputComponentObjectVal) {
+    return computedParameterInputComponentObjectVal[toolName]
+  }
+}
 
 onMounted(() => {
   const dbAnalysisVal = toValue(analysis) as Record<string, any>
@@ -334,14 +372,14 @@ await useFetch('/sync')
       >
         <template #leading="{ item }">
           <div>
-            <GalaxyStatus v-if="jobsMap" :state="item?.value ? jobsMap[item.value].state : undefined" size="25" />
+            <GalaxyStatus :state="item?.value && jobsMap ? jobsMap[item.value]?.state : undefined" size="25" />
           </div>
         </template>
         <template #body="{ item }">
           <!-- item.value is step_id as string -->
-          <div v-if="jobDetailsAccordionItems" class="p-4">
+          <div v-if="jobDetailsAccordionItems && item.value" class="p-4">
             <UAccordion
-              :items="jobDetailsAccordionItems[item.value].details" :ui="{
+              :items="jobDetailsAccordionItems[item.value]?.details" :ui="{
                 header:
                   'hover:bg-[var(--ui-bg-elevated)] px-2 rounded-[calc(var(--ui-radius))]',
               }"
@@ -351,24 +389,16 @@ await useFetch('/sync')
                   v-if="
                     workflowParametersModel
                       && workflowSteps
-                      && sanitizedToolsParameters
-                      && computedParameterInputComponentObject
-                      && workflowRun?.stepToTool
+                      && item.value
                   " class="p-2"
                 >
                   <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]">
                     <GalaxyWorkflowStep
-                      variant="display" :workflow-step="workflowSteps[item.value]" :tool-parameters="
-                        sanitizedToolsParameters[
-                          workflowRun.stepToTool[item.value]
-                        ]
-                      " :parameters-inputs-component="
-                        computedParameterInputComponentObject?.[
-                          workflowRun?.stepToTool?.[item.value]
-                        ]
-                      " :workflow-parameters-model="
-                        workflowParametersModel[item.value]
-                      "
+                      variant="display"
+                      :workflow-step="workflowSteps[item.value]"
+                      :tool-parameters="getToolParameters(item.value)"
+                      :parameters-inputs-component="getParametersInputComponent(item.value)"
+                      :workflow-parameters-model=" workflowParametersModel[item.value] "
                     />
                   </div>
                 </div>
@@ -376,14 +406,14 @@ await useFetch('/sync')
               <template #stdout>
                 <div class="p-1">
                   <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-2">
-                    <pre> {{ jobsMap[item.value].stdout }}</pre>
+                    <pre v-if="jobsMap"> {{ jobsMap[item.value]?.stdout }}</pre>
                   </div>
                 </div>
               </template>
               <template #stderr>
                 <div class="p-1">
                   <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-2">
-                    <pre> {{ jobsMap[item.value].stderr }}</pre>
+                    <pre v-if="jobsMap"> {{ jobsMap[item.value]?.stderr }}</pre>
                   </div>
                 </div>
               </template>
@@ -391,8 +421,6 @@ await useFetch('/sync')
           </div>
         </template>
       </UAccordion>
-
-      <GalaxyStatus v-if="jobsMap" :state="item?.value ? jobsMap[item.value].state : undefined" size="25" />
     </div>
     <USeparator icon="i-lucide:file" />
 
@@ -401,7 +429,6 @@ await useFetch('/sync')
         <h2 class="text-lg font-bold">
           Outputs
         </h2>
-
         <GalaxyAnalysisIoDatasets :items="outputs" />
       </div>
     </div>

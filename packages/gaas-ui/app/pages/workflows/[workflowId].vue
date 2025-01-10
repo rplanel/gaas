@@ -25,17 +25,31 @@ const workflowId = computed(() => {
 
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
-  const workflowIdVal = toValue(workflowId)
-  if (userVal && workflowIdVal) {
-    const { data } = await supabase
-      .schema('galaxy')
-      .from('workflows')
-      .select('id, name, galaxy_id')
-      .eq('id', workflowIdVal)
-      .limit(1)
-      .single()
-    return data
+  let workflowIdVal = toValue(workflowId)
+
+  if (!userVal) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized: User not found',
+    })
   }
+  if (!workflowIdVal) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Not Found: workflow not found',
+    })
+  }
+  if (typeof workflowIdVal === 'string') {
+    workflowIdVal = Number.parseInt(workflowIdVal)
+  }
+  const { data } = await supabase
+    .schema('galaxy')
+    .from('workflows')
+    .select('id, name, galaxy_id')
+    .eq('id', workflowIdVal)
+    .limit(1)
+    .single()
+  return data
 })
 
 const computedBreadcrumbsItems = computed(() => {
