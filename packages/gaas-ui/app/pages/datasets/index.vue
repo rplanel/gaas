@@ -124,10 +124,12 @@ const datasets = computed<Dataset[] | undefined>(() => {
     return dataVal.map((d) => {
       let size: string | undefined
       let rawSize: number | undefined
+      let name: string | null | undefined
       if (
         storageObjectsMapVal
         && storageObjectsMapVal.has(d.storage_object_id)
       ) {
+        name = storageObjectsMapVal.get(d.storage_object_id)?.name
         const metadata = fileMetadataSchema.passthrough().parse(storageObjectsMapVal.get(
           d.storage_object_id,
         )?.metadata)
@@ -138,7 +140,7 @@ const datasets = computed<Dataset[] | undefined>(() => {
         }
       }
       return {
-        name: d.dataset_name,
+        name,
         size,
         rawSize,
       }
