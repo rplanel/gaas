@@ -1,23 +1,19 @@
 <script setup lang="ts">
 import type { SupabaseTypes } from '#build/types/database'
-import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
 import type { BreadcrumbItem } from '@nuxt/ui'
 import {
   definePageMeta,
-  ref,
   useAsyncData,
   useRouter,
   useSupabaseClient,
   useSupabaseUser,
 } from '#imports'
 import { galaxyWorkflowExportSchema, getErrorMessage, getStatusCode } from 'blendtype'
-import { jwtDecode, type JwtPayload } from 'jwt-decode'
 import { toValue } from 'vue'
 import { z } from 'zod'
 import { fromError } from 'zod-validation-error'
 
 type Database = SupabaseTypes.Database
-type RoleType = GalaxyTypes.RoleType
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
 }
@@ -33,22 +29,6 @@ type WorkflowDbItem = Pick<
   Database['galaxy']['Tables']['workflows']['Row'],
   'id' | 'name' | 'galaxy_id' | 'version' | 'definition'
 >
-
-interface JwtPayloadWithRole extends JwtPayload {
-  user_role: RoleType
-}
-
-const userRole = ref<string | undefined>(undefined)
-supabase.auth.onAuthStateChange(async (event, session) => {
-  if (session) {
-    const jwt = jwtDecode<JwtPayloadWithRole>(session.access_token)
-    userRole.value = jwt?.user_role
-  }
-})
-
-function runWorkflowPage(workflowId: number) {
-  router.push(`/workflows/${workflowId}/run`)
-}
 
 async function resetError(error: Ref<null | unknown >) {
   await router.push('/')
@@ -108,34 +88,50 @@ definePageMeta({
         <div>
           <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
             <NuxtErrorBoundary>
-              <div v-for="(workflow, i) in sanitizedDbWorkflows" :key="workflow.id">
-                <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
-                  <div>
-                    <div class="grid grid-flow-col auto-cols-max items-center justify-between">
-                      <div class="grid grid-flow-col auto-cols-max items-center place-items-start">
-                        <span class="mr-3">
-                          <UAvatar :text="String(i + 1)" />
-                        </span>
-                        <div class="grid grid-flow-row auto-rows-max">
-                          <div>
-                            <span class="font-bold text-lg">{{
-                              workflow.name
-                            }}</span>
-                          </div>
-                          <div v-if="workflow?.definition">
-                            <span class="font-medium text-sm opacity-60">{{
-                              workflow.definition.annotation
-                            }}</span>
+              <div>
+                <UPageList divide>
+                  <UPageCard
+                    v-for="(workflow) in sanitizedDbWorkflows"
+                    :key="workflow.id"
+                    orientation="horizontal"
+                    variant="ghost"
+                    :to="`/workflows/${workflow.id}/run`"
+                    :title="workflow.name"
+                    :description=" workflow.definition.annotation"
+                  >
+                    <template #footer>
+                      <VersionBadge :version="workflow.version.toString()" />
+                    </template>
+
+                    <!-- <template #body>
+                      <div class="grid grid-flow-col auto-cols-max items-center justify-between">
+                        <div class="grid grid-flow-col auto-cols-max items-center place-items-start">
+                          <span class="mr-3">
+                            <UAvatar :text="String(i + 1)" />
+                          </span>
+                          <div class="grid grid-flow-row auto-rows-max">
+                            <div>
+                              <span class="font-bold text-lg">{{
+                                workflow.name
+                              }}</span>
+                            </div>
+                            <div v-if="workflow?.definition">
+                              <span class="font-medium text-sm opacity-60">{{
+                                workflow.definition.annotation
+                              }}</span>
+                            </div>
                           </div>
                         </div>
+                        <div class="place-items-end">
+                          <VersionBadge :version="workflow.version.toString()" />
+                        </div>
                       </div>
-                      <div class="place-items-end">
-                        <VersionBadge :version="workflow.version.toString()" />
-                      </div>
-                    </div>
-                  </div>
-                <!-- <USeparator orientation="horizontal" type="dashed" class="my-5" /> -->
-                </UCard>
+                    </template> -->
+                  </UPageCard>
+
+                  <!-- <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
+                  </UCard> -->
+                </UPageList>
               </div>
             </NuxtErrorBoundary>
           </div>

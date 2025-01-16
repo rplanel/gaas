@@ -18,13 +18,15 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="pb-5 mb-10">
+  <div>
     <div v-if="breadcrumbsItems" class="py-4">
       <UBreadcrumb :items="breadcrumbsItems" />
     </div>
 
-    <div class="mt-5 flex items-center justify-between gap-3">
-      <div class="grid grid-flow-col items-center gap-3">
+    <UPageHeader :description :title />
+
+    <!-- <div class="flex items-center justify-between gap-3"> -->
+    <!-- <div class="grid grid-flow-col items-center gap-3">
         <div v-if="icon">
           <UIcon :name="icon" class="size-10" />
         </div>
@@ -42,13 +44,13 @@ withDefaults(defineProps<Props>(), {
             </slot>
           </div>
         </div>
-      </div>
-      <!-- trailing content -->
-      <div>
+      </div> -->
+    <!-- trailing content -->
+    <!-- <div>
         <div class="py-4">
           <slot name="trailing-content" />
         </div>
-      </div>
-    </div>
+      </div> -->
+    <!-- </div> -->
   </div>
 </template>

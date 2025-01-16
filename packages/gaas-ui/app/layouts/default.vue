@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { UPage } from '#components'
 import { useState } from '#imports'
 
 useState('showWorkflowStepParameter', () => true)
@@ -6,6 +7,8 @@ useState('showWorkflowStepParameter', () => true)
 
 <template>
   <UContainer>
-    <slot />
+    <UPage>
+      <slot />
+    </UPage>
   </UContainer>
 </template>

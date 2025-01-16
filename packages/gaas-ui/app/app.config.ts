@@ -1,3 +1,5 @@
+import type { NavigationMenuItem } from '@nuxt/ui'
+
 export default defineAppConfig({
   gaasUi: {
     name: 'Hello from Nuxt layer',
@@ -21,6 +23,18 @@ export default defineAppConfig({
         order: 3,
       },
     ],
+    footerItems: [
+      {
+        label: 'Issues',
+        to: 'https://github.com/rplanel/gaas/issues',
+        target: '_blank',
+      },
+      {
+        label: 'Releases',
+        to: 'https://github.com/rplanel/gaas/releases',
+        target: '_blank',
+      },
+    ],
   },
   toaster: {
     position: 'bottom-right' as const,
@@ -31,11 +45,8 @@ export default defineAppConfig({
 })
 
 // should use extends NavigationMenuItem from @nuxt/ui but it is not working right now
-export interface OrderedNavigationMenuItem {
+export interface OrderedNavigationMenuItem extends NavigationMenuItem {
   order: number
-  label: string
-  icon: string
-  to: string
 }
 declare module '@nuxt/schema' {
   interface AppConfigInput {
@@ -43,6 +54,7 @@ declare module '@nuxt/schema' {
       /** Project name */
       name?: string
       navigationMenuItems?: OrderedNavigationMenuItem[]
+      footerItems?: NavigationMenuItem[]
     }
     toaster: {
       position: string

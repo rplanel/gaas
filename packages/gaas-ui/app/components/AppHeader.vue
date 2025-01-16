@@ -1,20 +1,55 @@
 <script setup lang="ts">
-import type { DropdownMenuItem, NavigationMenuItem } from '@nuxt/ui'
+import type { DropdownMenuItem } from '@nuxt/ui'
+import type { OrderedNavigationMenuItem } from '../app.config'
+import { getErrorMessage, getStatusCode } from 'blendtype'
 
-const props = defineProps<{
-  links: NavigationMenuItem[]
-}>()
 const supabase = useSupabaseClient()
+const { userRole } = useUserRole(supabase)
+
+const { gaasUi: { navigationMenuItems } } = useAppConfig()
 
 async function logout() {
   const { error } = await supabase.auth.signOut()
   if (error) {
-    console.error(error)
-    return
+    throw createError({ statusMessage: getErrorMessage(error), statusCode: getStatusCode(error) })
   }
 
   await navigateTo('/login')
 }
+
+const navigationMenuItemsRef = toRef(navigationMenuItems)
+
+const computedItems = computed<OrderedNavigationMenuItem[]>(() => {
+  const userRoleVal = toValue(userRole)
+  const itemsVal = toValue(navigationMenuItemsRef)
+  if (userRoleVal === 'admin') {
+    return [
+      ...itemsVal,
+      {
+        label: 'Admin',
+        icon: 'i-material-symbols:admin-panel-settings',
+        to: '/admin',
+        order: itemsVal.length + 1,
+        children: [
+          {
+            icon: 'i-lucide:workflow',
+            label: 'Workflows',
+            description: 'Manage workflows',
+            to: '/admin/workflows',
+          },
+          {
+            label: 'User',
+            icon: 'i-lucide:user',
+            description: 'Manage users and roles',
+            to: '/admin/users',
+          },
+        ],
+      },
+
+    ].sort((a, b) => a.order - b.order)
+  }
+  return itemsVal
+})
 
 const userItems = ref<DropdownMenuItem[]>([
   {
@@ -25,7 +60,7 @@ const userItems = ref<DropdownMenuItem[]>([
   },
 ])
 
-const items = computed(() => props.links.map(({ icon, ...link }) => link))
+// const items = computed(() => computedItems.value.map(({icon, ...item }) => item))
 </script>
 
 <template>
@@ -43,11 +78,11 @@ const items = computed(() => props.links.map(({ icon, ...link }) => link))
         Gaas
       </NuxtLink>
     </template>
-
     <UNavigationMenu
-      :items="items"
+      :items="computedItems"
       variant="link"
     />
+
     <template #right>
       <UTooltip
         text="Search"
@@ -78,7 +113,7 @@ const items = computed(() => props.links.map(({ icon, ...link }) => link))
     <template #content>
       <UNavigationMenu
         orientation="vertical"
-        :items="links"
+        :items="computedItems"
         class="-mx-2.5"
       />
     </template>
