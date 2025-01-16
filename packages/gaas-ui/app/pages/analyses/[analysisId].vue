@@ -46,9 +46,29 @@ const { inputs } = useAnalysisInput()
 const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
 const { workflowSteps } = useAnalysisWorkflow()
 const { outputs } = useOutputs()
+
+// Listen to job updates
+supabase
+  .channel('histories')
+  .on(
+    'postgres_changes',
+    { event: 'UPDATE', schema: 'galaxy', table: 'histories' },
+    handleUpdates,
+  )
+  .subscribe()
+
+supabase
+  .channel('jobs')
+  .on(
+    'postgres_changes',
+    { event: 'UPDATE', schema: 'galaxy', table: 'jobs' },
+    handleUpdates,
+  )
+  .subscribe()
+
 // Fetch data
 
-const { data: analysis } = await useAsyncData(
+const { data: analysis, refresh: refreshAnalysis } = await useAsyncData(
   `analysis-details-${toValue(analysisId)}`,
   async () => {
     const analysisVal = toValue(analysisId)
@@ -88,6 +108,10 @@ const { data: analysis } = await useAsyncData(
     return false
   },
 )
+
+function handleUpdates() {
+  refreshAnalysis()
+}
 
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
@@ -340,13 +364,15 @@ onMounted(() => {
   )
   workflowParametersModel.value = toValue(decodedParameters)
 })
+
+await useFetch('/sync')
 </script>
 
 <template>
   <div>
     <PageHeader
       v-if="analysis" :title="analysis.name" description="Analysis perform with workflow"
-      icon="i-streamline:code-analysis" :breadcrumbs-items="breadcrumbsItems"
+      icon="i-streamline:code-analysis" :breadcrumbs-items="computedBreadcrumbsItems"
     >
       <template #description="{ description }">
         <div class="text-lg text-[var(--ui-text-muted)] mt-4">
@@ -423,14 +449,14 @@ onMounted(() => {
               </template>
               <template #stdout>
                 <div class="p-1">
-                  <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-2">
-                    <pre v-if="jobsMap"> {{ jobsMap[item.value]?.stdout }}</pre>
+                  <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-8 overflow-x-auto">
+                    <pre v-if="jobsMap" class="text-nowrap"> {{ jobsMap[item.value]?.stdout }}</pre>
                   </div>
                 </div>
               </template>
               <template #stderr>
                 <div class="p-1">
-                  <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-2">
+                  <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-8 overflow-x-auto">
                     <pre v-if="jobsMap"> {{ jobsMap[item.value]?.stderr }}</pre>
                   </div>
                 </div>
