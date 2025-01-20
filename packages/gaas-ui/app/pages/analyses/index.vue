@@ -8,6 +8,7 @@ import {
   useSupabaseClient,
   useSupabaseUser,
 } from '#imports'
+import { useOffsetPagination } from '@vueuse/core'
 // import { getErrorMessage, getStatusCode } from 'blendtype'
 import { toValue } from 'vue'
 
@@ -19,6 +20,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   breadcrumbsItems: undefined,
 })
+const page = ref(1)
+const pageSize = ref(8)
+const pageSizeOptions = ref([3, 8, 15])
+
 const { breadcrumbsItems } = toRefs(props)
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
@@ -114,6 +119,27 @@ const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {
   return []
 })
 
+const slicedData = ref<SanitizedAnalysis[]>([])
+
+function sliceData({ currentPage, currentPageSize }: { currentPage: number, currentPageSize: number }) {
+  const start = (currentPage - 1) * currentPageSize
+  const end = start + pageSize.value
+  slicedData.value = sanitizedAnalyses.value.slice(start, end)
+}
+sliceData({
+  currentPage: page.value,
+  currentPageSize: pageSize.value,
+})
+const {
+  currentPage,
+  currentPageSize,
+} = useOffsetPagination({
+  total: sanitizedAnalyses.value.length,
+  page,
+  pageSize,
+  onPageChange: sliceData,
+  onPageSizeChange: sliceData,
+})
 function handleUpdates() {
   refreshAnalyses()
 }
@@ -226,7 +252,7 @@ await useFetch('/sync')
           <UButton icon="i-mdi:plus" to="/workflows" size="xl" />
         </template>
       </PageHeader>
-      <UTable :data="sanitizedAnalyses" :columns="galaxyAnalysesColumns">
+      <UTable :data="slicedData" :columns="galaxyAnalysesColumns">
         <template #name-cell="{ row }">
           <div
             v-if="isEditingAnalyses?.[row.original.id]"
@@ -267,13 +293,13 @@ await useFetch('/sync')
           <div class="grid grid-flow-col gap-1 justify-start">
             <div>
               <UButton
-                icon="i-mdi:refresh" :to="`/analyses/${row.original.id}/rerun`" variant="outline"
+                icon="i-mdi:refresh" :to="`/analyses/${row.original.id}/rerun`" variant="ghost"
                 color="neutral" size="md"
               />
             </div>
             <div>
               <UButton
-                icon="i-lucide:pencil" variant="outline" color="neutral" size="md"
+                icon="i-lucide:pencil" variant="ghost" color="neutral" size="md"
                 @click="setEditState(row.original.id, row.original.name)"
               />
             </div>
@@ -285,7 +311,10 @@ await useFetch('/sync')
           </div>
         </template>
       </UTable>
-
+      <div class="flex justify-center p-3 m-2 gap-1">
+        <UPagination v-model:page="currentPage" :items-per-page="currentPageSize" :total="sanitizedAnalyses.length" variant="soft" />
+        <USelect v-model="pageSize" :items="pageSizeOptions" variant="soft" />
+      </div>
       <template #error="{ error }">
         <UAlert
           color="error" variant="soft" title="Error" :description="error" icon="i-material-symbols:error"

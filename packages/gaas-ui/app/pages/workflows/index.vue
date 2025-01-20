@@ -98,6 +98,7 @@ definePageMeta({
                     :to="`/workflows/${workflow.id}/run`"
                     :title="workflow.name"
                     :description=" workflow.definition.annotation"
+                    :ui="{ container: 'lg:grid-cols-1' }"
                   >
                     <template #footer>
                       <VersionBadge :version="workflow.version.toString()" />
