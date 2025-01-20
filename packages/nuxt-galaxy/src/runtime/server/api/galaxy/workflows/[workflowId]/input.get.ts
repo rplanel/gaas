@@ -1,10 +1,12 @@
 import type { GalaxyClient, GalaxyTool } from 'blendtype'
+import { createError } from '#imports'
 import { defineEventHandler, getRouterParam } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const workflowId = getRouterParam(event, 'workflowId')
   if (workflowId) {
     const $galaxy: GalaxyClient = event.context?.galaxy
+
     const galaxyWorkflow = await $galaxy.workflows().getWorkflow(workflowId)
     const workflowSteps = galaxyWorkflow.steps
     const stepToTool: Record<string, string> = {}
@@ -29,5 +31,8 @@ export default defineEventHandler(async (event) => {
       }, {} as Record<string, GalaxyTool>)
       return { galaxyWorkflow, tools, stepToTool }
     })
+  }
+  else {
+    throw createError('Workflow id missing in request')
   }
 })
