@@ -41,6 +41,7 @@ catalog:
   jiti: ^2.4.2
   jwt-decode: ^4.0.0
   lint-staged: ^15.3.0
+  nuxt: ^3.15.2
   ofetch: 1.4.1
   postgres: ^3.4.5
   simple-git-hooks: ^2.11.1
