@@ -15,7 +15,7 @@ import {
 import { defu } from 'defu'
 
 const log = logger.withTag('nuxt-galaxy')
-
+export * from './runtime/app/utils/errors'
 export interface ModuleOptions {
   /**
    * Galaxy server URL
@@ -129,6 +129,7 @@ export default defineNuxtModule<ModuleOptions>({
     // From the runtime directory
     addImportsDir(resolver.resolve('./runtime/app/composables'))
     addImportsDir(resolver.resolve('./runtime/app/composables/galaxy'))
+    addImportsDir(resolver.resolve('./runtime/app/utils'))
 
     addServerImportsDir(resolver.resolve('./runtime/server/utils'))
     addServerImportsDir(resolver.resolve('./runtime/server/db'))
