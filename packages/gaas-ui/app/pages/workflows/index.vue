@@ -4,7 +4,6 @@ import type { BreadcrumbItem } from '@nuxt/ui'
 import {
   definePageMeta,
   useAsyncData,
-  useRouter,
   useSupabaseClient,
   useSupabaseUser,
 } from '#imports'
@@ -21,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   breadcrumbsItems: undefined,
 })
 const { breadcrumbsItems } = toRefs(props)
-const router = useRouter()
+// const router = useRouter()
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 
@@ -30,10 +29,10 @@ type WorkflowDbItem = Pick<
   'id' | 'name' | 'galaxy_id' | 'version' | 'definition'
 >
 
-async function resetError(error: Ref<null | unknown >) {
-  await router.push('/')
-  error.value = null
-}
+// async function resetError(error: Ref<null | unknown >) {
+//   await router.push('/')
+//   error.value = null
+// }
 
 const { data: dbWorkflows } = await useAsyncData('workflows-auth', async () => {
   const userVal = toValue(user)
@@ -78,33 +77,31 @@ definePageMeta({
 
 <template>
   <div>
-    <NuxtErrorBoundary>
-      <PageHeader
-        title="Workflows" description="All the workflow available either on this web app or in the galaxy
+    <PageHeader
+      title="Workflows" description="All the workflow available either on this web app or in the galaxy
               instance" icon="i-lucide:workflow" :breadcrumbs-items="breadcrumbsItems"
-      />
+    />
 
-      <div class="grid grid-flow-row auto-rows-max gap-6">
-        <div>
-          <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
-            <NuxtErrorBoundary>
-              <div>
-                <UPageList divide>
-                  <UPageCard
-                    v-for="(workflow) in sanitizedDbWorkflows"
-                    :key="workflow.id"
-                    orientation="horizontal"
-                    variant="ghost"
-                    :to="`/workflows/${workflow.id}/run`"
-                    :title="workflow.name"
-                    :description=" workflow.definition.annotation"
-                    :ui="{ container: 'lg:grid-cols-1' }"
-                  >
-                    <template #footer>
-                      <VersionBadge :version="workflow.version.toString()" />
-                    </template>
+    <div class="grid grid-flow-row auto-rows-max gap-6">
+      <div>
+        <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
+          <div>
+            <UPageList divide>
+              <UPageCard
+                v-for="(workflow) in sanitizedDbWorkflows"
+                :key="workflow.id"
+                orientation="horizontal"
+                variant="ghost"
+                :to="`/workflows/${workflow.id}/run`"
+                :title="workflow.name"
+                :description=" workflow.definition.annotation"
+                :ui="{ container: 'lg:grid-cols-1' }"
+              >
+                <template #footer>
+                  <VersionBadge :version="workflow.version.toString()" />
+                </template>
 
-                    <!-- <template #body>
+                <!-- <template #body>
                       <div class="grid grid-flow-col auto-cols-max items-center justify-between">
                         <div class="grid grid-flow-col auto-cols-max items-center place-items-start">
                           <span class="mr-3">
@@ -128,33 +125,15 @@ definePageMeta({
                         </div>
                       </div>
                     </template> -->
-                  </UPageCard>
+              </UPageCard>
 
-                  <!-- <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
+              <!-- <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
                   </UCard> -->
-                </UPageList>
-              </div>
-            </NuxtErrorBoundary>
+            </UPageList>
           </div>
         </div>
       </div>
-
-      <template #error="{ error }">
-        <div>
-          <UAlert
-            color="error" variant="soft" title="Error" :description="error" icon="i-material-symbols:error"
-            :actions="[
-              {
-                label: 'home',
-                onClick() {
-                  resetError(error);
-                },
-              },
-            ]" class="my-4"
-          />
-        </div>
-      </template>
-    </NuxtErrorBoundary>
+    </div>
   </div>
 </template>
 

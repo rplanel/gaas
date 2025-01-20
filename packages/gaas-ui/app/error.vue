@@ -20,7 +20,7 @@ async function handleError() {
         :actions="[
           {
             label: 'go to list workfows',
-            onClick(event) {
+            onClick() {
               handleError();
             },
           },

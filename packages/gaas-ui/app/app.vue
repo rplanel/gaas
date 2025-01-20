@@ -20,15 +20,17 @@ useState('showWorkflowStepParameter', () => true)
 </script>
 
 <template>
-  <UApp :toaster>
-    <!-- <Banner /> -->
-    <AppHeader />
-    <UMain>
-      <NuxtLayout>
-        <NuxtPage />
-      </NuxtLayout>
-    </UMain>
-    <USeparator type="dashed" class="h-px" />
-    <AppFooter />
-  </UApp>
+  <div>
+    <UApp :toaster>
+      <!-- <Banner /> -->
+      <AppHeader />
+      <UMain>
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
+      </UMain>
+      <USeparator type="dashed" class="h-px" />
+      <AppFooter />
+    </UApp>
+  </div>
 </template>

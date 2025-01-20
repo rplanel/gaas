@@ -2,15 +2,16 @@
 <script setup lang="ts">
 import type { SupabaseTypes } from '#build/types/database'
 import type { AccordionItem } from '@nuxt/ui'
+import type {
+  // getErrorMessage,
+  // getStatusCode,
+  GalaxyTool,
+  GalaxyToolParameters,
+  GalaxyWorkflow,
+} from 'blendtype'
 import type { Props as WorkflowStepProps } from '../../../components/galaxy/workflow/Step.vue'
 import { computed, onMounted, ref, toValue, useFetch } from '#imports'
-import {
-  type GalaxyTool,
-  type GalaxyToolParameters,
-  type GalaxyWorkflow,
-  getErrorMessage,
-  getStatusCode,
-} from 'blendtype'
+// import { getErrorMessage, getStatusCode } from 'nuxt-galaxy'
 import { z } from 'zod'
 import { useGalaxyDecodeParameters } from '../../../composables/galaxy/useGalaxyDecodeParameters'
 import { useGalaxyEncodeParameters } from '../../../composables/galaxy/useGalaxyEncodeParameters'
@@ -335,148 +336,167 @@ const { data: datasets } = await useAsyncData(
   },
 )
 
-const { data: workflowRun, error } = await useFetch<{
+const { data: workflowRun, error: wfInputsError } = await useFetch<{
   galaxyWorkflow: GalaxyWorkflow
   tools: Record<string, GalaxyTool>
 }>(`/api/galaxy/workflows/${toValue(workflowGalaxyId)}/input`)
+// debugger
 
-if (error) {
-  createError('There was an error fetching workflow inputs and parameters')
+if (wfInputsError.value) {
+  const { errorStatus } = useErrorStatus(wfInputsError)
+  const { errorMessage } = useErrorMessage(wfInputsError)
+  if (errorStatus.value === 503 && errorMessage.value === 'Service Unavailable') {
+    throw createError({
+      statusMessage: 'The Galaxy server is Unavailable',
+      statusCode: errorStatus.value,
+    })
+  }
+  // throw createError  ('Only a message')
+  throw createError({
+    statusMessage: errorMessage.value,
+    statusCode: errorStatus.value,
+  })
 }
 </script>
 
 <template>
-  <UCard class="mt-5">
-    <template #header>
-      <div class="grid grid-flow-col auto-cols-auto justify-between">
-        <div class="break-normal">
-          <div class="text-[var(--ui-primary)] font-bold text-lg self-center">
-            {{ dbWorkflow?.name }}
-          </div>
-          <div
-            v-if="workflowDefinition?.annotation"
-            class="text-sm font-medium text-[var(--ui-text-muted)]"
-          >
-            {{ workflowDefinition.annotation }}
-          </div>
-        </div>
-        <div class="flex-initial self-center">
-          <VersionBadge :version="workflowDefinition?.version.toString()" />
-        </div>
-      </div>
-    </template>
-    <div>
-      <UForm :schema="schema" :state="state" @submit.prevent="runAnalysis">
-        <UFormField
-          label="Name of the analysis"
-          name="analysisName"
-          required
-        >
-          <UInput
-            v-model="state.analysisName"
-            type="text"
-            name="name"
-            placeholder="Enter the name of the analysis"
-            class="w-full"
-          />
-        </UFormField>
-        <USeparator
-          icon="i-lucide-files"
-          class="mt-5 mb-3"
-        />
-
-        <h3 class="font-bold text-lg">
-          Datasets
-        </h3>
-
-        <div
-          v-for="(input, stepId) in sanitizedWorkflowInputs"
-          :key="stepId"
-        >
-          <div
-            v-if="datasets && workflowInputDatasetsModel"
-            class="my-5"
-          >
-            <UFormField
-              :label="input.label"
-              required
-              :name="input.uuid"
+  <div>
+    <UCard class="mt-5">
+      <template #header>
+        <div class="grid grid-flow-col auto-cols-auto justify-between">
+          <div class="break-normal">
+            <div class="text-[var(--ui-primary)] font-bold text-lg self-center">
+              {{ dbWorkflow?.name }}
+            </div>
+            <div
+              v-if="workflowDefinition?.annotation"
+              class="text-sm font-medium text-[var(--ui-text-muted)]"
             >
-              <USelectMenu
-                v-model="workflowInputDatasetsModel[stepId]"
-                :search-input="{
-                  placeholder: 'Filter...',
-                  icon: 'i-lucide-search',
-                }"
-                icon="i-material-symbols:dataset"
-                :items="datasets"
-                label-key="name"
-                class="w-full"
-                :name="input.uuid"
-              />
-            </UFormField>
+              {{ workflowDefinition.annotation }}
+            </div>
+          </div>
+          <div class="flex-initial self-center">
+            <VersionBadge :version="workflowDefinition?.version.toString()" />
           </div>
         </div>
-        <USeparator
-          icon="i-lucide:workflow"
-          class="mt-5 mb-3"
-        />
-        <h3 class="font-bold text-lg">
-          Select workflow parameters
-        </h3>
-        <div v-if="workflowStepsToolInfo">
-          <UAccordion
-            :items="workflowStepsItems"
-            :ui="{
-              header:
-                'hover:bg-[var(--ui-bg-elevated)] px-2 rounded-[calc(var(--ui-radius))]',
-
-            }"
+      </template>
+      <div>
+        <UForm :schema="schema" :state="state" @submit.prevent="runAnalysis">
+          <UFormField
+            label="Name of the analysis"
+            name="analysisName"
+            required
           >
-            <template #default="{ item: { value: stepId } }">
-              <div
-                v-if="stepId !== undefined"
-                class="grid grid-flow-col auto-cols-auto items-center justify-between w-full gap-5 break-words"
-              >
-                <div class="grid grid-flow-row auto-rows-auto break-words">
-                  <div class="font-bold text-[var(--ui-info)] grow break-all">
-                    {{ workflowStepsToolInfo[stepId]?.name }}
-                  </div>
-                  <div class="font-medium text-sm opacity-60 grow break-words">
-                    {{ workflowStepsToolInfo[stepId]?.description }}
-                  </div>
-                </div>
-                <div>
-                  <VersionBadge
-                    :version="workflowStepsToolInfo[stepId]?.version"
-                  />
-                </div>
-              </div>
-            </template>
-            <template #body="{ item: { value: stepId } }">
-              <div class="p-2">
-                <div
-                  class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]"
-                >
-                  <GalaxyWorkflowStep
-                    v-if="stepId !== undefined && galaxyWorkflowStepProps?.[stepId]"
-                    v-bind="galaxyWorkflowStepProps[stepId]"
-                    variant="form"
-                  />
-                </div>
-              </div>
-            </template>
-          </UAccordion>
-          <USeparator class="mt-5 mb-3" />
-        </div>
+            <UInput
+              v-model="state.analysisName"
+              type="text"
+              name="name"
+              placeholder="Enter the name of the analysis"
+              class="w-full"
+            />
+          </UFormField>
+          <USeparator
+            icon="i-lucide-files"
+            class="mt-5 mb-3"
+          />
 
-        <UButton
-          type="submit"
-          :loading="startingAnalysis"
-        >
-          Run
-        </UButton>
-      </UForm>
-    </div>
-  </UCard>
+          <h3 class="font-bold text-lg">
+            Datasets
+          </h3>
+          <!-- <NuxtErrorBoundary> -->
+          <div
+            v-for="(input, stepId) in sanitizedWorkflowInputs"
+            :key="stepId"
+          >
+            <div
+              v-if="datasets && workflowInputDatasetsModel"
+              class="my-5"
+            >
+              <UFormField
+                :label="input.label"
+                required
+                :name="input.uuid"
+              >
+                <USelectMenu
+                  v-model="workflowInputDatasetsModel[stepId]"
+                  :search-input="{
+                    placeholder: 'Filter...',
+                    icon: 'i-lucide-search',
+                  }"
+                  icon="i-material-symbols:dataset"
+                  :items="datasets"
+                  label-key="name"
+                  class="w-full"
+                  :name="input.uuid"
+                />
+              </UFormField>
+            </div>
+          </div>
+          <!-- <template #error="{ error }">
+          catch an error {{ error }}
+        </template> -->
+          <!-- </NuxtErrorBoundary> -->
+          <USeparator
+            icon="i-lucide:workflow"
+            class="mt-5 mb-3"
+          />
+          <h3 class="font-bold text-lg">
+            Select workflow parameters
+          </h3>
+          <div v-if="workflowStepsToolInfo">
+            <UAccordion
+              :items="workflowStepsItems"
+              :ui="{
+                header:
+                  'hover:bg-[var(--ui-bg-elevated)] px-2 rounded-[calc(var(--ui-radius))]',
+
+              }"
+            >
+              <template #default="{ item: { value: stepId } }">
+                <div
+                  v-if="stepId !== undefined"
+                  class="grid grid-flow-col auto-cols-auto items-center justify-between w-full gap-5 break-words"
+                >
+                  <div class="grid grid-flow-row auto-rows-auto break-words">
+                    <div class="font-bold text-[var(--ui-info)] grow break-all">
+                      {{ workflowStepsToolInfo[stepId]?.name }}
+                    </div>
+                    <div class="font-medium text-sm opacity-60 grow break-words">
+                      {{ workflowStepsToolInfo[stepId]?.description }}
+                    </div>
+                  </div>
+                  <div>
+                    <VersionBadge
+                      :version="workflowStepsToolInfo[stepId]?.version"
+                    />
+                  </div>
+                </div>
+              </template>
+              <template #body="{ item: { value: stepId } }">
+                <div class="p-2">
+                  <div
+                    class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]"
+                  >
+                    <GalaxyWorkflowStep
+                      v-if="stepId !== undefined && galaxyWorkflowStepProps?.[stepId]"
+                      v-bind="galaxyWorkflowStepProps[stepId]"
+                      variant="form"
+                    />
+                  </div>
+                </div>
+              </template>
+            </UAccordion>
+            <USeparator class="mt-5 mb-3" />
+          </div>
+
+          <UButton
+            type="submit"
+            :loading="startingAnalysis"
+          >
+            Run
+          </UButton>
+        </UForm>
+      </div>
+    </UCard>
+  </div>
 </template>

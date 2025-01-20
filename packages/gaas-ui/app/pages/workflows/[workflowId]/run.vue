@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { breadcrumbsItems } = toRefs(props)
-
+const router = useRouter()
 const showWorkflowStepParameter = useState<boolean>(
   'showWorkflowStepParameter',
 )
@@ -34,6 +34,11 @@ definePageMeta({
   middleware: 'auth',
 })
 const route = useRoute()
+
+async function resetError(error: Ref<unknown>) {
+  error.value = null
+  await router.push('/workflows')
+}
 
 const workflowId = computed(() => {
   const wfId = route?.params?.workflowId
@@ -76,10 +81,27 @@ const workflowGalaxyId = computed(() => {
     />
 
     <template v-if="workflowGalaxyId">
-      <GalaxyWorkflowInvokeForm
-        v-if="showWorkflowStepParameter && workflowId"
-        :workflow-id="workflowId"
-      />
+      <NuxtErrorBoundary>
+        <GalaxyWorkflowInvokeForm
+          v-if="showWorkflowStepParameter && workflowId"
+          :workflow-id="workflowId"
+        />
+        <template #error="{ error }">
+          <div class="p-4 m-2">
+            <UAlert
+              color="error" variant="soft" title="Error" :description="error" icon="i-material-symbols:error"
+              :actions="[
+                {
+                  label: 'List available workflows',
+                  onClick() {
+                    resetError(error);
+                  },
+                },
+              ]"
+            />
+          </div>
+        </template>
+      </NuxtErrorBoundary>
     </template>
   </div>
 </template>
