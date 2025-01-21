@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  experimental: {
+    typedPages: true,
+  },
   eslint: {
     config: {
       // Use the generated ESLint config for lint root project as well

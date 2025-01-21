@@ -7,6 +7,9 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  experimental: {
+    typedPages: true,
+  },
   css: ['../app/assets/css/main.css'],
 
 })
