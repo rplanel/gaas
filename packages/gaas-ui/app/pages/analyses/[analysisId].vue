@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), { breadcrumbsItems: undefined }
 
 definePageMeta({
   middleware: 'auth',
-  layout: 'toc',
+  layout: 'analyses',
 })
 
 const { breadcrumbsItems } = toRefs(props)
