@@ -22,6 +22,7 @@ const navigationMenuItemsRef = toRef(navigationMenuItems)
 const computedItems = computed<OrderedNavigationMenuItem[]>(() => {
   const userRoleVal = toValue(userRole)
   const itemsVal = toValue(navigationMenuItemsRef)
+
   if (userRoleVal === 'admin') {
     return [
       ...itemsVal,
@@ -48,7 +49,7 @@ const computedItems = computed<OrderedNavigationMenuItem[]>(() => {
 
     ].sort((a, b) => a.order - b.order)
   }
-  return itemsVal
+  return itemsVal.sort((a, b) => a.order - b.order)
 })
 
 const userItems = ref<DropdownMenuItem[]>([
