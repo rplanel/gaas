@@ -20,6 +20,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   breadcrumbsItems: undefined,
 })
+const table = useTemplateRef('table')
 const page = ref(1)
 const pageSize = ref(8)
 const pageSizeOptions = ref([3, 8, 15])
@@ -119,6 +120,15 @@ const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {
   }
   return []
 })
+
+// const filteredAnalyses = computed(() => {
+//   const tableVal = toValue(table)
+//   if (tableVal) {
+//     const rowModel = tableVal.tableApi.getFilteredRowModel().rowsById
+//     console.log(t)
+//   }
+//   return toValue(slicedData)
+// })
 
 const slicedData = ref<SanitizedAnalysis[]>([])
 
@@ -233,17 +243,7 @@ async function editAnalysisName(id: number) {
     isEditingAnalyses.value = rest
   }
 }
-
 await useFetch('/sync')
-const table = useTemplateRef('table')
-// const filteredData = computed(() => {
-//   const tableVal = toValue(table)
-//   if (tableVal) {
-//     const rowModel = tableVal.tableApi.getFilteredRowModel().rowsById
-//     console.log(t)
-//   }
-//   return toValue(slicedData)
-// })
 </script>
 
 <template>
@@ -257,9 +257,9 @@ const table = useTemplateRef('table')
       </template>
     </PageHeader>
     <div class="flex flex-col flex-1 w-full">
-      <div class="flex px-4 py-3.5 border-b border-[var(--ui-border-accented)]">
+      <!-- <div class="flex px-4 py-3.5 border-b border-[var(--ui-border-accented)]">
         <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
-      </div>
+      </div> -->
       <UTable ref="table" v-model:global-filter="globalFilter" :data="slicedData" :columns="galaxyAnalysesColumns">
         <template #name-cell="{ row }">
           <div
