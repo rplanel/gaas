@@ -17,15 +17,21 @@ const breadcrumbsItems = ref([
     to: '/galaxy/histories',
   },
 ])
+
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Galaxy Histories',
+    description: 'All histories that has been used to run analysis',
+  }
+})
 </script>
 
 <template>
   <div>
     <PageHeader
-      title="Galaxy Histories"
-      description="All histories that has been used to run analysis"
-      icon="i-lucide:history"
+      :page-header-props
       :breadcrumbs-items="breadcrumbsItems"
+      icon="i-lucide:history'"
     />
 
     <div class="grid grid-flow-row auto-rows-max gap-8">

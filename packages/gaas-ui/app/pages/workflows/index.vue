@@ -20,6 +20,10 @@ const props = withDefaults(defineProps<Props>(), {
   breadcrumbsItems: undefined,
 })
 const { breadcrumbsItems } = toRefs(props)
+definePageMeta({
+  middleware: 'auth',
+})
+
 // const router = useRouter()
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
@@ -70,16 +74,20 @@ const sanitizedDbWorkflows = computed(() => {
   return null
 })
 
-definePageMeta({
-  middleware: 'auth',
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Workflows',
+    description: 'All the workflow available either on this web app or in the galaxy instance',
+  }
 })
 </script>
 
 <template>
   <div>
     <PageHeader
-      title="Workflows" description="All the workflow available either on this web app or in the galaxy
-              instance" icon="i-lucide:workflow" :breadcrumbs-items="breadcrumbsItems"
+      :page-header-props
+      icon="i-lucide:workflow"
+      :breadcrumbs-items="breadcrumbsItems"
     />
 
     <div class="grid grid-flow-row auto-rows-max gap-6">

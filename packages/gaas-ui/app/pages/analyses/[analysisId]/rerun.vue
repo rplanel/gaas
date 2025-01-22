@@ -71,13 +71,27 @@ const workflowId = computed(() => {
   const analysisVal = toValue(analysis)
   return analysisVal?.workflows.id
 })
+
+const pageHeaderProps = computed(() => {
+  const analysisVal = toValue(analysis)
+  const props = {
+    title: 'Rerun analysis',
+    description: 'Rerun the analysis',
+
+  }
+  if (analysisVal) {
+    return { ...props, title: analysisVal.name }
+  }
+  return props
+})
 </script>
 
 <template>
   <div v-if="workflowId && analysis">
     <PageHeader
-      :title="analysis.name" description="Rerun the analysis" icon="i-streamline:code-analysis"
+      :page-header-props
       :breadcrumbs-items="computedBreadcrumbsItems"
+      icon="i-streamline:code-analysis"
     />
 
     <GalaxyWorkflowInvokeForm v-if="analysisId && workflowId" :workflow-id="workflowId" :analysis-id="analysisId" />

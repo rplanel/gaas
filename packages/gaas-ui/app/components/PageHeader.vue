@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from '@nuxt/ui'
+import type { PageHeaderProps } from '@nuxt/ui-pro'
 
 interface Props {
-  title: string
-  description?: string | undefined
   breadcrumbsItems?: BreadcrumbItem[] | undefined
-  icon?: string | undefined
+  pageHeaderProps?: PageHeaderProps
+  icon?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: 'Title',
-  description: undefined,
+  pageHeaderProps: () => ({
+    title: 'Title',
+    description: 'A description',
+  }),
   breadcrumbsItems: undefined,
-  icon: undefined,
 
 })
 
@@ -24,6 +25,6 @@ const { breadcrumbsItems } = toRefs(props)
     <div v-if="breadcrumbsItems" class="py-4">
       <UBreadcrumb :items="breadcrumbsItems" />
     </div>
-    <UPageHeader :description :title />
+    <UPageHeader v-bind="pageHeaderProps" />
   </div>
 </template>

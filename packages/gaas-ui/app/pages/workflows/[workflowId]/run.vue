@@ -67,15 +67,20 @@ const workflowGalaxyId = computed(() => {
     return dbWorkflowVal.galaxy_id
   return undefined
 })
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Run',
+    description: 'Choose datasets, set parameters and invoke a workflow.',
 
+  }
+})
 // get workflow input
 </script>
 
 <template>
   <div>
     <PageHeader
-      title="Run"
-      description="Choose datasets, set parameters and invoke a workflow."
+      :page-header-props
       icon="i-lucide:workflow"
       :breadcrumbs-items="breadcrumbsItems"
     />

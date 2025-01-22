@@ -165,18 +165,25 @@ const columns = ref<TableColumn<Dataset>[]>([
     },
   },
 ])
+
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Datasets',
+    description: 'From here you can upload a dataset and have the list of all the datasets available.',
+
+  }
+})
 </script>
 
 <template>
   <div>
     <PageHeader
-      title="Datasets"
-      description="From here you can upload a dataset and have the list of all the datasets available."
-      icon="i-lucide-files"
+      :page-header-props
       :breadcrumbs-items="breadcrumbsItems"
+      icon="i-lucide-files"
     />
 
-    <div class="grid grid-flow-row auto-rows-max gap-6">
+    <div class="grid grid-flow-row auto-rows-max gap-6 mt-6">
       <div>
         <!-- <h2 class="text-xl font-bold mb-2 mt-4">Upload</h2> -->
         <div>
@@ -204,7 +211,7 @@ const columns = ref<TableColumn<Dataset>[]>([
           </UForm>
         </div>
       </div>
-      <div v-if="datasets" class="mt-5">
+      <div v-if="datasets">
         <!-- <h2 class="text-xl font-bold mb-3 mt-4">Datasets</h2> -->
         <UTable
           :data="datasets"

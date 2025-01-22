@@ -176,14 +176,22 @@ const { data: galaxyInstance } = await useAsyncData(
     }
   },
 )
+
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Workflows',
+    description: 'Manage the workflows that are available for this web application',
+
+  }
+})
 </script>
 
 <template>
   <div v-if="userRole === 'admin'">
     <div v-if="galaxyInstance">
       <PageHeader
-        title="Manage workflows"
-        description="Manage the workflows that are available for this web application" icon="i-lucide:workflow"
+        :page-header-props
+        icon="i-lucide:workflow"
         :breadcrumbs-items="computedBreadcrumbsItems"
       >
         <template #trailing-content>

@@ -356,6 +356,21 @@ function useOutputs() {
   return { outputs }
 }
 
+const pageHeaderProps = computed(() => {
+  const analysisVal = toValue(analysis)
+  const props = {
+    title: 'Analysis',
+    description: 'Analysis perform with workflow',
+    ui: {
+      root: 'relative border-b-0 border-[var(--ui-border)] py-8',
+    },
+  }
+  if (analysisVal) {
+    return { ...props, title: analysisVal.name }
+  }
+  return props
+})
+
 onMounted(() => {
   const dbAnalysisVal = toValue(analysis) as Record<string, any>
 
@@ -369,28 +384,29 @@ await useFetch('/sync')
 </script>
 
 <template>
+  <PageHeader
+    v-if="analysis" :page-header-props="pageHeaderProps"
+    :breadcrumbs-items="computedBreadcrumbsItems"
+    icon="i-streamline:code-analysis"
+  >
+    <template #description="{ description }">
+      <div class="text-lg text-[var(--ui-text-muted)] mt-4">
+        {{ description }}
+        <UBadge variant="subtle">
+          {{
+            workflowRun?.galaxyWorkflow.name
+          }}
+        </UBadge>
+      </div>
+    </template>
+    <template #trailing-content>
+      <div v-if="history">
+        <GalaxyStatus :state="history.state" :size="40" />
+      </div>
+    </template>
+  </PageHeader>
   <div>
-    <PageHeader
-      v-if="analysis" :title="analysis.name" description="Analysis perform with workflow"
-      icon="i-streamline:code-analysis" :breadcrumbs-items="computedBreadcrumbsItems"
-    >
-      <template #description="{ description }">
-        <div class="text-lg text-[var(--ui-text-muted)] mt-4">
-          {{ description }}
-          <UBadge variant="subtle">
-            {{
-              workflowRun?.galaxyWorkflow.name
-            }}
-          </UBadge>
-        </div>
-      </template>
-      <template #trailing-content>
-        <div v-if="history">
-          <GalaxyStatus :state="history.state" :size="40" />
-        </div>
-      </template>
-    </PageHeader>
-    <USeparator icon="i-lucide:file" />
+    <USeparator :id="`input-${analysisId}`" icon="i-lucide:file" />
     <div class="py-4">
       <h2 class="text-lg font-bold">
         Inputs
@@ -398,9 +414,9 @@ await useFetch('/sync')
       <GalaxyAnalysisIoDatasets :items="inputs" />
     </div>
 
-    <USeparator icon="i-mdi:tools" />
+    <USeparator :id="`job-${analysisId}`" icon="i-mdi:tools" />
 
-    <div v-if="jobs" name="job">
+    <div v-if="jobs">
       <div class="py-4">
         <h2 class="text-lg font-bold">
           Jobs
@@ -468,7 +484,7 @@ await useFetch('/sync')
     </div>
 
     <!-- outputs -->
-    <USeparator icon="i-lucide:file" />
+    <USeparator :id="`output-${analysisId}`" icon="i-lucide:file" />
     <div v-if="outputs">
       <div class="py-4">
         <h2 class="text-lg font-bold">

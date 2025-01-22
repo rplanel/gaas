@@ -18,13 +18,23 @@ const breadcrumbsItems = ref([
 ])
 
 const { data: workflows } = await useFetch('/api/galaxy/workflows')
+
+const pageHeaderProps = computed(() => {
+  const title = 'Galaxy Workflows'
+  const description = 'All workflows available on the galaxy instance'
+  const props = {
+    title,
+    description,
+
+  }
+  return props
+})
 </script>
 
 <template>
   <div>
     <PageHeader
-      title="Galaxy Workflows"
-      description="All workflows available on the galaxy instance"
+      :page-header-props
       icon="i-lucide:workflow"
       :breadcrumbs-items="breadcrumbsItems"
     />

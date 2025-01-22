@@ -37,12 +37,22 @@ const adminItems = ref([
 function goToAdminPanel(name: string) {
   router.push(`/admin/${name}`)
 }
+
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Admin panel',
+    description: 'Manage your web application',
+  }
+})
 </script>
 
 <template>
   <div>
     <div v-if="userRole === 'admin'">
-      <PageHeader title="Admin panel" description="Manage your web application" :breadcrumbs-items="breadcrumbsItems" />
+      <PageHeader
+        :page-header-props
+        :breadcrumbs-items
+      />
 
       <div class="grid grid-flow-col gap-5 p-2">
         <UCard

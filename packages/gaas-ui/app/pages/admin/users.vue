@@ -46,16 +46,23 @@ const { data: listUsers } = await useAsyncData('list-app-users', async () => {
 
   return users
 })
+
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Users and roles',
+    description: 'Manage the user and roles of the web application',
+  }
+})
 </script>
 
 <template>
   <div>
     <div v-if="userRole === 'admin'" class="my-5">
       <PageHeader
-        title="Manage users and roles" description="Manage the user and roles of the web application"
+        :page-header-props
         :breadcrumbs-items="computedBreadcrumbsItems"
       />
-      <div v-if="noUsers">
+      <div v-if="noUsers" class="my-3 p-2">
         <UAlert
           title="Permissions" description="You don't have the permissions to display the list of all users"
           icon="i-lucide:user-x" color="error" variant="soft"

@@ -13,17 +13,22 @@ const breadcrumbsItems = ref([
     to: '/galaxy',
   },
 ])
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Galaxy',
+    description: 'Description of the Galaxy instance the web application is connected to.',
 
+  }
+})
 const { data: galaxyInstanceDetails } = await useFetch<GalaxyTypes.GalaxyInstanceDetails>('/api/galaxy/instance')
 </script>
 
 <template>
   <div>
     <PageHeader
-      title="Galaxy"
-      description="Description of the Galaxy instance the web application is connected to."
-      icon="i-file-icons:galaxy"
+      :page-header-props
       :breadcrumbs-items="breadcrumbsItems"
+      icon="i-file-icons:galaxy"
     />
     <UAlert
       v-if="galaxyInstanceDetails"

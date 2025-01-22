@@ -244,19 +244,32 @@ async function editAnalysisName(id: number) {
   }
 }
 await useFetch('/sync')
+
+const pageHeaderProps = computed(() => {
+  return {
+    title: 'Analysis',
+    description: 'All analyses that has been run',
+    ui: {
+      root: 'relative border-b-0 border-[var(--ui-border)] py-8',
+    },
+
+  }
+})
 </script>
 
 <template>
   <div>
     <PageHeader
-      title="Analysis" description="All analyses that has been run" icon="i-streamline:code-analysis"
+      :page-header-props
       :breadcrumbs-items="breadcrumbsItems"
+      icon="i-streamline:code-analysis"
     >
       <template #trailing-content>
         <UButton icon="i-mdi:plus" to="/workflows" size="xl" />
       </template>
     </PageHeader>
-    <div class="flex flex-col flex-1 w-full">
+
+    <div class="flex flex-col flex-1 w-full ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] my-3">
       <!-- <div class="flex px-4 py-3.5 border-b border-[var(--ui-border-accented)]">
         <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
       </div> -->
