@@ -15,6 +15,7 @@
     "cleandep": "rm -rf node_modules && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules"
   },
   "dependencies": {
+    "@iconify-json/tabler": "catalog:",
     "@nuxt/ui-pro": "catalog:",
     "@tailwindcss/typography": "catalog:",
     "@vueuse/core": "catalog:",
@@ -33,7 +34,6 @@
     "@iconify-json/stash": "catalog:",
     "@iconify-json/streamline": "catalog:",
     "@iconify-json/svg-spinners": "catalog:",
-    "@iconify-json/tabler": "catalog:",
     "@nuxt/eslint": "latest",
     "eslint": "catalog:",
     "nuxt": "catalog:",
