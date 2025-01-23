@@ -41,9 +41,11 @@ async function resetError(error: Ref<unknown>) {
 }
 
 const workflowId = computed(() => {
-  const wfId = route?.params?.workflowId
-  if (!Array.isArray(wfId) && wfId !== undefined) {
-    return Number.parseInt(wfId)
+  if (route?.params && 'workflowId' in route.params) {
+    const wfId = route?.params?.workflowId
+    if (!Array.isArray(wfId) && wfId !== undefined) {
+      return Number.parseInt(wfId)
+    }
   }
   return undefined
 })

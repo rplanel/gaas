@@ -112,9 +112,9 @@ const storageObjectsMap = computed(() => {
 })
 
 interface Dataset {
-  name: string
-  size?: string
-  rawSize?: number
+  name: string | null | undefined
+  size?: string | undefined
+  rawSize?: number | undefined
 }
 
 const datasets = computed<Dataset[] | undefined>(() => {

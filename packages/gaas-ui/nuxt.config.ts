@@ -11,5 +11,4 @@ export default defineNuxtConfig({
     typedPages: true,
   },
   css: ['../app/assets/css/main.css'],
-
 })

@@ -24,6 +24,10 @@ const {
   workflowParametersModel,
   parametersInputsComponent,
 } = props
+
+function getComponent(toolInput: GalaxyToolParameters) {
+  return parametersInputsComponent?.[toolInput.name]?.component
+}
 </script>
 
 <template>
@@ -36,16 +40,13 @@ const {
       :key="toolInput.name"
     >
       <div
-        v-if="
-          parametersInputsComponent?.[toolInput.name]
-            && workflowParametersModel
-            && toolInput.name in workflowParametersModel
+        v-if=" workflowParametersModel
+          && toolInput.name in workflowParametersModel
         "
         class="border-b border-[var(--ui-border)] last:border-none px-4 py-5 w-full grow-1"
       >
         <component
-          :is="parametersInputsComponent[toolInput.name].component"
-
+          :is="getComponent(toolInput)"
           v-model="workflowParametersModel[toolInput.name]"
           :variant
           v-bind="toolInput"

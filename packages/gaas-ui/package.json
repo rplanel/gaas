@@ -15,7 +15,6 @@
     "cleandep": "rm -rf node_modules && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules"
   },
   "dependencies": {
-    "@nuxt/ui": "catalog:",
     "@nuxt/ui-pro": "catalog:",
     "@tailwindcss/typography": "catalog:",
     "@vueuse/core": "catalog:",

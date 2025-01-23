@@ -14,13 +14,16 @@ const user = useSupabaseUser()
 const supabase = useSupabaseClient<Database>()
 
 const workflowId = computed(() => {
-  const workflowId = route?.params?.workflowId
-  if (Array.isArray(workflowId))
-    return 0
-  if (workflowId) {
-    return Number.parseInt(workflowId)
+  if (route?.params && 'workflowId' in route.params) {
+    const workflowId = route.params.workflowId
+    if (Array.isArray(workflowId))
+      return 0
+    if (workflowId) {
+      return Number.parseInt(workflowId)
+    }
+    return workflowId
   }
-  return workflowId
+  return undefined
 })
 
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {

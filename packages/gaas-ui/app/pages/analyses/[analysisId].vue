@@ -32,13 +32,16 @@ const workflowParametersModel = ref<
   | undefined
 >(undefined)
 const analysisId = computed(() => {
-  const analysisId = route?.params?.analysisId
-  if (Array.isArray(analysisId))
-    return 0
-  if (analysisId !== undefined) {
-    return Number.parseInt(analysisId)
+  if (route?.params && 'analysisId' in route.params) {
+    const analysisId = route?.params?.analysisId
+    if (Array.isArray(analysisId))
+      return 0
+    if (analysisId !== undefined) {
+      return Number.parseInt(analysisId)
+    }
+    return analysisId
   }
-  return analysisId
+  return undefined
 })
 
 const { tools, getToolParameters, getParametersInputComponent } = useAnalysisTools()

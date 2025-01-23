@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SupabaseTypes } from '#build/types/database'
-import type { InputDatasets, OutputDatasets } from '../../../pages/analyses/[analysisId]/index.vue'
+import type { InputDatasets, OutputDatasets } from '../../../pages/analyses/[analysisId].vue'
 
 export interface Props {
   items: InputDatasets | OutputDatasets | undefined
