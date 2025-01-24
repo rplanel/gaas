@@ -15,6 +15,14 @@
     "cleandep": "rm -rf node_modules && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules"
   },
   "dependencies": {
+    "@iconify-json/ep": "catalog:",
+    "@iconify-json/lucide": "catalog:",
+    "@iconify-json/majesticons": "catalog:",
+    "@iconify-json/material-symbols": "catalog:",
+    "@iconify-json/mdi": "catalog:",
+    "@iconify-json/stash": "catalog:",
+    "@iconify-json/streamline": "catalog:",
+    "@iconify-json/svg-spinners": "catalog:",
     "@iconify-json/tabler": "catalog:",
     "@nuxt/ui-pro": "catalog:",
     "@tailwindcss/typography": "catalog:",
@@ -26,14 +34,6 @@
     "zod-validation-error": "catalog:"
   },
   "devDependencies": {
-    "@iconify-json/ep": "catalog:",
-    "@iconify-json/lucide": "catalog:",
-    "@iconify-json/majesticons": "catalog:",
-    "@iconify-json/material-symbols": "catalog:",
-    "@iconify-json/mdi": "catalog:",
-    "@iconify-json/stash": "catalog:",
-    "@iconify-json/streamline": "catalog:",
-    "@iconify-json/svg-spinners": "catalog:",
     "@nuxt/eslint": "latest",
     "eslint": "catalog:",
     "nuxt": "catalog:",

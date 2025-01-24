@@ -77,7 +77,7 @@ const sanitizedDbWorkflows = computed(() => {
 const pageHeaderProps = computed(() => {
   return {
     title: 'Workflows',
-    description: 'All the workflow available either on this web app or in the galaxy instance',
+    description: 'Select a workflow in order to run your analysis',
   }
 })
 </script>
@@ -90,26 +90,27 @@ const pageHeaderProps = computed(() => {
       :breadcrumbs-items="breadcrumbsItems"
     />
 
-    <div class="grid grid-flow-row auto-rows-max gap-6">
+    <div class="grid grid-flow-row auto-rows-max gap-6 my-3">
       <div>
         <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
-          <div>
-            <UPageList divide>
-              <UPageCard
-                v-for="(workflow) in sanitizedDbWorkflows"
-                :key="workflow.id"
-                orientation="horizontal"
-                variant="ghost"
-                :to="`/workflows/${workflow.id}/run`"
-                :title="workflow.name"
-                :description=" workflow.definition.annotation"
-                :ui="{ container: 'lg:grid-cols-1' }"
-              >
-                <template #footer>
-                  <VersionBadge :version="workflow.version.toString()" />
-                </template>
+          <UPageList divide>
+            <UPageCard
+              v-for="(workflow) in sanitizedDbWorkflows"
+              :key="workflow.id"
+              orientation="horizontal"
+              variant="ghost"
+              icon="tabler:square-rounded-arrow-right"
+              :to="`/workflows/${workflow.id}/run`"
+              :title="workflow.name"
+              :description=" workflow.definition.annotation"
 
-                <!-- <template #body>
+              :ui="{ container: 'lg:grid-cols-1' }"
+            >
+              <template #footer>
+                <VersionBadge :version="workflow.version.toString()" variant="soft" />
+              </template>
+
+              <!-- <template #body>
                       <div class="grid grid-flow-col auto-cols-max items-center justify-between">
                         <div class="grid grid-flow-col auto-cols-max items-center place-items-start">
                           <span class="mr-3">
@@ -133,12 +134,11 @@ const pageHeaderProps = computed(() => {
                         </div>
                       </div>
                     </template> -->
-              </UPageCard>
+            </UPageCard>
 
-              <!-- <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
+            <!-- <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
                   </UCard> -->
-            </UPageList>
-          </div>
+          </UPageList>
         </div>
       </div>
     </div>

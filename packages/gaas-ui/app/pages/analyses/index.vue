@@ -299,8 +299,10 @@ const pageHeaderProps = computed(() => {
             </div>
           </div>
           <div v-else>
+            <!-- <UPageCard :title="row.original.name" icon="tabler:square-rounded-arrow-right" :to="`/analyses/${row.original.id}/results`" variant="ghost" /> -->
+
             <UButton
-              trailing-icon="i-lucide-arrow-right" :to="`/analyses/${row.original.id}/results`" color="neutral"
+              trailing-icon="tabler:square-rounded-arrow-right" :to="`/analyses/${row.original.id}/results`" color="neutral"
               variant="ghost"
             >
               <span class="font-bold">{{ row.original.name }}</span>

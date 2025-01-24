@@ -37,7 +37,7 @@ const galaxyStateToIcon: Record<
   ready: { icon: '', color: '' },
   resubmitted: { icon: '', color: '' },
   scheduled: {
-    icon: 'i-material-symbols:schedule',
+    icon: 'material-symbols:schedule-send-outline',
     color: 'text-[var(--ui-success)]',
   },
   skipped: { icon: '', color: '' },
@@ -70,6 +70,7 @@ const currentState = computed(() => {
       <UIcon
         :name="currentState.icon"
         :size
+        variant="ghost"
       />
     </span>
     <span v-else>{{ state }}</span>

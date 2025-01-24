@@ -196,6 +196,7 @@ const pageHeaderProps = computed(() => {
               name="file"
               required
               class="text-lg"
+              size="xl"
             >
               <UInput
                 v-model="state.file"
@@ -204,7 +205,6 @@ const pageHeaderProps = computed(() => {
                 :disabled="uploadingFile"
                 :loading="uploadingFile"
                 class="w-full"
-                size="xl"
                 @change="uploadFile"
               />
             </UFormField>
@@ -212,22 +212,34 @@ const pageHeaderProps = computed(() => {
         </div>
       </div>
       <div v-if="datasets">
-        <!-- <h2 class="text-xl font-bold mb-3 mt-4">Datasets</h2> -->
-        <UTable
-          :data="datasets"
-          :columns
-          class="ring ring-[var(--ui-border-muted)] rounded-[calc(var(--ui-radius)*1.5)]"
-        >
-          <template #rawSize-cell="{ row }">
-            <UBadge :label="row.original.size" />
-          </template>
-        </UTable>
+        <USeparator icon="i-lucide:file" />
+        <div class="py-4">
+          <h2 class="text-lg font-bold">
+            Datasets
+          </h2>
+          <!-- <h2 class="text-xl font-bold mb-3 mt-4">Datasets</h2> -->
+          <UTable
+            :data="datasets"
+            :columns
+            class="ring ring-[var(--ui-border-muted)] rounded-[calc(var(--ui-radius)*1.5)]"
+          >
+            <template #rawSize-cell="{ row }">
+              <UBadge :label="row.original.size" variant="soft" />
+            </template>
+          </UTable>
+
+          <div class="flex my-2 py-3 justify-end">
+            <UPageCard
+              title="Run a workflow"
+              description="Select a workflow and run it with one of the datasets listed above."
+              icon="tabler:square-rounded-arrow-right"
+              to="/workflows"
+              variant="soft"
+              class="w-64"
+            />
+          </div>
+        </div>
       </div>
-      <!-- <div>
-        <UButton to="/workflows" trailing-icon="i-lucide-arrow-right"
-          >workflows</UButton
-        >
-      </div> -->
     </div>
   </div>
 </template>
