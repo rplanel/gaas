@@ -3,7 +3,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['nuxt-galaxy', '@nuxt/ui-pro'],
+  modules: ['nuxt-galaxy', '@nuxt/ui-pro', '@nuxt/test-utils/module'],
   future: {
     compatibilityVersion: 4,
   },
