@@ -40,8 +40,6 @@ const proxyValue = computed({
     emit('update:modelValue', emitValue)
   },
 })
-
-// const proxyValue = useVModel(props, "modelValue", emit);
 const { hint } = useGalaxyHint(props.help, props.argument)
 </script>
 

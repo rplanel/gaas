@@ -31,13 +31,22 @@ export interface WorkflowInputStep {
   step_output: string
 }
 
+export interface WorkflowToolParameters {
+  [paramName: string]: WorkflowParameterValue
+}
+
+export interface WorkflowConditionalParametersValue {
+  [paramName: string]: WorkflowParameterValue
+}
+export type WorkflowParameterValue = string | string[] | WorkflowConditionalParametersValue
+
 export interface WorkflowStep {
   id: number
   type: WorkflowStepType
   tool_id: null | string
   tool_version: null | string
   annotation: null | string
-  tool_inputs: Record<string, any>
+  tool_inputs: WorkflowToolParameters
   input_steps: Record<string, WorkflowInputStep>
 }
 

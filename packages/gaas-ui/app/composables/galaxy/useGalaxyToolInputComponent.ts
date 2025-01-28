@@ -1,5 +1,13 @@
+/**
+ * @file useGalaxyToolInputComponent composable
+ * @module app/composables/galaxy/useGalaxyToolInputComponent
+ * This composable will map a tool input parameter to a UI component
+ * Should live in the same package as the components (i.e. gaas-ui)
+ */
+
 import type { GalaxyToolParameters } from 'blendtype'
 import type { ComputedRef, MaybeRef } from 'vue'
+
 import {
   GalaxyBooleanToolParameter,
   GalaxyConditional,
@@ -11,7 +19,7 @@ import {
 import { computed, ref, toValue } from 'vue'
 
 export interface GalaxyToolInputComponent {
-  component: any
+  component: unknown
 
 }
 

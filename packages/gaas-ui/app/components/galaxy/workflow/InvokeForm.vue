@@ -3,17 +3,13 @@
 import type { SupabaseTypes } from '#build/types/database'
 import type { AccordionItem } from '@nuxt/ui'
 import type {
-  // getErrorMessage,
-  // getStatusCode,
   GalaxyTool,
-  GalaxyToolParameters,
   GalaxyWorkflow,
 } from 'blendtype'
 import type { Props as WorkflowStepProps } from '../../../components/galaxy/workflow/Step.vue'
-import { computed, onMounted, ref, toValue, useFetch } from '#imports'
-// import { getErrorMessage, getStatusCode } from 'nuxt-galaxy'
+import { computed, onMounted, ref, toValue } from '#imports'
 import { z } from 'zod'
-import { useGalaxyDecodeParameters } from '../../../composables/galaxy/useGalaxyDecodeParameters'
+import { useGalaxyTools } from '../../../../../nuxt-galaxy/src/runtime/app/composables/galaxy/useGalaxyTools'
 import { useGalaxyEncodeParameters } from '../../../composables/galaxy/useGalaxyEncodeParameters'
 import {
   type GalaxyToolInputComponent,
@@ -44,37 +40,25 @@ const workflowInputDatasetsModel = ref<
   Record<string, UploadedDatasetDb> | undefined
 >({})
 
-const workflowParametersModel = ref<
-  | Record<string, Record<string, string | string[] | Record<string, any>>>
-  | undefined
->(undefined)
 const user = useSupabaseUser()
 const supabase = useSupabaseClient<Database>()
-// const analysisName = ref<string | undefined>(undefined)
 
 onMounted(() => {
-  const workflowRunVal = toValue(workflowRun)
   const dbAnalysisVal = toValue(dbAnalysis) as Record<string, any>
-  const workflowStepsVal = toValue(workflowSteps)
+  // const workflowStepsVal = toValue(workflowSteps)
   if (props.analysisId && dbAnalysisVal) {
     state.analysisName = `Copy of ${dbAnalysisVal.name}`
-    const { decodedParameters } = useGalaxyDecodeParameters(
-      dbAnalysisVal.parameters,
-    )
-    workflowParametersModel.value = toValue(decodedParameters)
+    // const { decodedParameters } = useGalaxyDecodeParameters(
+    //   dbAnalysisVal.parameters,
+    // )
+    // workflowParametersModel.value = toValue(decodedParameters)
     workflowInputDatasetsModel.value = dbAnalysisVal.datamap
   }
-  else if (workflowRunVal && workflowStepsVal) {
-    workflowParametersModel.value = Object.entries(workflowStepsVal).reduce(
-      (acc, [stepId, step]) => {
-        if (step.type === 'tool')
-          acc[stepId] = step.tool_inputs
-        return acc
-      },
-      {} as Record<string, Record<string, any>>,
-    )
-  }
 })
+
+// const workflowParametersModel = computed(() => {
+//   return Object.entries(toValue(workflowToolSteps))
+// })
 
 const schema = z.object({
   analysisName: z.string().max(256, 'Must be less than 256'),
@@ -87,10 +71,10 @@ const state = reactive<Partial<Schema>>({
   analysisName: undefined,
 })
 
-const computedParameterInputComponentObject = computed(() => {
-  const worklowRunVal = toValue(workflowRun)
-  if (worklowRunVal?.tools) {
-    return Object.entries(worklowRunVal.tools).reduce(
+const toolInputParameterComponent = computed(() => {
+  const toolsVal = toValue(tools)
+  if (toolsVal) {
+    return Object.entries(toolsVal).reduce(
       (
         acc: Record<string, Record<string, GalaxyToolInputComponent>>,
         [toolId, tool]: [string, GalaxyTool],
@@ -109,96 +93,54 @@ const computedParameterInputComponentObject = computed(() => {
   return undefined
 })
 
-const workflowSteps = computed(() => {
-  const workflowRunVal = toValue(workflowRun)
-  if (workflowRunVal?.galaxyWorkflow?.steps) {
-    return workflowRunVal.galaxyWorkflow.steps
-  }
-  return undefined
-})
-
 const workflowStepsItems = computed<AccordionItem[] | undefined>(() => {
-  const workflowStepsVal = toValue(workflowSteps)
-
-  if (workflowStepsVal) {
-    return Object.entries(workflowStepsVal)
-      .filter(([_, step]) => step.type === 'tool' && step.tool_id !== null)
-      .map(([stepId, step]) => {
-        const toolId = step.tool_id
-        const toolsDetails = toolId?.split('/').slice(-2)
-        if (toolsDetails?.length === 2) {
-          return { value: stepId, label: toolsDetails[0] }
-        }
-        return { value: stepId }
-      })
-  }
-  return undefined
+  const workflowStepsVal = toValue(workflowToolSteps)
+  return Object.entries(workflowStepsVal)
+    .map(([stepId, step]) => {
+      const toolId = step.tool_id
+      const splittedToolId = toolId?.split('/').slice(-2)
+      if (splittedToolId?.length === 2) {
+        return { value: stepId, label: splittedToolId[0] }
+      }
+      return { value: stepId }
+    })
 })
 
 const workflowStepsToolInfo = computed(() => {
   const workflowStepsVal = toValue(workflowSteps)
-  const tools = toValue(sanitizedTools)
-  if (workflowStepsVal && tools) {
-    const wfStepsToolInfo: {
-      [stepId: string]: {
-        name: string
-        version: string
-        description: string
-      }
-    } = {}
-    for (const stepId in workflowStepsVal) {
-      const toolId = workflowStepsVal[stepId]?.tool_id
-      // const toolId = wfStep.tool_id
-      if (toolId) {
-        const toolsDetails = toolId?.split('/').slice(-2)
-        if (toolsDetails?.length === 2) {
-          wfStepsToolInfo[stepId] = {
-            name: toolsDetails?.[0] ?? '',
-            version: toolsDetails?.[1] ?? '',
-            description: toolId !== null ? tools[toolId]?.description ?? '' : '',
-          }
+  const toolsVal = toValue(tools)
+
+  const wfStepsToolInfo: {
+    [stepId: string]: {
+      name: string
+      version: string
+      description: string
+    }
+  } = {}
+  for (const stepId in workflowStepsVal) {
+    const toolId = workflowStepsVal[stepId]?.tool_id
+    // const toolId = wfStep.tool_id
+    if (toolId) {
+      const toolsDetails = toolId?.split('/').slice(-2)
+      if (toolsDetails?.length === 2) {
+        wfStepsToolInfo[stepId] = {
+          name: toolsDetails?.[0] ?? '',
+          version: toolsDetails?.[1] ?? '',
+          description: toolId !== null ? toolsVal[toolId]?.description ?? '' : '',
         }
       }
     }
-    return wfStepsToolInfo
   }
-  return undefined
-})
-
-const sanitizedWorkflowInputs = computed(() => {
-  const workflowRunVal = toValue(workflowRun)
-  return workflowRunVal?.galaxyWorkflow?.inputs
-})
-
-const sanitizedTools = computed(() => {
-  const workflowRunVal = toValue(workflowRun)
-  return workflowRunVal?.tools
-})
-
-const sanitizedToolsParameters = computed(() => {
-  const sanitizedToolsVal = toValue(sanitizedTools)
-  let toolsInputs: Record<string, GalaxyToolParameters[]> | undefined
-  if (sanitizedToolsVal) {
-    toolsInputs = {}
-    for (const toolId in sanitizedToolsVal) {
-      const toolParams = toValue(sanitizedTools)?.[toolId]
-      if (toolParams) {
-        toolsInputs[toolId] = toolParams.inputs.filter(
-          input => input.type !== 'data',
-        )
-      }
-    }
-  }
-  return toolsInputs
+  return wfStepsToolInfo
 })
 
 const galaxyWorkflowStepProps = computed(
   () => {
     const workflowStepsItemsVal = toValue(workflowStepsItems)
     const workflowStepsVal = toValue(workflowSteps)
-    const sanitizedToolsParametersVal = toValue(sanitizedToolsParameters)
-    const computedParameterInputComponentObjectVal = toValue(
-      computedParameterInputComponentObject,
+    const sanitizedToolsParametersVal = toValue(toolInputParameters)
+    const toolInputParameterComponentVal = toValue(
+      toolInputParameterComponent,
     )
     const workflowParametersModelVal = toValue(workflowParametersModel)
     let props: Record<string, Omit<WorkflowStepProps, 'variant'>> | undefined
@@ -207,7 +149,7 @@ const galaxyWorkflowStepProps = computed(
       workflowStepsItemsVal
       && workflowStepsVal
       && sanitizedToolsParametersVal
-      && computedParameterInputComponentObjectVal
+      && toolInputParameterComponentVal
       && workflowParametersModelVal
     ) {
       for (const item of workflowStepsItemsVal) {
@@ -222,7 +164,7 @@ const galaxyWorkflowStepProps = computed(
                 workflowStep,
                 toolParameters: sanitizedToolsParametersVal[toolId],
                 parametersInputsComponent:
-                computedParameterInputComponentObjectVal[toolId],
+                toolInputParameterComponentVal[toolId],
                 workflowParametersModel: workflowParametersModelVal[stepId],
               }
             }
@@ -336,27 +278,8 @@ const { data: datasets } = await useAsyncData(
   },
 )
 
-const { data: workflowRun, error: wfInputsError } = await useFetch<{
-  galaxyWorkflow: GalaxyWorkflow
-  tools: Record<string, GalaxyTool>
-}>(`/api/galaxy/workflows/${toValue(workflowGalaxyId)}/input`)
-// debugger
-
-if (wfInputsError.value) {
-  const { errorStatus } = useErrorStatus(wfInputsError)
-  const { errorMessage } = useErrorMessage(wfInputsError)
-  if (errorStatus.value === 503 && errorMessage.value === 'Service Unavailable') {
-    throw createError({
-      statusMessage: 'The Galaxy server is Unavailable',
-      statusCode: errorStatus.value,
-    })
-  }
-  // throw createError  ('Only a message')
-  throw createError({
-    statusMessage: errorMessage.value,
-    statusCode: errorStatus.value,
-  })
-}
+const { workflowSteps, workflowInputs, workflowToolSteps, workflowToolIds, workflowParametersModel } = useGalaxyWorkflow(workflowGalaxyId)
+const { tools, toolInputParameters } = useGalaxyTools(workflowToolIds)
 </script>
 
 <template>
@@ -405,7 +328,7 @@ if (wfInputsError.value) {
           </h3>
           <!-- <NuxtErrorBoundary> -->
           <div
-            v-for="(input, stepId) in sanitizedWorkflowInputs"
+            v-for="(input, stepId) in workflowInputs"
             :key="stepId"
           >
             <div
@@ -453,6 +376,7 @@ if (wfInputsError.value) {
               }"
             >
               <template #default="{ item: { value: stepId } }">
+                {{ stepId }}
                 <div
                   v-if="stepId !== undefined"
                   class="grid grid-flow-col auto-cols-auto items-center justify-between w-full gap-5 break-words"
@@ -477,6 +401,7 @@ if (wfInputsError.value) {
                   <div
                     class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]"
                   >
+                    {{ stepId }}
                     <GalaxyWorkflowStep
                       v-if="stepId !== undefined && galaxyWorkflowStepProps?.[stepId]"
                       v-bind="galaxyWorkflowStepProps[stepId]"

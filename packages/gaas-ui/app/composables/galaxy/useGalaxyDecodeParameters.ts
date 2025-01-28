@@ -1,20 +1,21 @@
+import type { WorkflowConditionalParametersValue, WorkflowToolParameters } from 'blendtype'
 import type { ComputedRef, MaybeRef } from 'vue'
 import type { EncodedGalaxyWorkflowParameter } from './useGalaxyEncodeParameters'
 import { computed, toValue } from 'vue'
 
 export interface WorkflowParametersModel {
-  [stepId: string]: WorkflowParametersTool
+  [stepId: string]: WorkflowToolParameters
 }
 
-export interface WorkflowParametersTool {
-  [paramName: string]: WorkflowParameterValue
-}
+// export interface WorkflowParametersTool {
+//   [paramName: string]: WorkflowParameterValue
+// }
 
-export interface WorkflowConditionalParametersValue {
-  [paramName: string]: WorkflowParameterValue
-}
+// export interface WorkflowConditionalParametersValue {
+//   [paramName: string]: WorkflowParameterValue
+// }
 
-export type WorkflowParameterValue = string | string[] | WorkflowConditionalParametersValue
+// export type WorkflowParameterValue = string | string[] | WorkflowConditionalParametersValue
 
 export function useGalaxyDecodeParameters(galaxyWorkflowParameters: MaybeRef<EncodedGalaxyWorkflowParameter>): { decodedParameters: ComputedRef<WorkflowParametersModel | undefined> } {
   const decodedParameters = computed<WorkflowParametersModel | undefined>(() => {
@@ -35,7 +36,7 @@ export function useGalaxyDecodeParameters(galaxyWorkflowParameters: MaybeRef<Enc
             const parentParam = splittedParamName.slice(0, -1)
             const childParam = splittedParamName.slice(-1)
 
-            let currParamVisit: WorkflowParametersTool | WorkflowConditionalParametersValue = inputParameters[stepId]
+            let currParamVisit: WorkflowToolParameters | WorkflowConditionalParametersValue = inputParameters[stepId]
 
             // we are creating the object structure.
             // each parent param should correspond to a WorkflowConditionalParametersValue type

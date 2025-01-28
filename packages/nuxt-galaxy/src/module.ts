@@ -195,6 +195,12 @@ export default defineNuxtModule<ModuleOptions>({
       handler: resolver.resolve('./runtime/server/api/galaxy/workflows/[workflowId]/input.get'),
       method: 'get',
     })
+    // tools
+    addServerHandler({
+      route: '/api/galaxy/tools/:toolId/:toolVersion',
+      handler: resolver.resolve('./runtime/server/api/galaxy/tools/[toolId]/[toolVersion].get'),
+      method: 'get',
+    })
 
     // db
     addServerHandler({
