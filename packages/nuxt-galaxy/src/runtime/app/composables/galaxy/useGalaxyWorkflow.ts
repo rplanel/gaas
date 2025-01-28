@@ -1,12 +1,6 @@
 import type { MaybeRef } from '#imports'
-import type { GalaxyWorkflow, WorkflowStep, WorkflowToolParameters } from 'blendtype'
+import type { GalaxyWorkflow, WorkflowToolParameters, WorkflowToolStep } from 'blendtype'
 import { computed, ref, toValue } from '#imports'
-
-interface WorkflowToolStep extends WorkflowStep {
-  type: 'tool'
-  tool_id: string
-  tool_version: string
-}
 
 export function useGalaxyWorkflow(workflowId: MaybeRef<string | undefined>) {
   const workflow = ref<GalaxyWorkflow | undefined>(undefined)
@@ -75,5 +69,12 @@ export function useGalaxyWorkflow(workflowId: MaybeRef<string | undefined>) {
     }
   }
   fetchWorkflow()
-  return { workflow, workflowSteps, workflowInputs, workflowToolSteps, workflowToolIds, workflowParametersModel }
+  return {
+    workflow,
+    workflowSteps,
+    workflowInputs,
+    workflowToolSteps,
+    workflowToolIds,
+    workflowParametersModel,
+  }
 }

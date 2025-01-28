@@ -5,11 +5,13 @@ import type { AccordionItem } from '@nuxt/ui'
 import type {
   GalaxyTool,
   GalaxyWorkflow,
+  WorkflowToolParameters,
 } from 'blendtype'
 import type { Props as WorkflowStepProps } from '../../../components/galaxy/workflow/Step.vue'
-import { computed, onMounted, ref, toValue } from '#imports'
+import { computed, ref, toValue } from '#imports'
 import { z } from 'zod'
 import { useGalaxyTools } from '../../../../../nuxt-galaxy/src/runtime/app/composables/galaxy/useGalaxyTools'
+import { useGalaxyDecodeParameters } from '../../../composables/galaxy/useGalaxyDecodeParameters'
 import { useGalaxyEncodeParameters } from '../../../composables/galaxy/useGalaxyEncodeParameters'
 import {
   type GalaxyToolInputComponent,
@@ -39,22 +41,25 @@ const startingAnalysis = ref<boolean>(false)
 const workflowInputDatasetsModel = ref<
   Record<string, UploadedDatasetDb> | undefined
 >({})
-
+const invokeWorkflowParameterModel = ref<Record<string, WorkflowToolParameters>>({})
 const user = useSupabaseUser()
 const supabase = useSupabaseClient<Database>()
 
-onMounted(() => {
-  const dbAnalysisVal = toValue(dbAnalysis) as Record<string, any>
-  // const workflowStepsVal = toValue(workflowSteps)
-  if (props.analysisId && dbAnalysisVal) {
-    state.analysisName = `Copy of ${dbAnalysisVal.name}`
-    // const { decodedParameters } = useGalaxyDecodeParameters(
-    //   dbAnalysisVal.parameters,
-    // )
-    // workflowParametersModel.value = toValue(decodedParameters)
-    workflowInputDatasetsModel.value = dbAnalysisVal.datamap
-  }
-})
+// onMounted(() => {
+//   const dbAnalysisVal = toValue(dbAnalysis) as Record<string, any>
+//   // const workflowStepsVal = toValue(workflowSteps)
+//   if (props.analysisId && dbAnalysisVal) {
+//     state.analysisName = `Copy of ${dbAnalysisVal.name}`
+//     const { decodedParameters } = useGalaxyDecodeParameters(
+//       dbAnalysisVal.parameters,
+//     )
+//     invokeWorkflowParameterModel.value = decodedParameters.value
+//     workflowInputDatasetsModel.value = dbAnalysisVal.datamap
+//   }
+//   else {
+//     invokeWorkflowParameterModel.value = workflowParametersModel.value
+//   }
+// })
 
 // const workflowParametersModel = computed(() => {
 //   return Object.entries(toValue(workflowToolSteps))
@@ -107,9 +112,8 @@ const workflowStepsItems = computed<AccordionItem[] | undefined>(() => {
 })
 
 const workflowStepsToolInfo = computed(() => {
-  const workflowStepsVal = toValue(workflowSteps)
   const toolsVal = toValue(tools)
-
+  const stepToToolVal = toValue(stepToTool)
   const wfStepsToolInfo: {
     [stepId: string]: {
       name: string
@@ -117,16 +121,17 @@ const workflowStepsToolInfo = computed(() => {
       description: string
     }
   } = {}
-  for (const stepId in workflowStepsVal) {
-    const toolId = workflowStepsVal[stepId]?.tool_id
-    // const toolId = wfStep.tool_id
+  for (const stepId in stepToToolVal) {
+    const toolId = stepToToolVal[stepId]
     if (toolId) {
-      const toolsDetails = toolId?.split('/').slice(-2)
-      if (toolsDetails?.length === 2) {
+      const splittedToolId = toolId?.split('/').slice(-2)
+      if (splittedToolId?.length === 2) {
+        const [toolName, toolVersion] = splittedToolId
+        const toolDescription = toolsVal[toolId]?.description ?? ''
         wfStepsToolInfo[stepId] = {
-          name: toolsDetails?.[0] ?? '',
-          version: toolsDetails?.[1] ?? '',
-          description: toolId !== null ? toolsVal[toolId]?.description ?? '' : '',
+          name: toolName || '',
+          version: toolVersion || '',
+          description: toolDescription,
         }
       }
     }
@@ -138,20 +143,14 @@ const galaxyWorkflowStepProps = computed(
   () => {
     const workflowStepsItemsVal = toValue(workflowStepsItems)
     const workflowStepsVal = toValue(workflowSteps)
-    const sanitizedToolsParametersVal = toValue(toolInputParameters)
+    const toolInputParametersVal = toValue(toolInputParameters)
     const toolInputParameterComponentVal = toValue(
       toolInputParameterComponent,
     )
-    const workflowParametersModelVal = toValue(workflowParametersModel)
+    const workflowParametersModelVal = toValue(invokeWorkflowParameterModel)
     let props: Record<string, Omit<WorkflowStepProps, 'variant'>> | undefined
 
-    if (
-      workflowStepsItemsVal
-      && workflowStepsVal
-      && sanitizedToolsParametersVal
-      && toolInputParameterComponentVal
-      && workflowParametersModelVal
-    ) {
+    if (workflowStepsItemsVal && toolInputParameterComponentVal) {
       for (const item of workflowStepsItemsVal) {
         const { value: stepId } = item
         if (stepId) {
@@ -162,7 +161,7 @@ const galaxyWorkflowStepProps = computed(
               props = {}
               props[stepId] = {
                 workflowStep,
-                toolParameters: sanitizedToolsParametersVal[toolId],
+                toolParameters: toolInputParametersVal[toolId],
                 parametersInputsComponent:
                 toolInputParameterComponentVal[toolId],
                 workflowParametersModel: workflowParametersModelVal[stepId],
@@ -180,7 +179,7 @@ async function runAnalysis() {
   const workflowInputsModelVal = toValue(workflowInputDatasetsModel)
   const analysesNameVal = state.analysisName
   const workflowIdVal = toValue(props.workflowId)
-  const workflowParametersModelVal = toValue(workflowParametersModel)
+  const workflowParametersModelVal = toValue(invokeWorkflowParameterModel)
   if (workflowParametersModelVal) {
     const { encodedParameters } = useGalaxyEncodeParameters(
       workflowParametersModelVal,
@@ -279,7 +278,25 @@ const { data: datasets } = await useAsyncData(
 )
 
 const { workflowSteps, workflowInputs, workflowToolSteps, workflowToolIds, workflowParametersModel } = useGalaxyWorkflow(workflowGalaxyId)
+
 const { tools, toolInputParameters } = useGalaxyTools(workflowToolIds)
+const { stepToTool } = useGalaxyWorkflowSteps({ workflowToolSteps })
+
+watchEffect(() => {
+  const dbAnalysisVal = toValue(dbAnalysis) as Record<string, any>
+
+  if (props.analysisId && dbAnalysisVal) {
+    state.analysisName = `Copy of ${dbAnalysisVal.name}`
+    const { decodedParameters } = useGalaxyDecodeParameters(
+      dbAnalysisVal.parameters,
+    )
+    invokeWorkflowParameterModel.value = decodedParameters.value
+    workflowInputDatasetsModel.value = dbAnalysisVal.datamap
+  }
+  else {
+    invokeWorkflowParameterModel.value = workflowParametersModel.value
+  }
+})
 </script>
 
 <template>

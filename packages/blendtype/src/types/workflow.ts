@@ -50,6 +50,12 @@ export interface WorkflowStep {
   input_steps: Record<string, WorkflowInputStep>
 }
 
+export interface WorkflowToolStep extends WorkflowStep {
+  type: 'tool'
+  tool_id: string
+  tool_version: string
+}
+
 export interface GalaxyWorkflowsItem {
 
   model_class: string

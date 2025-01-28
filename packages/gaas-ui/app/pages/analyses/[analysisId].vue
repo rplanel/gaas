@@ -2,7 +2,7 @@
 import type { SupabaseTypes } from '#build/types/database'
 import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
 import type { AccordionItem, BreadcrumbItem } from '@nuxt/ui'
-import type { GalaxyTool, GalaxyToolParameters } from 'blendtype'
+import type { GalaxyTool } from 'blendtype'
 import { useGalaxyDecodeParameters } from '../../composables/galaxy/useGalaxyDecodeParameters'
 import { type GalaxyToolInputComponent, useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 
@@ -43,34 +43,6 @@ const analysisId = computed(() => {
   }
   return undefined
 })
-
-const { tools, getToolParameters, getParametersInputComponent } = useAnalysisTools()
-const { inputs } = useAnalysisInput()
-const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
-const { workflowSteps } = useAnalysisWorkflow()
-const { outputs } = useOutputs()
-
-// Listen to job updates
-supabase
-  .channel('histories')
-  .on(
-    'postgres_changes',
-    { event: 'UPDATE', schema: 'galaxy', table: 'histories' },
-    handleUpdates,
-  )
-  .subscribe()
-
-supabase
-  .channel('jobs')
-  .on(
-    'postgres_changes',
-    { event: 'UPDATE', schema: 'galaxy', table: 'jobs' },
-    handleUpdates,
-  )
-  .subscribe()
-
-// Fetch data
-
 const { data: analysis, refresh: refreshAnalysis } = await useAsyncData(
   `analysis-details-${toValue(analysisId)}`,
   async () => {
@@ -111,11 +83,6 @@ const { data: analysis, refresh: refreshAnalysis } = await useAsyncData(
     return false
   },
 )
-
-function handleUpdates() {
-  refreshAnalysis()
-}
-
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
   const analysisVal = toValue(analysis)
@@ -148,10 +115,43 @@ const workflowGalaxyId = computed(() => {
     return dbWorkflowVal.galaxy_id
   return undefined
 })
+const { workflow, workflowSteps, workflowToolIds, workflowToolSteps } = useGalaxyWorkflow(workflowGalaxyId)
+const { tools, toolInputParameters } = useGalaxyTools(workflowToolIds)
+const { stepToTool } = useGalaxyWorkflowSteps({ workflowToolSteps })
+const { getToolParameters, getParametersInputComponent } = useAnalysisTools()
+const { inputs } = await useAnalysisInput(analysisId)
+// const { inputs } = useAnalysisInput()
+const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
+const { outputs } = useOutputs()
 
-const { data: workflowRun } = await useFetch(
-  `/api/galaxy/workflows/${toValue(workflowGalaxyId)}/input`,
-)
+// Listen to job updates
+supabase
+  .channel('histories')
+  .on(
+    'postgres_changes',
+    { event: 'UPDATE', schema: 'galaxy', table: 'histories' },
+    handleUpdates,
+  )
+  .subscribe()
+
+supabase
+  .channel('jobs')
+  .on(
+    'postgres_changes',
+    { event: 'UPDATE', schema: 'galaxy', table: 'jobs' },
+    handleUpdates,
+  )
+  .subscribe()
+
+// Fetch data
+
+function handleUpdates() {
+  refreshAnalysis()
+}
+
+// const { data: workflowRun } = await useFetch(
+//   `/api/galaxy/workflows/${toValue(workflowGalaxyId)}/input`,
+// )
 
 // computed data
 
@@ -179,22 +179,22 @@ const history = computed(() => {
   return undefined
 })
 
-function useAnalysisInput() {
-  const inputs = computed(() => {
-    const analysisVal = toValue(analysis)
-    if (analysisVal && analysisVal?.analysis_inputs) {
-      return analysisVal.analysis_inputs.map((input) => {
-        return {
-          ...input.datasets,
-          state: input.state,
-        }
-      })
-    }
-    return undefined
-  })
+// function useAnalysisInput() {
+//   const inputs = computed(() => {
+//     const analysisVal = toValue(analysis)
+//     if (analysisVal && analysisVal?.analysis_inputs) {
+//       return analysisVal.analysis_inputs.map((input) => {
+//         return {
+//           ...input.datasets,
+//           state: input.state,
+//         }
+//       })
+//     }
+//     return undefined
+//   })
 
-  return { inputs }
-}
+//   return { inputs }
+// }
 
 function useAnalysisJob() {
   const jobs = computed<RowAnalysisJob[] | undefined>(() => {
@@ -255,62 +255,20 @@ function useAnalysisJob() {
   return { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems }
 }
 
-function useAnalysisWorkflow() {
-  const workflowSteps = computed(() => {
-    const workflowRunVal = toValue(workflowRun)
-    if (workflowRunVal?.galaxyWorkflow?.steps) {
-      return workflowRunVal.galaxyWorkflow.steps
-    }
-    return undefined
-  })
-
-  return { workflowSteps }
-}
-
 function useAnalysisTools() {
-  const tools = computed(() => {
-    const workflowRunVal = toValue(workflowRun)
-    if (workflowRunVal?.tools) {
-      return workflowRunVal.tools
-    }
-    return {}
-  })
-
-  const stepTools = computed(() => {
-    const workflowRunVal = toValue(workflowRun)
-    if (workflowRunVal?.stepToTool) {
-      return workflowRunVal.stepToTool
-    }
-    return {}
-  })
-  const sanitizedToolsParameters = computed(() => {
-    const workflowRunVal = toValue(workflowRun)
-    if (workflowRunVal) {
-      const toolsInputs: Record<string, GalaxyToolParameters[]> = {}
-      for (const toolId in workflowRunVal.tools) {
-        if (workflowRunVal.tools[toolId]?.inputs) {
-          toolsInputs[toolId] = workflowRunVal.tools[toolId]?.inputs.filter(
-            input => input.type !== 'data',
-          ) as GalaxyToolParameters[]
-        }
-      }
-      return toolsInputs
-    }
-    return undefined
-  })
   function getToolParameters(stepId: string) {
-    const stepToolsVal = toValue(stepTools)
-    const sanitizedToolsParametersVal = toValue(sanitizedToolsParameters)
+    const stepToolsVal = toValue(stepToTool)
+    const toolInputParametersVal = toValue(toolInputParameters)
     const toolName = stepToolsVal[stepId]
-    if (toolName && sanitizedToolsParametersVal) {
-      return sanitizedToolsParametersVal[toolName]
+    if (toolName) {
+      return toolInputParametersVal[toolName]
     }
   }
 
-  const computedParameterInputComponentObject = computed(() => {
-    const worklowRunVal = toValue(workflowRun)
-    if (worklowRunVal?.tools) {
-      return Object.entries(worklowRunVal.tools).reduce(
+  const toolInputParameterComponent = computed(() => {
+    const toolsVal = toValue(tools)
+    if (toolsVal) {
+      return Object.entries(toolsVal).reduce(
         (
           acc: Record<string, Record<string, GalaxyToolInputComponent>>,
           curr,
@@ -330,8 +288,8 @@ function useAnalysisTools() {
     return undefined
   })
   function getParametersInputComponent(stepId: string) {
-    const toolName = toValue(stepTools)[stepId]
-    const computedParameterInputComponentObjectVal = toValue(computedParameterInputComponentObject)
+    const toolName = toValue(stepToTool)[stepId]
+    const computedParameterInputComponentObjectVal = toValue(toolInputParameterComponent)
     if (toolName && computedParameterInputComponentObjectVal) {
       return computedParameterInputComponentObjectVal[toolName]
     }
@@ -374,7 +332,7 @@ const pageHeaderProps = computed(() => {
   return props
 })
 
-onMounted(() => {
+watchEffect(() => {
   const dbAnalysisVal = toValue(analysis) as Record<string, any>
 
   const { decodedParameters } = useGalaxyDecodeParameters(
@@ -397,7 +355,7 @@ await useFetch('/sync')
         {{ description }}
         <UBadge variant="subtle">
           {{
-            workflowRun?.galaxyWorkflow.name
+            workflow?.name
           }}
         </UBadge>
       </div>
