@@ -61,6 +61,18 @@ export function useGalaxyWorkflow(workflowId: MaybeRef<string | undefined>) {
     }, {} as Record<string, WorkflowToolParameters>)
   })
 
+  const stepToTool = computed(() => {
+    const workflowToolStepsVal = toValue(workflowToolSteps)
+    const stepToToolMap: Record<string, string> = {}
+
+    for (const stepId in workflowToolStepsVal) {
+      const step = workflowToolStepsVal[stepId]
+      const { tool_id: toolId } = step
+      stepToToolMap[stepId] = toolId
+    }
+    return stepToToolMap
+  })
+
   async function fetchWorkflow() {
     const workflowIdVal = toValue(workflowId)
     if (workflowIdVal) {
@@ -76,5 +88,6 @@ export function useGalaxyWorkflow(workflowId: MaybeRef<string | undefined>) {
     workflowToolSteps,
     workflowToolIds,
     workflowParametersModel,
+    stepToTool,
   }
 }

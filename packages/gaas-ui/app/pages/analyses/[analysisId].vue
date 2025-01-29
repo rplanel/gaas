@@ -7,11 +7,9 @@ import { useGalaxyDecodeParameters } from '../../composables/galaxy/useGalaxyDec
 import { type GalaxyToolInputComponent, useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 
 type Database = SupabaseTypes.Database
-type AnalysisDetail = GalaxyTypes.AnalysisDetail
 export type InputDatasets = typeof inputs.value
 export type OutputDatasets = typeof outputs.value
 type RowAnalysisJob = GalaxyTypes.RowAnalysisJob
-type AnalysisOutputsWithDatasets = GalaxyTypes.AnalysisOutputsWithDatasets
 
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
@@ -43,46 +41,9 @@ const analysisId = computed(() => {
   }
   return undefined
 })
-const { data: analysis, refresh: refreshAnalysis } = await useAsyncData(
-  `analysis-details-${toValue(analysisId)}`,
-  async () => {
-    const analysisVal = toValue(analysisId)
-    const userVal = toValue(user)
-    if (userVal && analysisVal) {
-      const { data, error } = await supabase
-        .schema('galaxy')
-        .from('analyses')
-        .select(
-          `
-        *,
-        histories(*),
-        jobs(*),
-        workflows(*),
-        analysis_inputs(
-            *,
-            datasets(*)
-        ),
-        analysis_outputs(
-            *,
-            datasets(*)
-        )
-    `,
-        )
-        .eq('id', analysisVal)
-        .limit(1)
-        .returns<AnalysisDetail[]>()
 
-      if (error) {
-        throw createError({
-          statusMessage: error.message,
-          statusCode: Number.parseInt(error.code),
-        })
-      }
-      return data ? data[0] : data
-    }
-    return false
-  },
-)
+const { inputs, outputs, analysis, refresh: refreshAnalysis } = await useAnalysisDatasetIO(analysisId)
+
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
   const analysisVal = toValue(analysis)
@@ -115,14 +76,15 @@ const workflowGalaxyId = computed(() => {
     return dbWorkflowVal.galaxy_id
   return undefined
 })
-const { workflow, workflowSteps, workflowToolIds, workflowToolSteps } = useGalaxyWorkflow(workflowGalaxyId)
+const {
+  workflow,
+  workflowSteps,
+  workflowToolIds,
+  stepToTool,
+} = useGalaxyWorkflow(workflowGalaxyId)
 const { tools, toolInputParameters } = useGalaxyTools(workflowToolIds)
-const { stepToTool } = useGalaxyWorkflowSteps({ workflowToolSteps })
 const { getToolParameters, getParametersInputComponent } = useAnalysisTools()
-const { inputs } = await useAnalysisInput(analysisId)
-// const { inputs } = useAnalysisInput()
 const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
-const { outputs } = useOutputs()
 
 // Listen to job updates
 supabase
@@ -149,12 +111,6 @@ function handleUpdates() {
   refreshAnalysis()
 }
 
-// const { data: workflowRun } = await useFetch(
-//   `/api/galaxy/workflows/${toValue(workflowGalaxyId)}/input`,
-// )
-
-// computed data
-
 const computedBreadcrumbsItems = computed(() => {
   const analysisVal = toValue(analysis)
   const breadcrumbsItemsVal = toValue(breadcrumbsItems)
@@ -178,23 +134,6 @@ const history = computed(() => {
   }
   return undefined
 })
-
-// function useAnalysisInput() {
-//   const inputs = computed(() => {
-//     const analysisVal = toValue(analysis)
-//     if (analysisVal && analysisVal?.analysis_inputs) {
-//       return analysisVal.analysis_inputs.map((input) => {
-//         return {
-//           ...input.datasets,
-//           state: input.state,
-//         }
-//       })
-//     }
-//     return undefined
-//   })
-
-//   return { inputs }
-// }
 
 function useAnalysisJob() {
   const jobs = computed<RowAnalysisJob[] | undefined>(() => {
@@ -296,25 +235,6 @@ function useAnalysisTools() {
   }
 
   return { tools, getToolParameters, getParametersInputComponent }
-}
-
-function useOutputs() {
-  const outputs = computed(() => {
-    const analysisVal = toValue(analysis)
-    if (analysisVal && analysisVal?.analysis_outputs) {
-      return analysisVal.analysis_outputs.map((output: AnalysisOutputsWithDatasets) => {
-      // const { fileSize } = useFileSize(output.datasets.file_size);
-        return {
-          ...output.datasets,
-          state: output.state,
-        // humanFileSize: fileSize,
-        }
-      })
-    }
-    return undefined
-  })
-
-  return { outputs }
 }
 
 const pageHeaderProps = computed(() => {

@@ -277,10 +277,16 @@ const { data: datasets } = await useAsyncData(
   },
 )
 
-const { workflowSteps, workflowInputs, workflowToolSteps, workflowToolIds, workflowParametersModel } = useGalaxyWorkflow(workflowGalaxyId)
+const {
+  workflowSteps,
+  stepToTool,
+  workflowInputs,
+  workflowToolSteps,
+  workflowToolIds,
+  workflowParametersModel,
+} = useGalaxyWorkflow(workflowGalaxyId)
 
 const { tools, toolInputParameters } = useGalaxyTools(workflowToolIds)
-const { stepToTool } = useGalaxyWorkflowSteps({ workflowToolSteps })
 
 watchEffect(() => {
   const dbAnalysisVal = toValue(dbAnalysis) as Record<string, any>
@@ -393,7 +399,6 @@ watchEffect(() => {
               }"
             >
               <template #default="{ item: { value: stepId } }">
-                {{ stepId }}
                 <div
                   v-if="stepId !== undefined"
                   class="grid grid-flow-col auto-cols-auto items-center justify-between w-full gap-5 break-words"
@@ -418,7 +423,6 @@ watchEffect(() => {
                   <div
                     class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]"
                   >
-                    {{ stepId }}
                     <GalaxyWorkflowStep
                       v-if="stepId !== undefined && galaxyWorkflowStepProps?.[stepId]"
                       v-bind="galaxyWorkflowStepProps[stepId]"

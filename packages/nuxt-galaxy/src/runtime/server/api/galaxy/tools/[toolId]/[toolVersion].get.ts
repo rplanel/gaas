@@ -1,5 +1,6 @@
 import type { GalaxyClient } from 'blendtype'
-import { createError, defineEventHandler, getRouterParam } from '#imports'
+import { createError } from '#imports'
+import { defineEventHandler, getRouterParam } from 'h3'
 import { decode } from 'ufo'
 
 export default defineEventHandler(async (event) => {
