@@ -304,12 +304,8 @@ await useFetch('/sync')
         </h2>
       </div>
 
-      <UAccordion
-        :items="jobsAccordionItems" :ui="{
-          header:
-            'flex hover:bg-[var(--ui-bg-elevated)] px-2 rounded-[calc(var(--ui-radius))] grid grid-flow-col align-middle',
-          trailingIcon: 'shrink-1 shrink-none',
-        }"
+      <UPageAccordion
+        :items="jobsAccordionItems"
       >
         <template #leading="{ item }">
           <div>
@@ -319,17 +315,14 @@ await useFetch('/sync')
         <template #body="{ item }">
           <!-- item.value is step_id as string -->
           <div v-if="jobDetailsAccordionItems && item.value" class="p-4">
-            <UAccordion
-              :items="jobDetailsAccordionItems[item.value]?.details" :ui="{
-                header:
-                  'hover:bg-[var(--ui-bg-elevated)] px-2 rounded-[calc(var(--ui-radius))]',
-              }"
+            <UPageAccordion
+              :items="jobDetailsAccordionItems[item.value]?.details"
             >
               <template #parameters>
                 <div
                   v-if="
-                    workflowParametersModel
-                      && workflowSteps
+                    workflowSteps
+                      && workflowParametersModel
                       && item.value
                   " class="p-2"
                 >
@@ -358,10 +351,10 @@ await useFetch('/sync')
                   </div>
                 </div>
               </template>
-            </UAccordion>
+            </UPageAccordion>
           </div>
         </template>
-      </UAccordion>
+      </UPageAccordion>
     </div>
 
     <!-- outputs -->

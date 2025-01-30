@@ -69,9 +69,9 @@ const { hint } = useGalaxyHint(props.help, props.argument)
     </div>
     <div
       v-if="variant === 'display'"
-      class="grid grid-flow-col align-middle auto-cols-max gap-2 mx-2 w-full"
+      class="flex flex-row align-middle gap-2 mx-2 w-full"
     >
-      <div class="font-medium self-center">
+      <div class="font-medium self-center text-wrap">
         {{ label }}
       </div>
       <div class="mx-2">

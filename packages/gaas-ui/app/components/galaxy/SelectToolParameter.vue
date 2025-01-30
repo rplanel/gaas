@@ -102,16 +102,16 @@ const selectedOptionLabel = computed(() => {
     </div>
     <div
       v-if="variant === 'display'"
-      class="mx-2 grid grid-flow-col auto-cols-max gap-2 w-full"
+      class="mx-2 flex flex-row gap-2 w-full"
     >
-      <div class="font-medium">
+      <div class="font-medium self-center text-wrap">
         {{ label }}
       </div>
       <div>
         <USeparator orientation="vertical" />
       </div>
       <div>
-        <UBadge color="primary">
+        <UBadge color="primary" class="self-center">
           {{ selectedOptionLabel }}
         </UBadge>
       </div>

@@ -4,7 +4,7 @@ import type { GalaxyToolInputComponent } from '../../../composables/galaxy/useGa
 
 export interface Props {
   variant: 'form' | 'display'
-  workflowStep: WorkflowStep | undefined
+  workflowStep: MaybeRef<WorkflowStep | undefined>
   toolParameters: GalaxyToolParameters[] | undefined
   parametersInputsComponent:
     | Record<string, GalaxyToolInputComponent>
@@ -23,10 +23,10 @@ const {
   toolParameters,
   workflowParametersModel,
   parametersInputsComponent,
-} = props
+} = toRefs(props)
 
 function getComponent(toolInput: GalaxyToolParameters) {
-  return parametersInputsComponent?.[toolInput.name]?.component
+  return toValue(parametersInputsComponent)?.[toolInput.name]?.component
 }
 </script>
 

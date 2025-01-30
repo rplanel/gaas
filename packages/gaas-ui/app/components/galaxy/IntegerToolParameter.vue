@@ -73,9 +73,11 @@ const numberInputProps = computed(() => {
     </div>
     <div
       v-if="variant === 'display'"
-      class="grid grid-flow-col auto-cols-max gap-2 mx-2 w-full"
+      class="flex flex-row gap-2 mx-2 w-full"
     >
-      <div>class="font-medium self-center">{{ label }}</div>
+      <div class="font-medium self-center text-wrap">
+        {{ label }}
+      </div>
       <div>
         <USeparator orientation="vertical" />
       </div>
