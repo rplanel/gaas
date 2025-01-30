@@ -10,7 +10,6 @@ import type {
 import type { Props as WorkflowStepProps } from '../../../components/galaxy/workflow/Step.vue'
 import { computed, ref, toValue } from '#imports'
 import { z } from 'zod'
-import { useGalaxyTools } from '../../../../../nuxt-galaxy/src/runtime/app/composables/galaxy/useGalaxyTools'
 import { useGalaxyDecodeParameters } from '../../../composables/galaxy/useGalaxyDecodeParameters'
 import { useGalaxyEncodeParameters } from '../../../composables/galaxy/useGalaxyEncodeParameters'
 import {
