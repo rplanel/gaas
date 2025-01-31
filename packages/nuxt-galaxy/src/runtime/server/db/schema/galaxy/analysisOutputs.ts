@@ -22,7 +22,9 @@ export const analysisOutputs = galaxy.table('analysis_outputs', {
  */
 
 export const analysisOutputsToTags = galaxy.table('analysis_outputs_to_tags', {
-  analysisOutputId: integer('analysis_output_id').notNull().references(() => analysisOutputs.id),
+  analysisOutputId: integer('analysis_output_id')
+    .notNull()
+    .references(() => analysisOutputs.id, { onDelete: 'cascade' }),
   tagId: integer('tag_id').notNull().references(() => tags.id),
 }, t => ({
   pk: primaryKey({ columns: [t.analysisOutputId, t.tagId] }),
