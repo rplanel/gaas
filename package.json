@@ -10,6 +10,8 @@
   "scripts": {
     "test": "pnpm --filter './packages/**' test",
     "dev": "pnpm --filter ./playground dev",
+    "build:playground": "pnpm --filter ./playground build",
+    "preview:playground": "pnpm --filter ./playground preview",
     "lint": "eslint .",
     "cleandep": "rm -rf node_modules && rm -rf pnpm-lock.yaml && pnpm --filter '**' run cleandep",
     "build": "pnpm --filter './packages/**' prepack",

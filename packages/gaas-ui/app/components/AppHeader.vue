@@ -4,6 +4,7 @@ import type { OrderedNavigationMenuItem } from '../app.config'
 import { getErrorMessage, getStatusCode } from 'blendtype'
 
 const supabase = useSupabaseClient()
+const user = useSupabaseUser()
 const { userRole } = useUserRole(supabase)
 
 const { gaasUi: { navigationMenuItems } } = useAppConfig()
@@ -93,6 +94,7 @@ const userItems = ref<DropdownMenuItem[]>([
       </UTooltip>
       <UColorModeSelect />
       <UDropdownMenu
+        v-if="user"
         :content="{
           align: 'end',
           side: 'bottom',

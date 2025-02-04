@@ -44,7 +44,7 @@ catalog:
   jiti: ^2.4.2
   jwt-decode: ^4.0.0
   lint-staged: ^15.3.0
-  nuxt: ^3.15.2
+  nuxt: ^3.15.4
   ofetch: ^1.4.1
   playwright-core: ^1.50.0
   postgres: ^3.4.5
