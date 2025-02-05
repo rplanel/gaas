@@ -19,6 +19,9 @@ export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
   if (isErrorWithMessage(maybeError))
     return maybeError
 
+  if (typeof maybeError === 'string')
+    return new Error(maybeError)
+
   try {
     return new Error(JSON.stringify(maybeError))
   }
