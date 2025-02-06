@@ -45,6 +45,8 @@ export async function uploadDatasets(
               parsedSignedUrl.host = 'host.docker.internal'
               sanitizedSignedUrl = withoutProtocol(stringifyParsedURL(parsedSignedUrl))
             }
+
+            sanitizedSignedUrl = 'https://dl.pasteur.fr/fop/XPbIC5YS/ESCO001.0523.00470.prt'
             const filename = parseFilename(sanitizedSignedUrl, { strict: false })
             return galaxyClient.histories().uploadFile(
               galaxyHistoryId,
