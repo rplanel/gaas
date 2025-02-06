@@ -3,7 +3,13 @@ import type { ComputedRef, MaybeRef, Ref } from '#imports'
 import type { DatasetState } from 'blendtype'
 import type { Database } from '../../types/database'
 import type { AnalysisDetail, RowAnalaysisDataset } from '../../types/nuxt-galaxy'
-import { computed, createError, toValue, useAsyncData, useSupabaseClient, useSupabaseUser } from '#imports'
+import {
+  computed,
+  createError,
+  toValue,
+  useAsyncData,
+  useSupabaseClient,
+} from '#imports'
 
 interface Input extends RowAnalaysisDataset {
   state: DatasetState
@@ -18,21 +24,20 @@ export async function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefin
   analysis: Ref<AnalysisDetail | null>
   refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 }> {
-  const supabase = useSupabaseClient<Database>()
-  const user = useSupabaseUser()
-
   const { data: analysis, refresh } = await useAsyncData<AnalysisDetail | null>(
     `analysis-details-${toValue(analysisId)}`,
     async () => {
+      const supabase = useSupabaseClient<Database>()
+      // const user = useSupabaseUser()
       const analysisVal = toValue(analysisId)
-      const userVal = toValue(user)
+      // const userVal = toValue(user)
 
-      if (!userVal) {
-        throw createError({
-          statusCode: 401,
-          statusMessage: 'Unauthorized: User not found',
-        })
-      }
+      // if (!userVal) {
+      //   throw createError({
+      //     statusCode: 401,
+      //     statusMessage: 'Unauthorized: User not found',
+      //   })
+      // }
       if (!analysisVal) {
         throw createError({
           statusCode: 404,

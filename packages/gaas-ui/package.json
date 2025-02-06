@@ -38,6 +38,7 @@
   "devDependencies": {
     "@nuxt/eslint": "latest",
     "@nuxt/test-utils": "catalog:",
+    "@testing-library/vue": "^8.1.0",
     "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "happy-dom": "catalog:",
