@@ -348,7 +348,6 @@ watchEffect(() => {
           <h3 class="font-bold text-lg">
             Datasets
           </h3>
-          <!-- <NuxtErrorBoundary> -->
           <div
             v-for="(input, stepId) in workflowInputs"
             :key="stepId"
@@ -377,10 +376,6 @@ watchEffect(() => {
               </UFormField>
             </div>
           </div>
-          <!-- <template #error="{ error }">
-          catch an error {{ error }}
-        </template> -->
-          <!-- </NuxtErrorBoundary> -->
           <USeparator
             icon="i-lucide:workflow"
             class="mt-5 mb-3"

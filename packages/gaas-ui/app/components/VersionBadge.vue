@@ -17,10 +17,7 @@ const badgeProps = computed<BadgeProps>(() => {
 
 <template>
   <div>
-    <UBadge
-      v-bind="badgeProps"
-      icon="tabler:versions"
-    >
+    <UBadge v-bind="badgeProps">
       v{{ version }}
     </UBadge>
   </div>
