@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem, TableColumn } from '@nuxt/ui'
+import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
 import { z } from 'zod'
 
@@ -12,10 +13,25 @@ const props = withDefaults(defineProps<Props>(), {
 definePageMeta({
   middleware: 'auth',
 })
+const filterInput = useTemplateRef('filterInput')
+
+defineShortcuts({
+  '/': () => {
+    filterInput.value?.inputRef?.focus()
+  },
+})
+
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
 }
 const { breadcrumbsItems } = toRefs(props)
+const table = useTemplateRef('table')
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 5,
+})
+const pageSizeOptions = ref([1, 5, 10, 15])
+const globalFilter = ref('')
 
 const user = useSupabaseUser()
 const supabase = useSupabaseClient<Database>()
@@ -170,6 +186,9 @@ const pageHeaderProps = computed(() => {
   return {
     title: 'Datasets',
     description: 'From here you can upload a dataset and have the list of all the datasets available.',
+    ui: {
+      root: 'relative border-b-0 border-[var(--ui-border)] py-8',
+    },
 
   }
 })
@@ -185,8 +204,8 @@ const pageHeaderProps = computed(() => {
 
     <div class="grid grid-flow-row auto-rows-max gap-6 mt-6">
       <div>
-        <!-- <h2 class="text-xl font-bold mb-2 mt-4">Upload</h2> -->
-        <div>
+        <USeparator icon="lucide:upload" />
+        <div class="py-3">
           <UForm
             :schema="schema"
             :state="state"
@@ -204,30 +223,66 @@ const pageHeaderProps = computed(() => {
                 icon="i-lucide:paperclip"
                 :disabled="uploadingFile"
                 :loading="uploadingFile"
-                class="w-full"
                 @change="uploadFile"
               />
             </UFormField>
           </UForm>
         </div>
       </div>
-      <div v-if="datasets">
+      <div v-if="datasets" class="mt-5">
         <USeparator icon="i-lucide:file" />
-        <div class="py-4">
-          <h2 class="text-lg font-bold">
+        <div class="py-3">
+          <h2 class="text-lg font-bold mb-2">
             Datasets
           </h2>
           <!-- <h2 class="text-xl font-bold mb-3 mt-4">Datasets</h2> -->
-          <UTable
-            :data="datasets"
-            :columns
-            class="ring ring-[var(--ui-border-muted)] rounded-[calc(var(--ui-radius)*1.5)]"
-          >
-            <template #rawSize-cell="{ row }">
-              <UBadge :label="row.original.size" variant="soft" />
-            </template>
-          </UTable>
+          <UCard :ui="{ body: 'p-0 sm:p-0' }" class="mb-4">
+            <div class="w-full space-y-4 pb-4">
+              <div class="flex p-3 w-full">
+                <UInput ref="filterInput" v-model="globalFilter" size="lg" icon="lucide:filter" class="w-full" placeholder="Filter...">
+                  <template #trailing>
+                    <template v-if="globalFilter?.length">
+                      <UButton
+                        color="neutral"
+                        variant="link"
 
+                        icon="lucide:circle-x"
+                        aria-label="Clear input"
+                        @click="globalFilter = ''"
+                      />
+                    </template>
+                    <template v-else>
+                      <UKbd value="/" />
+                    </template>
+                  </template>
+                </UInput>
+              </div>
+              <UTable
+                ref="table"
+                v-model:pagination="pagination"
+                v-model:global-filter="globalFilter"
+                :data="datasets"
+                :columns
+                :pagination-options="{
+                  getPaginationRowModel: getPaginationRowModel(),
+                }"
+                class="flex"
+              >
+                <template #rawSize-cell="{ row }">
+                  <UBadge :label="row.original.size" variant="soft" />
+                </template>
+              </UTable>
+              <div class="flex justify-center border-t border-[var(--ui-border)] pt-4 gap-2">
+                <UPagination
+                  :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+                  :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+                  :total="table?.tableApi?.getFilteredRowModel().rows.length"
+                  @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+                />
+                <USelect v-model="pagination.pageSize" :items="pageSizeOptions" variant="soft" @update:model-value="(s) => table?.tableApi.setPageSize(s)" />
+              </div>
+            </div>
+          </UCard>
           <div class="flex my-2 py-3 justify-end">
             <UPageCard
               title="Run a workflow"
