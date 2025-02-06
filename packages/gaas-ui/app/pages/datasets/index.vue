@@ -223,12 +223,9 @@ const pageHeaderProps = computed(() => {
       <div v-if="datasets" class="mt-2">
         <USeparator icon="i-lucide:file" />
         <div class="py-3">
-          <h2 class="text-lg font-bold mb-2">
-            Datasets
-          </h2>
-          <!-- <h2 class="text-xl font-bold mb-3 mt-4">Datasets</h2> -->
           <TableGeneric
             :utable-props
+            title="Datasets"
           >
             <template #rawSize-cell="{ row }">
               <UBadge :label="row.original.size" variant="soft" />

@@ -20,7 +20,7 @@ catalog:
   '@nuxt/schema': ^3.15.0
   '@nuxt/test-utils': ^3.15.4
   '@nuxt/ui-pro': https://pkg.pr.new/@nuxt/ui-pro@37c0e89
-  '@nuxt/ui': https://pkg.pr.new/@nuxt/ui@4aa3179
+  '@nuxt/ui': https://pkg.pr.new/@nuxt/ui@71ed7ce
   '@nuxtjs/supabase': ^1.4.5
   '@release-it/conventional-changelog': ^10.0.0
   '@tailwindcss/typography': ^0.5.15
