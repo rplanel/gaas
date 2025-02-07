@@ -2,13 +2,14 @@
 import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem, TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
+import { ColumnTableSort } from '#components'
+
 import {
   definePageMeta,
   useAsyncData,
   useSupabaseClient,
   useSupabaseUser,
 } from '#imports'
-import { useOffsetPagination } from '@vueuse/core'
 // import { getErrorMessage, getStatusCode } from 'blendtype'
 import { toValue } from 'vue'
 
@@ -20,11 +21,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   breadcrumbsItems: undefined,
 })
-const table = useTemplateRef('table')
-const page = ref(1)
-const pageSize = ref(8)
-const pageSizeOptions = ref([3, 8, 15])
-const globalFilter = ref(undefined)
 
 const { breadcrumbsItems } = toRefs(props)
 const supabase = useSupabaseClient<Database>()
@@ -57,10 +53,19 @@ const isEditingAnalyses = ref<Record<number, string>>({})
 const galaxyAnalysesColumns = ref<TableColumn<SanitizedAnalysis>[]>([
   {
     accessorKey: 'name',
-    header: 'Name',
+    sortingFn: 'alphanumeric',
+    header: ({ column }) => {
+      return h(ColumnTableSort, { column, label: 'Name' })
+    },
   },
   { header: 'State', accessorKey: 'histories.state', id: 'historiesState' },
-  { header: 'Workflow', accessorKey: 'workflows' },
+  {
+    accessorKey: 'workflows',
+    sortingFn: 'alphanumeric',
+    header: ({ column }) => {
+      return h(ColumnTableSort, { column, label: 'Workflow' })
+    },
+  },
   {
     id: 'actions',
   },
@@ -121,36 +126,6 @@ const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {
   return []
 })
 
-// const filteredAnalyses = computed(() => {
-//   const tableVal = toValue(table)
-//   if (tableVal) {
-//     const rowModel = tableVal.tableApi.getFilteredRowModel().rowsById
-//     console.log(t)
-//   }
-//   return toValue(slicedData)
-// })
-
-const slicedData = ref<SanitizedAnalysis[]>([])
-
-function sliceData({ currentPage, currentPageSize }: { currentPage: number, currentPageSize: number }) {
-  const start = (currentPage - 1) * currentPageSize
-  const end = start + pageSize.value
-  slicedData.value = sanitizedAnalyses.value.slice(start, end)
-}
-sliceData({
-  currentPage: page.value,
-  currentPageSize: pageSize.value,
-})
-const {
-  currentPage,
-  currentPageSize,
-} = useOffsetPagination({
-  total: sanitizedAnalyses.value.length,
-  page,
-  pageSize,
-  onPageChange: sliceData,
-  onPageSizeChange: sliceData,
-})
 function handleUpdates() {
   refreshAnalyses()
 }
@@ -266,6 +241,13 @@ const pageHeaderProps = computed(() => {
 
   }
 })
+
+const utableProps = computed(() => {
+  return {
+    columns: galaxyAnalysesColumns.value,
+    data: sanitizedAnalyses.value,
+  }
+})
 </script>
 
 <template>
@@ -280,75 +262,68 @@ const pageHeaderProps = computed(() => {
       </template>
     </PageHeader>
 
-    <div class="flex flex-col flex-1 w-full ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] my-3">
-      <!-- <div class="flex px-4 py-3.5 border-b border-[var(--ui-border-accented)]">
-        <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
-      </div> -->
-      <UTable ref="table" v-model:global-filter="globalFilter" :data="slicedData" :columns="galaxyAnalysesColumns">
-        <template #name-cell="{ row }">
-          <div
-            v-if="isEditingAnalyses?.[row.original.id]"
-            class="grid grid-flow-col-dense auto-cols-max gap-0.5 justify-start w-full"
-          >
-            <div class="self-center w-full flex-1">
-              <UInput
-                v-if="isEditingAnalyses?.[row.original.id]" v-model="isEditingAnalyses[row.original.id]"
-                label="Analysis Name" class=""
-              />
-            </div>
-            <div class="self-center flex-none">
-              <UButton
-                color="success" variant="ghost" size="sm" icon="i-lucide:check"
-                @click="editAnalysisName(row.original.id)"
-              />
-            </div>
-            <div class="self-center flex-none">
-              <UButton
-                color="warning" variant="ghost" size="sm" icon="i-mdi:cancel"
-                @click="resetEditAnalysis(row.original.id)"
-              />
-            </div>
+    <TableGeneric
+      :utable-props
+    >
+      <template #name-cell="{ row }">
+        <div
+          v-if="isEditingAnalyses?.[row.original.id]"
+          class="grid grid-flow-col-dense auto-cols-max gap-0.5 justify-start w-full"
+        >
+          <div class="self-center w-full flex-1">
+            <UInput
+              v-if="isEditingAnalyses?.[row.original.id]" v-model="isEditingAnalyses[row.original.id]"
+              label="Analysis Name" class=""
+            />
           </div>
-          <div v-else>
-            <!-- <UPageCard :title="row.original.name" icon="tabler:square-rounded-arrow-right" :to="`/analyses/${row.original.id}/results`" variant="ghost" /> -->
-
+          <div class="self-center flex-none">
             <UButton
-              trailing-icon="tabler:square-rounded-arrow-right" :to="`/analyses/${row.original.id}/results`" color="neutral"
-              variant="ghost"
-            >
-              <span class="font-bold">{{ row.original.name }}</span>
-            </UButton>
+              color="success" variant="ghost" size="sm" icon="i-lucide:check"
+              @click="editAnalysisName(row.original.id)"
+            />
           </div>
-        </template>
-        <template #historiesState-cell="{ row }">
-          <GalaxyStatus :state="row.original.state" />
-        </template>
-        <template #actions-cell="{ row }">
-          <div class="grid grid-flow-col gap-1 justify-start">
-            <div>
-              <UButton
-                icon="i-mdi:refresh" :to="`/analyses/${row.original.id}/rerun`" variant="ghost"
-                color="neutral" size="md"
-              />
-            </div>
-            <div>
-              <UButton
-                icon="i-lucide:pencil" variant="ghost" color="neutral" size="md"
-                @click="setEditState(row.original.id, row.original.name)"
-              />
-            </div>
-            <div>
-              <UDropdownMenu :content="{ content: { align: 'end' } }" :items="getRowItems(row)">
-                <UButton icon="i-lucide-ellipsis-vertical" color="neutral" variant="ghost" class="ml-auto" />
-              </UDropdownMenu>
-            </div>
+          <div class="self-center flex-none">
+            <UButton
+              color="warning" variant="ghost" size="sm" icon="i-mdi:cancel"
+              @click="resetEditAnalysis(row.original.id)"
+            />
           </div>
-        </template>
-      </UTable>
-    </div>
-    <div class="flex justify-center p-3 m-2 gap-1">
-      <UPagination v-model:page="currentPage" :items-per-page="currentPageSize" :total="sanitizedAnalyses.length" variant="soft" />
-      <USelect v-model="pageSize" :items="pageSizeOptions" variant="soft" />
-    </div>
+        </div>
+        <div v-else>
+          <UButton
+            trailing-icon="tabler:square-rounded-arrow-right" :to="`/analyses/${row.original.id}/results`" color="neutral"
+            variant="ghost"
+          >
+            <span class="font-bold">{{ row.original.name }}</span>
+          </UButton>
+        </div>
+      </template>
+
+      <template #historiesState-cell="{ row }">
+        <GalaxyStatus :state="row.original.state" />
+      </template>
+
+      <template #actions-cell="{ row }">
+        <div class="grid grid-flow-col gap-1 justify-start">
+          <div>
+            <UButton
+              icon="i-mdi:refresh" :to="`/analyses/${row.original.id}/rerun`" variant="ghost"
+              color="neutral" size="md"
+            />
+          </div>
+          <div>
+            <UButton
+              icon="i-lucide:pencil" variant="ghost" color="neutral" size="md"
+              @click="setEditState(row.original.id, row.original.name)"
+            />
+          </div>
+          <div>
+            <UDropdownMenu :content="{ content: { align: 'end' } }" :items="getRowItems(row)">
+              <UButton icon="i-lucide-ellipsis-vertical" color="neutral" variant="ghost" class="ml-auto" />
+            </UDropdownMenu>
+          </div>
+        </div>
+      </template>
+    </TableGeneric>
   </div>
 </template>

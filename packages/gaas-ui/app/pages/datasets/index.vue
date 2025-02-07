@@ -12,11 +12,11 @@ const props = withDefaults(defineProps<Props>(), {
 definePageMeta({
   middleware: 'auth',
 })
+
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
 }
 const { breadcrumbsItems } = toRefs(props)
-
 const user = useSupabaseUser()
 const supabase = useSupabaseClient<Database>()
 const uploadingFile = ref(false)
@@ -166,10 +166,20 @@ const columns = ref<TableColumn<Dataset>[]>([
   },
 ])
 
+const utableProps = computed(() => {
+  return {
+    columns: toValue(columns),
+    data: toValue(datasets),
+  }
+})
+
 const pageHeaderProps = computed(() => {
   return {
     title: 'Datasets',
     description: 'From here you can upload a dataset and have the list of all the datasets available.',
+    ui: {
+      root: 'relative border-b-0 border-[var(--ui-border)] py-8',
+    },
 
   }
 })
@@ -185,8 +195,8 @@ const pageHeaderProps = computed(() => {
 
     <div class="grid grid-flow-row auto-rows-max gap-6 mt-6">
       <div>
-        <!-- <h2 class="text-xl font-bold mb-2 mt-4">Upload</h2> -->
-        <div>
+        <USeparator icon="lucide:upload" />
+        <div class="py-3">
           <UForm
             :schema="schema"
             :state="state"
@@ -204,29 +214,23 @@ const pageHeaderProps = computed(() => {
                 icon="i-lucide:paperclip"
                 :disabled="uploadingFile"
                 :loading="uploadingFile"
-                class="w-full"
                 @change="uploadFile"
               />
             </UFormField>
           </UForm>
         </div>
       </div>
-      <div v-if="datasets">
+      <div v-if="datasets" class="mt-2">
         <USeparator icon="i-lucide:file" />
-        <div class="py-4">
-          <h2 class="text-lg font-bold">
-            Datasets
-          </h2>
-          <!-- <h2 class="text-xl font-bold mb-3 mt-4">Datasets</h2> -->
-          <UTable
-            :data="datasets"
-            :columns
-            class="ring ring-[var(--ui-border-muted)] rounded-[calc(var(--ui-radius)*1.5)]"
+        <div class="py-3">
+          <TableGeneric
+            :utable-props
+            title="Datasets"
           >
             <template #rawSize-cell="{ row }">
               <UBadge :label="row.original.size" variant="soft" />
             </template>
-          </UTable>
+          </TableGeneric>
 
           <div class="flex my-2 py-3 justify-end">
             <UPageCard
