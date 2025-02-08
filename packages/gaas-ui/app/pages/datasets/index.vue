@@ -30,7 +30,7 @@ const fileMetadataSchema = z.object({
 })
 
 type Schema = z.output<typeof schema>
-type DatasetColumn = Database['galaxy']['Tables']['datasets']['Row']
+type DatasetColumn = Database['galaxy']['Tables']['uploaded_datasets']['Row']
 const state = reactive<Partial<Schema>>({
   file: undefined,
 })
@@ -129,7 +129,8 @@ const datasets = computed<Dataset[] | undefined>(() => {
         storageObjectsMapVal
         && storageObjectsMapVal.has(d.storage_object_id)
       ) {
-        name = storageObjectsMapVal.get(d.storage_object_id)?.name
+        // name = storageObjectsMapVal.get(d.storage_object_id)?.name
+        name = d.name
         const metadata = fileMetadataSchema.passthrough().parse(storageObjectsMapVal.get(
           d.storage_object_id,
         )?.metadata)
