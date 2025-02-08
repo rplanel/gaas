@@ -1,0 +1,3 @@
+DROP VIEW "galaxy"."datasets_with_storage_path";--> statement-breakpoint
+ALTER TABLE "galaxy"."datasets" DROP COLUMN "file_size";--> statement-breakpoint
+CREATE VIEW "galaxy"."datasets_with_storage_path" AS (select "galaxy"."datasets"."id", "galaxy"."datasets"."owner_id", "galaxy"."datasets"."history_id", "galaxy"."datasets"."storage_object_id", "galaxy"."datasets"."created_at", "galaxy"."datasets"."uuid", "galaxy"."datasets"."extension", "galaxy"."datasets"."data_lines", "galaxy"."datasets"."dataset_name", "galaxy"."datasets"."galaxy_id", "galaxy"."datasets"."annotation", "storage"."objects"."name", "storage"."objects"."metadata" from "galaxy"."datasets" inner join "storage"."objects" on "galaxy"."datasets"."storage_object_id" = "storage"."objects"."id");

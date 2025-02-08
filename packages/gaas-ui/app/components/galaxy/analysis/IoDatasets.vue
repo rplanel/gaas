@@ -16,10 +16,11 @@ const sanitizedItems = computed(() => {
 
   if (itemsVal) {
     return itemsVal.map((item) => {
-      const { fileSize } = useFileSize(item.file_size)
+      // const { fileSize } = useFileSize(item.file_size)
       return {
         ...item,
-        humanFileSize: fileSize,
+        // humanFileSize: fileSize,
+        humanFileSize: '8 Mb',
       }
     })
   }

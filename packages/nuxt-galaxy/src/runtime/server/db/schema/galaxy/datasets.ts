@@ -33,7 +33,7 @@ export const datasets = galaxy.table('datasets', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   uuid: uuid('uuid').notNull().unique(),
   extension: varchar('extension', { length: 100 }).notNull(),
-  fileSize: integer('file_size').notNull(),
+  // fileSize: integer('file_size').notNull(),
   dataLines: integer('data_lines'),
   datasetName: varchar('dataset_name', { length: 256 }).notNull(),
   ...galaxyItemNoName,
@@ -82,6 +82,7 @@ export const datasetsWithStoragePath = galaxy.view('datasets_with_storage_path')
       return qb.select({
         ...getTableColumns(datasets),
         storageObjectPath: objects.name,
+        metadata: objects.metadata,
       }).from(datasets).innerJoin(objects, eq(datasets.storageObjectId, objects.id))
     },
   )

@@ -73,7 +73,7 @@ export async function getOrCreateInputDataset(
             uuid: galaxyDataset.uuid,
             dataLines: galaxyDataset.metadata_comment_lines || 0,
             extension: galaxyDataset.extension,
-            fileSize: galaxyDataset.file_size,
+            // fileSize: galaxyDataset.file_size,
           })
           .onConflictDoNothing()
           .returning()

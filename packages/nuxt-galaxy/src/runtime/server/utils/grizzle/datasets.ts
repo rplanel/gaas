@@ -60,7 +60,14 @@ export async function uploadDatasets(
               }
             }).then(async ({ uploadedDatasets }) => {
               if (uploadedDatasets.length === 1 && uploadedDatasets[0]) {
-                const { id: uploadedGalaxyId, name, uuid, file_ext: extension, file_size: fileSize, create_time: createdAt } = uploadedDatasets[0]
+                const {
+                  id: uploadedGalaxyId,
+                  name,
+                  uuid,
+                  file_ext: extension,
+                  // file_size: fileSize,
+                  create_time: createdAt,
+                } = uploadedDatasets[0]
                 if (storageObjectId) {
                   return useDrizzle()
                     .insert(datasets)
@@ -71,7 +78,7 @@ export async function uploadDatasets(
                       historyId,
                       uuid,
                       extension,
-                      fileSize,
+                      // fileSize,
                       createdAt: new Date(createdAt),
                       dataLines: 0,
                       galaxyId: uploadedGalaxyId,
