@@ -1,7 +1,7 @@
+import type { ErrorWithMessage, ErrorWithStatus } from '../../src/runtime/app/utils/errors'
 import { describe, expect, it } from 'vitest'
 import {
-  type ErrorWithMessage,
-  type ErrorWithStatus,
+
   getErrorMessage,
   isErrorWithMessage,
   isErrorWithStatus,

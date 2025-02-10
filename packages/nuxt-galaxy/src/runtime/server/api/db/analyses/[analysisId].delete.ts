@@ -1,4 +1,5 @@
-import { type GalaxyClient, getErrorMessage, getStatusCode } from 'blendtype'
+import type { GalaxyClient } from 'blendtype'
+import { getErrorMessage, getStatusCode } from 'blendtype'
 import { eq } from 'drizzle-orm'
 import { createError, defineEventHandler, getRouterParam } from 'h3'
 import { analyses } from '../../../db/schema/galaxy/analyses'

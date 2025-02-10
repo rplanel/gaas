@@ -1,4 +1,5 @@
-import { computed, type ComputedRef, type MaybeRef, toValue } from 'vue'
+import type { ComputedRef, MaybeRef } from 'vue'
+import { computed, toValue } from 'vue'
 import { toErrorWithMessage } from '../utils/errors'
 
 export function useErrorMessage(error: MaybeRef<unknown>): { errorMessage: ComputedRef<string> } {

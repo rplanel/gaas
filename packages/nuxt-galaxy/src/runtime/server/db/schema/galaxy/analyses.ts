@@ -1,6 +1,6 @@
 import type { InvocationState } from 'blendtype'
 
-import { relations } from 'drizzle-orm'
+import { eq, getTableColumns, relations } from 'drizzle-orm'
 import {
   boolean,
   integer,
@@ -57,3 +57,24 @@ export const analysesRelations = relations(analyses, ({ one, many }) => {
     jobs: many(jobs),
   }
 })
+
+/**
+ * Analyis details vienw
+ *
+ */
+
+export const analysisDetails = galaxy.view('analysis_details')
+  .as(
+    (qb) => {
+      return qb.select({
+        ...getTableColumns(analyses),
+        ...getTableColumns(histories),
+        ...getTableColumns(jobs),
+        ...getTableColumns(workflows),
+      })
+        .from(analyses)
+        .innerJoin(histories, eq(analyses.historyId, histories.id))
+        .innerJoin(jobs, eq(analyses.id, jobs.analysisId))
+        .innerJoin(workflows, eq(analyses.workflowId, workflows.id))
+    },
+  )

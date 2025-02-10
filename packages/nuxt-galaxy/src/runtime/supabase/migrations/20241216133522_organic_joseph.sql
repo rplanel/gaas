@@ -1,1 +1,0 @@
-ALTER TABLE "galaxy"."uploaded_datasets" ALTER COLUMN "name" SET NOT NULL;

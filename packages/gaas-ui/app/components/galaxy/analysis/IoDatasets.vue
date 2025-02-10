@@ -1,22 +1,29 @@
 <script setup lang="ts">
 import type { SupabaseTypes } from '#build/types/database'
-import type { InputDatasets, OutputDatasets } from '../../../pages/analyses/[analysisId].vue'
+import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
+import { z } from 'zod'
+
+type AnalysisIOsWithStoratePath = GalaxyTypes.AnalysisInputsWithStoratePath | GalaxyTypes.AnalysisOutputsWithStoratePath
 
 export interface Props {
-  items: InputDatasets | OutputDatasets | undefined
+  items: AnalysisIOsWithStoratePath[] | undefined
 }
 
 type Database = SupabaseTypes.Database
 const props = withDefaults(defineProps<Props>(), { items: undefined })
 const supabase = useSupabaseClient<Database>()
 const { items } = toRefs(props)
-
+const fileMetadataSchema = z.object({
+  size: z.number(),
+})
 const sanitizedItems = computed(() => {
   const itemsVal = toValue(items)
 
   if (itemsVal) {
     return itemsVal.map((item) => {
-      const { fileSize } = useFileSize(item.file_size)
+      const size = fileMetadataSchema.passthrough().parse(item?.metadata?.size)
+
+      const { fileSize } = useFileSize(size)
       return {
         ...item,
         humanFileSize: fileSize,

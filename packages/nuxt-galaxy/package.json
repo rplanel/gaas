@@ -38,6 +38,7 @@
     "supabase:db:reset": "pnpm supabase --workdir src/runtime db reset",
     "supabase:migration:new": "pnpm supabase --workdir src/runtime migration new",
     "supabase:migration:up": "pnpm supabase --workdir src/runtime migration up",
+    "supabase:migration:galaxy:create": "pnpm run supabase:migration:new bucket && sleep .2 && pnpm run drizzle:generate && sleep .2 && pnpm run supabase:migration:new galaxy && sleep .2 && pnpm run supabase:migration:new realtime && sleep .2 && pnpm run supabase:migration:new rbac && sleep .2 && pnpm run supabase:migration:new rls",
     "supabase:generate:types": "pnpm supabase --workdir src/runtime gen types typescript --local > src/runtime/types/database.ts",
     "drizzle:generate": "pnpm drizzle-kit generate"
   },

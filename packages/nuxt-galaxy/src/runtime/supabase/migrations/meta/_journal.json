@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1733863869564,
-      "tag": "20241210205109_glorious_red_hulk",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1734356122176,
-      "tag": "20241216133522_organic_joseph",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1734447646247,
-      "tag": "20241217150046_moaning_hemingway",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1736542251039,
-      "tag": "20250110205051_glamorous_skullbuster",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1736544691118,
-      "tag": "20250110213131_mixed_charles_xavier",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1738319228759,
-      "tag": "20250131102708_careful_jasper_sitwell",
+      "when": 1739182217540,
+      "tag": "20250210101017_red_lockheed",
       "breakpoints": true
     }
   ]

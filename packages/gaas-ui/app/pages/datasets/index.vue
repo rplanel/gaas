@@ -30,7 +30,7 @@ const fileMetadataSchema = z.object({
 })
 
 type Schema = z.output<typeof schema>
-type DatasetColumn = Database['galaxy']['Tables']['datasets']['Row']
+type DatasetColumn = Database['galaxy']['Views']['uploaded_datasets_with_storage_path']['Row']
 const state = reactive<Partial<Schema>>({
   file: undefined,
 })
@@ -42,25 +42,13 @@ const { data, refresh: refreshDatasets } = await useAsyncData<DatasetColumn[] | 
     if (userVal) {
       const { data } = await supabase
         .schema('galaxy')
-        .from('uploaded_datasets')
+        .from(`uploaded_datasets_with_storage_path`)
         .select()
         .returns<DatasetColumn[]>()
       return data
     }
   },
 )
-
-const { data: storageObjects, refresh: refreshStorageObjects }
-  = await useAsyncData('storage-objects', async () => {
-    const userVal = toValue(user)
-    if (userVal) {
-      const { data } = await supabase
-        .schema('storage')
-        .from('objects')
-        .select()
-      return data
-    }
-  })
 
 async function uploadFile(event: any) {
   const selectedFile = event.target.files?.[0]
@@ -81,7 +69,6 @@ async function uploadFile(event: any) {
     else {
       uploadingFile.value = false
       refreshDatasets()
-      refreshStorageObjects()
       state.file = undefined
     }
     if (uploadedFile) {
@@ -91,25 +78,13 @@ async function uploadFile(event: any) {
         .insert({
           owner_id: userVal.id,
           storage_object_id: uploadedFile.id,
-          name: selectedFile.name,
+          dataset_name: selectedFile.name,
         })
         .select()
       refreshDatasets()
     }
   }
 }
-
-const storageObjectsMap = computed(() => {
-  const storageObjectsVal = toValue(storageObjects)
-  if (storageObjectsVal) {
-    return new Map(
-      storageObjectsVal.map((ob) => {
-        return [ob.id, ob]
-      }),
-    )
-  }
-  return undefined
-})
 
 interface Dataset {
   name: string | null | undefined
@@ -119,26 +94,18 @@ interface Dataset {
 
 const datasets = computed<Dataset[] | undefined>(() => {
   const dataVal = toValue(data)
-  const storageObjectsMapVal = toValue(storageObjectsMap)
+  // const storageObjectsMapVal = toValue(storageObjectsMap)
   if (dataVal) {
     return dataVal.map((d) => {
       let size: string | undefined
-      let rawSize: number | undefined
-      let name: string | null | undefined
-      if (
-        storageObjectsMapVal
-        && storageObjectsMapVal.has(d.storage_object_id)
-      ) {
-        name = storageObjectsMapVal.get(d.storage_object_id)?.name
-        const metadata = fileMetadataSchema.passthrough().parse(storageObjectsMapVal.get(
-          d.storage_object_id,
-        )?.metadata)
-        rawSize = metadata.size
-        if (rawSize) {
-          const { fileSize } = useFileSize(rawSize)
-          size = toValue(fileSize)
-        }
+      const name = d.dataset_name
+      const metadata = fileMetadataSchema.passthrough().parse(d.metadata)
+      const rawSize = metadata.size
+      if (rawSize) {
+        const { fileSize } = useFileSize(rawSize)
+        size = toValue(fileSize)
       }
+
       return {
         name,
         size,

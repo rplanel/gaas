@@ -70,6 +70,13 @@ export interface Database {
             foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
             columns: ['workflow_id']
             isOneToOne: false
+            referencedRelation: 'analysis_details'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
+            columns: ['workflow_id']
+            isOneToOne: false
             referencedRelation: 'workflows'
             referencedColumns: ['id']
           },
@@ -106,14 +113,21 @@ export interface Database {
             foreignKeyName: 'analysis_inputs_dataset_id_datasets_id_fk'
             columns: ['dataset_id']
             isOneToOne: true
-            referencedRelation: 'datasets'
+            referencedRelation: 'analysis_inputs_with_storage_path'
             referencedColumns: ['id']
           },
           {
             foreignKeyName: 'analysis_inputs_dataset_id_datasets_id_fk'
             columns: ['dataset_id']
             isOneToOne: true
-            referencedRelation: 'datasets_with_storage_path'
+            referencedRelation: 'analysis_outputs_with_storage_path'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_inputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: true
+            referencedRelation: 'datasets'
             referencedColumns: ['id']
           },
         ]
@@ -152,14 +166,21 @@ export interface Database {
             foreignKeyName: 'analysis_outputs_dataset_id_datasets_id_fk'
             columns: ['dataset_id']
             isOneToOne: false
-            referencedRelation: 'datasets'
+            referencedRelation: 'analysis_inputs_with_storage_path'
             referencedColumns: ['id']
           },
           {
             foreignKeyName: 'analysis_outputs_dataset_id_datasets_id_fk'
             columns: ['dataset_id']
             isOneToOne: false
-            referencedRelation: 'datasets_with_storage_path'
+            referencedRelation: 'analysis_outputs_with_storage_path'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_outputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: false
+            referencedRelation: 'datasets'
             referencedColumns: ['id']
           },
           {
@@ -208,7 +229,6 @@ export interface Database {
           data_lines: number | null
           dataset_name: string
           extension: string
-          file_size: number
           galaxy_id: string
           history_id: number
           id: number
@@ -222,7 +242,6 @@ export interface Database {
           data_lines?: number | null
           dataset_name: string
           extension: string
-          file_size: number
           galaxy_id: string
           history_id: number
           id?: number
@@ -236,7 +255,6 @@ export interface Database {
           data_lines?: number | null
           dataset_name?: string
           extension?: string
-          file_size?: number
           galaxy_id?: string
           history_id?: number
           id?: number
@@ -250,6 +268,13 @@ export interface Database {
             columns: ['history_id']
             isOneToOne: false
             referencedRelation: 'histories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'datasets_storage_object_id_objects_id_fk'
+            columns: ['storage_object_id']
+            isOneToOne: false
+            referencedRelation: 'datasets_with_storage_path'
             referencedColumns: ['id']
           },
         ]
@@ -272,14 +297,21 @@ export interface Database {
             foreignKeyName: 'datasets_to_tags_dataset_id_datasets_id_fk'
             columns: ['dataset_id']
             isOneToOne: false
-            referencedRelation: 'datasets'
+            referencedRelation: 'analysis_inputs_with_storage_path'
             referencedColumns: ['id']
           },
           {
             foreignKeyName: 'datasets_to_tags_dataset_id_datasets_id_fk'
             columns: ['dataset_id']
             isOneToOne: false
-            referencedRelation: 'datasets_with_storage_path'
+            referencedRelation: 'analysis_outputs_with_storage_path'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'datasets_to_tags_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: false
+            referencedRelation: 'datasets'
             referencedColumns: ['id']
           },
           {
@@ -467,24 +499,32 @@ export interface Database {
       }
       uploaded_datasets: {
         Row: {
+          dataset_name: string
           id: number
-          name: string
           owner_id: string
           storage_object_id: string
         }
         Insert: {
+          dataset_name: string
           id?: number
-          name: string
           owner_id: string
           storage_object_id: string
         }
         Update: {
+          dataset_name?: string
           id?: number
-          name?: string
           owner_id?: string
           storage_object_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'uploaded_datasets_storage_object_id_objects_id_fk'
+            columns: ['storage_object_id']
+            isOneToOne: true
+            referencedRelation: 'datasets_with_storage_path'
+            referencedColumns: ['id']
+          },
+        ]
       }
       user: {
         Row: {
@@ -601,6 +641,13 @@ export interface Database {
             foreignKeyName: 'workflows_to_tags_workflow_id_workflows_id_fk'
             columns: ['workflow_id']
             isOneToOne: false
+            referencedRelation: 'analysis_details'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'workflows_to_tags_workflow_id_workflows_id_fk'
+            columns: ['workflow_id']
+            isOneToOne: false
             referencedRelation: 'workflows'
             referencedColumns: ['id']
           },
@@ -608,6 +655,206 @@ export interface Database {
       }
     }
     Views: {
+      analysis_details: {
+        Row: {
+          analysis_id: number | null
+          annotation: string | null
+          created_at: string | null
+          datamap: Json | null
+          definition: Json | null
+          exit_code: number | null
+          galaxy_id: string | null
+          history_id: number | null
+          id: number | null
+          invocation: Json | null
+          is_deleted: boolean | null
+          is_sync: boolean | null
+          name: string | null
+          owner_id: string | null
+          parameters: Json | null
+          state: Database['galaxy']['Enums']['job_state'] | null
+          stderr: string | null
+          stdout: string | null
+          step_id: number | null
+          tool_id: string | null
+          user_id: number | null
+          version: number | null
+          workflow_id: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'analyses_history_id_histories_id_fk'
+            columns: ['history_id']
+            isOneToOne: true
+            referencedRelation: 'histories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
+            columns: ['workflow_id']
+            isOneToOne: false
+            referencedRelation: 'analysis_details'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
+            columns: ['workflow_id']
+            isOneToOne: false
+            referencedRelation: 'workflows'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'jobs_analysis_id_analyses_id_fk'
+            columns: ['analysis_id']
+            isOneToOne: false
+            referencedRelation: 'analyses'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'workflows_user_id_user_id_fk'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'user'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      analysis_inputs_with_storage_path: {
+        Row: {
+          analysis_id: number | null
+          annotation: string | null
+          created_at: string | null
+          data_lines: number | null
+          dataset_id: number | null
+          dataset_name: string | null
+          extension: string | null
+          galaxy_id: string | null
+          history_id: number | null
+          id: number | null
+          metadata: Json | null
+          name: string | null
+          owner_id: string | null
+          state: Database['galaxy']['Enums']['dataset_state'] | null
+          storage_object_id: string | null
+          uuid: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'analysis_inputs_analysis_id_analyses_id_fk'
+            columns: ['analysis_id']
+            isOneToOne: false
+            referencedRelation: 'analyses'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_inputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: true
+            referencedRelation: 'analysis_inputs_with_storage_path'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_inputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: true
+            referencedRelation: 'analysis_outputs_with_storage_path'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_inputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: true
+            referencedRelation: 'datasets'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'datasets_history_id_histories_id_fk'
+            columns: ['history_id']
+            isOneToOne: false
+            referencedRelation: 'histories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'datasets_storage_object_id_objects_id_fk'
+            columns: ['storage_object_id']
+            isOneToOne: false
+            referencedRelation: 'datasets_with_storage_path'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      analysis_outputs_with_storage_path: {
+        Row: {
+          analysis_id: number | null
+          annotation: string | null
+          created_at: string | null
+          data_lines: number | null
+          dataset_id: number | null
+          dataset_name: string | null
+          extension: string | null
+          galaxy_id: string | null
+          history_id: number | null
+          id: number | null
+          job_id: number | null
+          metadata: Json | null
+          name: string | null
+          owner_id: string | null
+          state: Database['galaxy']['Enums']['dataset_state'] | null
+          storage_object_id: string | null
+          uuid: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'analysis_outputs_analysis_id_analyses_id_fk'
+            columns: ['analysis_id']
+            isOneToOne: false
+            referencedRelation: 'analyses'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_outputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: false
+            referencedRelation: 'analysis_inputs_with_storage_path'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_outputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: false
+            referencedRelation: 'analysis_outputs_with_storage_path'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_outputs_dataset_id_datasets_id_fk'
+            columns: ['dataset_id']
+            isOneToOne: false
+            referencedRelation: 'datasets'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'analysis_outputs_job_id_jobs_id_fk'
+            columns: ['job_id']
+            isOneToOne: false
+            referencedRelation: 'jobs'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'datasets_history_id_histories_id_fk'
+            columns: ['history_id']
+            isOneToOne: false
+            referencedRelation: 'histories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'datasets_storage_object_id_objects_id_fk'
+            columns: ['storage_object_id']
+            isOneToOne: false
+            referencedRelation: 'datasets_with_storage_path'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       datasets_with_storage_path: {
         Row: {
           annotation: string | null
@@ -615,10 +862,10 @@ export interface Database {
           data_lines: number | null
           dataset_name: string | null
           extension: string | null
-          file_size: number | null
           galaxy_id: string | null
           history_id: number | null
-          id: number | null
+          id: string | null
+          metadata: Json | null
           name: string | null
           owner_id: string | null
           storage_object_id: string | null
@@ -630,6 +877,31 @@ export interface Database {
             columns: ['history_id']
             isOneToOne: false
             referencedRelation: 'histories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'datasets_storage_object_id_objects_id_fk'
+            columns: ['storage_object_id']
+            isOneToOne: false
+            referencedRelation: 'datasets_with_storage_path'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      uploaded_datasets_with_storage_path: {
+        Row: {
+          dataset_name: string | null
+          id: number | null
+          metadata: Json | null
+          owner_id: string | null
+          storage_object_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'uploaded_datasets_storage_object_id_objects_id_fk'
+            columns: ['storage_object_id']
+            isOneToOne: true
+            referencedRelation: 'datasets_with_storage_path'
             referencedColumns: ['id']
           },
         ]

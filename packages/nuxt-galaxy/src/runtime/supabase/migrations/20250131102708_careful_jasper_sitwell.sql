@@ -1,3 +1,0 @@
-ALTER TABLE "galaxy"."analysis_outputs_to_tags" DROP CONSTRAINT "analysis_outputs_to_tags_analysis_output_id_analysis_outputs_id_fk";
---> statement-breakpoint
-ALTER TABLE "galaxy"."analysis_outputs_to_tags" ADD CONSTRAINT "analysis_outputs_to_tags_analysis_output_id_analysis_outputs_id_fk" FOREIGN KEY ("analysis_output_id") REFERENCES "galaxy"."analysis_outputs"("id") ON DELETE cascade ON UPDATE no action;

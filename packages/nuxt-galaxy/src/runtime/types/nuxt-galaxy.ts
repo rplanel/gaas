@@ -29,6 +29,9 @@ export interface AnalysisDetail extends RowAnalysis {
   analysis_outputs?: AnalysisOutputsWithDatasets[]
 }
 
+export type AnalysisInputsWithStoratePath = Database['galaxy']['Views']['analysis_inputs_with_storage_path']['Row']
+export type AnalysisOutputsWithStoratePath = Database['galaxy']['Views']['analysis_outputs_with_storage_path']['Row']
+
 export interface Sync {
   isTerminalState: boolean
   updated: boolean
