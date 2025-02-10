@@ -8,17 +8,18 @@ import type {
   WorkflowToolParameters,
 } from 'blendtype'
 import type { Props as WorkflowStepProps } from '../../../components/galaxy/workflow/Step.vue'
+import type { GalaxyToolInputComponent } from '../../../composables/galaxy/useGalaxyToolInputComponent'
 import { computed, ref, toValue } from '#imports'
 import { z } from 'zod'
 import { useGalaxyDecodeParameters } from '../../../composables/galaxy/useGalaxyDecodeParameters'
 import { useGalaxyEncodeParameters } from '../../../composables/galaxy/useGalaxyEncodeParameters'
 import {
-  type GalaxyToolInputComponent,
+
   useGalaxyToolInputComponent,
 } from '../../../composables/galaxy/useGalaxyToolInputComponent'
 
 type Database = SupabaseTypes.Database
-export type UploadedDatasetDb = Database['galaxy']['Tables']['uploaded_datasets']['Row']
+export type UploadedDatasetDb = Database['galaxy']['Views']['uploaded_datasets_with_storage_path']['Row']
 
 export interface Props {
   workflowId: number
@@ -262,7 +263,7 @@ const { data: datasets } = await useAsyncData(
     }
     const { data, error } = await supabase
       .schema('galaxy')
-      .from('uploaded_datasets')
+      .from('uploaded_datasets_with_storage_path')
       .select()
       .returns<UploadedDatasetDb[]>()
 
@@ -369,7 +370,7 @@ watchEffect(() => {
                   }"
                   icon="i-material-symbols:dataset"
                   :items="datasets"
-                  label-key="name"
+                  label-key="dataset_name"
                   class="w-full"
                   :name="input.uuid"
                 />

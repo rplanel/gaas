@@ -3,8 +3,9 @@ import type { SupabaseTypes } from '#build/types/database'
 import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
 import type { AccordionItem, BreadcrumbItem } from '@nuxt/ui'
 import type { GalaxyTool } from 'blendtype'
+import type { GalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 import { useGalaxyDecodeParameters } from '../../composables/galaxy/useGalaxyDecodeParameters'
-import { type GalaxyToolInputComponent, useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
+import { useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 
 type Database = SupabaseTypes.Database
 export type InputDatasets = typeof inputs.value
@@ -42,7 +43,7 @@ const analysisId = computed(() => {
   return undefined
 })
 
-const { inputs, outputs, analysis, refresh: refreshAnalysis } = await useAnalysisDatasetIO(analysisId)
+const { outputs, analysis, refresh: refreshAnalysis, inputs } = await useAnalysisDatasetIO(analysisId)
 
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
