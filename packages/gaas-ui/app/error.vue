@@ -1,31 +1,23 @@
 <script setup lang="ts">
-import { clearError, useError } from '#imports'
+import type { NuxtError } from '#app'
 
-const error = useError()
-
-async function handleError() {
-  clearError({ redirect: '/' })
-}
+defineProps<{
+  error: NuxtError
+}>()
 </script>
 
 <template>
-  <NuxtLayout>
-    <div v-if="error">
-      <UAlert
-        color="error"
-        variant="soft"
-        title="Error"
-        :description="error.message"
-        icon="i-material-symbols:error"
-        :actions="[
-          {
-            label: 'go to list workfows',
-            onClick() {
-              handleError();
-            },
-          },
-        ]"
-      />
-    </div>
-  </NuxtLayout>
+  <div>
+    <UApp>
+      <!-- <Banner /> -->
+      <AppHeader />
+      <UMain>
+        <NuxtLayout>
+          <UError :error="error" />
+        </NuxtLayout>
+      </UMain>
+      <USeparator type="dashed" class="h-px" />
+      <AppFooter />
+    </UApp>
+  </div>
 </template>
