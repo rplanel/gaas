@@ -3,11 +3,9 @@ export function countDecimals(value: number) {
     return 0 // Check if the number is finite.
 
   const text = value.toString()
-
   // Check for scientific notation
   if (text.includes('e')) {
     const parts = text.split('e')
-
     if (parts.length >= 2 && parts[1] && parts[0]) {
       const exponent = Number.parseInt(parts[1], 10)
       const decimalParts = parts[0].split('.')
@@ -18,8 +16,8 @@ export function countDecimals(value: number) {
           return baseDecimals - exponent
         }
         else {
-          // Positive exponent: Subtracts the exponent from the base decimals
-          return Math.max(0, baseDecimals - exponent)
+          // Positive exponent: Subtracts the base decimals from the exponent
+          return Math.max(0, exponent - baseDecimals)
         }
       }
     }
