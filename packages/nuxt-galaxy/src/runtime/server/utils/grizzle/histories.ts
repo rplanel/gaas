@@ -1,7 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import type { DatasetTerminalState, HistoryState } from 'blendtype'
 import type { Database } from '../../../types/database'
 import { useRuntimeConfig } from '#imports'
-import { DatasetsTerminalStates, type DatasetTerminalState, GalaxyClient, type HistoryState } from 'blendtype'
+import { DatasetsTerminalStates, GalaxyClient } from 'blendtype'
 import { and, eq } from 'drizzle-orm'
 
 import { createError } from 'h3'

@@ -1,5 +1,6 @@
 import type { GalaxyClient } from './GalaxyClient'
-import { type GalaxyInvoke, type GalaxyWorkflow, type GalaxyWorkflowExport, galaxyWorkflowExportSchema, type GalaxyWorkflowInput, type GalaxyWorkflowParameters, type GalaxyWorkflowsItem, type rawGalaxyWorkflowExport } from './types'
+import type { GalaxyInvoke, GalaxyWorkflow, GalaxyWorkflowExport, GalaxyWorkflowInput, GalaxyWorkflowParameters, GalaxyWorkflowsItem, rawGalaxyWorkflowExport } from './types'
+import { galaxyWorkflowExportSchema } from './types'
 
 export class Workflows {
   #client: GalaxyClient

@@ -1,9 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { JwtPayload } from 'jwt-decode'
+import type { Ref } from 'vue'
 import type { Database } from '../../types/database'
 import type { RoleType } from '../../types/nuxt-galaxy'
 import { useJwt } from '@vueuse/integrations/useJwt'
-import { ref, type Ref, toValue } from 'vue'
+import { ref, toValue } from 'vue'
 
 interface JwtPayloadWithRole extends JwtPayload {
   user_role: RoleType

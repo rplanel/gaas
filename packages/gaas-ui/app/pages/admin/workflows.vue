@@ -3,8 +3,9 @@ import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem, TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 
+import type { GalaxyWorkflowsItem } from 'blendtype'
 import {
-  type GalaxyWorkflowsItem,
+
   getErrorMessage,
   getStatusCode,
 } from 'blendtype'
