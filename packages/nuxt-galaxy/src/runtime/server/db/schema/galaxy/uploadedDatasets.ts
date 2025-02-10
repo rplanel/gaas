@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm'
+import { eq, getTableColumns, relations } from 'drizzle-orm'
 import { serial, text, uuid } from 'drizzle-orm/pg-core'
 import { users as owners } from '../auth/users'
 import { galaxy } from '../galaxy'
@@ -7,7 +7,7 @@ import { objects } from '../storage/objects'
 export const uploadedDatasets = galaxy.table('uploaded_datasets', {
   id: serial('id').primaryKey(),
   ownerId: uuid('owner_id').notNull().references(() => owners.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
+  datasetName: text('dataset_name').notNull(),
   storageObjectId: uuid('storage_object_id').notNull().references(
     () => objects.id,
     { onDelete: 'cascade' },
@@ -15,7 +15,7 @@ export const uploadedDatasets = galaxy.table('uploaded_datasets', {
 
 })
 
-export const analysisOuputsRelations = relations(uploadedDatasets, ({ one }) => {
+export const uploadedDatasetsRelations = relations(uploadedDatasets, ({ one }) => {
   return {
     owner: one(owners, {
       fields: [uploadedDatasets.ownerId],
@@ -27,3 +27,14 @@ export const analysisOuputsRelations = relations(uploadedDatasets, ({ one }) => 
     }),
   }
 })
+
+export const uploadedDatasetsWithStoragePath = galaxy.view('uploaded_datasets_with_storage_path')
+  .as(
+    (qb) => {
+      return qb.select({
+        ...getTableColumns(uploadedDatasets),
+        // storageObjectPath: objects.name,
+        metadata: objects.metadata,
+      }).from(uploadedDatasets).innerJoin(objects, eq(uploadedDatasets.storageObjectId, objects.id))
+    },
+  )

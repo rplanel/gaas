@@ -1,1 +1,0 @@
-ALTER TABLE "galaxy"."tags" ADD CONSTRAINT "tags_label_unique" UNIQUE("label");

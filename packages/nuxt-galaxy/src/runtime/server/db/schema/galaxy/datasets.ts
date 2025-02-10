@@ -81,8 +81,7 @@ export const datasetsWithStoragePath = galaxy.view('datasets_with_storage_path')
     (qb) => {
       return qb.select({
         ...getTableColumns(datasets),
-        storageObjectPath: objects.name,
-        metadata: objects.metadata,
+        ...getTableColumns(objects),
       }).from(datasets).innerJoin(objects, eq(datasets.storageObjectId, objects.id))
     },
   )
@@ -99,3 +98,45 @@ export const datasetsToTagsRelations = relations(datasetsToTags, ({ one }) => {
     }),
   }
 })
+
+/**
+ * Analysis inputs with storage path
+ */
+
+export const analysisInputsStoragePath = galaxy.view('analysis_inputs_with_storage_path').as(
+  (qb) => {
+    return qb.select({
+      ...getTableColumns(analysisInputs),
+      ...getTableColumns(datasets),
+      storageObjectPath: objects.name,
+      metadata: objects.metadata,
+    })
+      .from(analysisInputs)
+      .innerJoin(datasets, eq(analysisInputs.datasetId, datasets.id))
+      .innerJoin(
+        objects,
+        eq(datasets.storageObjectId, objects.id),
+      )
+  },
+)
+
+/**
+ * Analysis outputs with storage path
+ */
+
+export const analysisOutputsStoragePath = galaxy.view('analysis_outputs_with_storage_path').as(
+  (qb) => {
+    return qb.select({
+      ...getTableColumns(analysisOutputs),
+      ...getTableColumns(datasets),
+      storageObjectPath: objects.name,
+      metadata: objects.metadata,
+    })
+      .from(analysisOutputs)
+      .innerJoin(datasets, eq(analysisOutputs.datasetId, datasets.id))
+      .innerJoin(
+        objects,
+        eq(datasets.storageObjectId, objects.id),
+      )
+  },
+)

@@ -153,3 +153,35 @@ on galaxy.instances for insert to authenticated with check (
   (SELECT galaxy.authorize('instances.insert')) = TRUE
 );
 
+
+
+-- Galaxy roles
+
+alter table "galaxy"."roles" enable row level security;
+
+alter table "galaxy"."user_roles" enable row level security;
+
+
+-- STORAGE
+
+create policy "Authenticated users can upload files"
+on storage.objects for insert to authenticated with check (
+  bucket_id = 'analysis_files' and
+    owner = auth.uid() and
+    private.uuid_or_null(path_tokens[1]) is not null
+);
+
+create policy "Users can view their own files"
+on storage.objects for select to authenticated using (
+  bucket_id = 'analysis_files' and owner = auth.uid()
+);
+
+create policy "Users can update their own files"
+on storage.objects for update to authenticated with check (
+  bucket_id = 'analysis_files' and owner = auth.uid()
+);
+
+create policy "Users can delete their own files"
+on storage.objects for delete to authenticated using (
+  bucket_id = 'analysis_files' and owner = auth.uid()
+);

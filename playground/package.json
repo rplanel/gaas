@@ -11,7 +11,7 @@
     "cleandep": "rm -rf node_modules && rm -rf .nuxt && rm -rf .output"
   },
   "dependencies": {
-    "nuxt": "^3.15.1",
+    "nuxt": "catalog:",
     "vue": "latest",
     "vue-router": "latest"
   }
