@@ -140,10 +140,21 @@ supabase
   )
   .subscribe()
 
+// Listen to delete
+supabase
+  .channel('analyses')
+  .on(
+    'postgres_changes',
+    { event: 'DELETE', schema: 'galaxy', table: 'analyses' },
+    handleUpdates,
+  )
+  .subscribe()
+
 async function deleteItem(item: SanitizedAnalysis) {
   try {
     await $fetch(`/api/db/analyses/${item.id}`, { method: 'DELETE' })
-    refreshAnalyses()
+    // refreshAnalyses()
+    // debugger
   }
   catch (error) {
     const { errorMessage } = useErrorMessage(error)
