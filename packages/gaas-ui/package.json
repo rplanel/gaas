@@ -47,5 +47,11 @@
     "vitest": "catalog:",
     "vue": "latest",
     "vue-tsc": "^2.2.0"
+  },
+  "resolutions": {
+    "@tailwindcss/node": "4.0.4",
+    "@tailwindcss/postcss": "4.0.4",
+    "@tailwindcss/vite": "4.0.4",
+    "tailwindcss": "4.0.4"
   }
 }
