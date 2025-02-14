@@ -33,6 +33,12 @@
     "lint-staged": "catalog:",
     "simple-git-hooks": "catalog:"
   },
+  "resolutions": {
+    "@tailwindcss/node": "4.0.4",
+    "@tailwindcss/postcss": "4.0.4",
+    "@tailwindcss/vite": "4.0.4",
+    "tailwindcss": "4.0.4"
+  },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
   },
