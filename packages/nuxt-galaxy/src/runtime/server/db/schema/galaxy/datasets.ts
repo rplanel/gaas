@@ -79,10 +79,18 @@ export const datasetsRelations = relations(datasets, ({ many, one }) => {
 export const datasetsWithStoragePath = galaxy.view('datasets_with_storage_path')
   .as(
     (qb) => {
-      return qb.select({
-        ...getTableColumns(datasets),
-        ...getTableColumns(objects),
-      }).from(datasets).innerJoin(objects, eq(datasets.storageObjectId, objects.id))
+      const { id: idDataset, ...restDatasetColumns } = getTableColumns(datasets)
+
+      return qb
+        .select({
+          ...restDatasetColumns,
+          ...getTableColumns(objects),
+        })
+        .from(datasets)
+        .innerJoin(
+          objects,
+          eq(datasets.storageObjectId, objects.id),
+        )
     },
   )
 

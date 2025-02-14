@@ -35,7 +35,8 @@ jobs:
 
       - name: Build packages
         run: npm run build
-
+        env:
+          NUXT_UI_PRO_LICENSE: ${{secrets.NUXT_UI_PRO_LICENSE}}
       - name: Publish
         run:
           >

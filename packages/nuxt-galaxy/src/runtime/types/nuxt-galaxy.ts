@@ -25,12 +25,14 @@ export interface AnalysisDetail extends RowAnalysis {
   workflows: Database['galaxy']['Tables']['workflows']['Row']
   histories: Database['galaxy']['Tables']['histories']['Row']
   jobs?: RowAnalysisJob[]
-  analysis_inputs?: AnalysisInputsWithDatasets[]
-  analysis_outputs?: AnalysisOutputsWithDatasets[]
+}
+export interface AnalysisJobs extends RowAnalysisJob {
+  analysis: RowAnalysis
 }
 
 export type AnalysisInputsWithStoratePath = Database['galaxy']['Views']['analysis_inputs_with_storage_path']['Row']
 export type AnalysisOutputsWithStoratePath = Database['galaxy']['Views']['analysis_outputs_with_storage_path']['Row']
+// export type AnalysisDetail = Database['galaxy']['Views']['analyses_details']['Row']
 
 export interface Sync {
   isTerminalState: boolean

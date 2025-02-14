@@ -20,15 +20,17 @@ const sanitizedItems = computed(() => {
   const itemsVal = toValue(items)
 
   if (itemsVal) {
-    return itemsVal.map((item) => {
-      const size = fileMetadataSchema.passthrough().parse(item?.metadata?.size)
+    return itemsVal
+      .filter(item => item?.metadata)
+      .map((item) => {
+        const { size } = fileMetadataSchema.passthrough().parse(item.metadata)
 
-      const { fileSize } = useFileSize(size)
-      return {
-        ...item,
-        humanFileSize: fileSize,
-      }
-    })
+        const { fileSize } = useFileSize(size)
+        return {
+          ...item,
+          humanFileSize: fileSize.value,
+        }
+      })
   }
   return undefined
 })

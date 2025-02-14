@@ -254,12 +254,13 @@ const pageHeaderProps = computed(() => {
 })
 
 watchEffect(() => {
-  const dbAnalysisVal = toValue(analysis) as Record<string, any>
-
-  const { decodedParameters } = useGalaxyDecodeParameters(
-    dbAnalysisVal.parameters,
-  )
-  workflowParametersModel.value = toValue(decodedParameters)
+  const dbAnalysisVal = toValue(analysis) as Record<string, any> | undefined
+  if (dbAnalysisVal) {
+    const { decodedParameters } = useGalaxyDecodeParameters(
+      dbAnalysisVal.parameters,
+    )
+    workflowParametersModel.value = toValue(decodedParameters)
+  }
 })
 
 await useFetch('/sync')

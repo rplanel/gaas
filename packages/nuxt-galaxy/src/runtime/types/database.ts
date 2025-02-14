@@ -70,13 +70,6 @@ export interface Database {
             foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
             columns: ['workflow_id']
             isOneToOne: false
-            referencedRelation: 'analysis_details'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
-            columns: ['workflow_id']
-            isOneToOne: false
             referencedRelation: 'workflows'
             referencedColumns: ['id']
           },
@@ -641,13 +634,6 @@ export interface Database {
             foreignKeyName: 'workflows_to_tags_workflow_id_workflows_id_fk'
             columns: ['workflow_id']
             isOneToOne: false
-            referencedRelation: 'analysis_details'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'workflows_to_tags_workflow_id_workflows_id_fk'
-            columns: ['workflow_id']
-            isOneToOne: false
             referencedRelation: 'workflows'
             referencedColumns: ['id']
           },
@@ -655,70 +641,6 @@ export interface Database {
       }
     }
     Views: {
-      analysis_details: {
-        Row: {
-          analysis_id: number | null
-          annotation: string | null
-          created_at: string | null
-          datamap: Json | null
-          definition: Json | null
-          exit_code: number | null
-          galaxy_id: string | null
-          history_id: number | null
-          id: number | null
-          invocation: Json | null
-          is_deleted: boolean | null
-          is_sync: boolean | null
-          name: string | null
-          owner_id: string | null
-          parameters: Json | null
-          state: Database['galaxy']['Enums']['job_state'] | null
-          stderr: string | null
-          stdout: string | null
-          step_id: number | null
-          tool_id: string | null
-          user_id: number | null
-          version: number | null
-          workflow_id: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'analyses_history_id_histories_id_fk'
-            columns: ['history_id']
-            isOneToOne: true
-            referencedRelation: 'histories'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
-            columns: ['workflow_id']
-            isOneToOne: false
-            referencedRelation: 'analysis_details'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'analyses_workflow_id_workflows_id_fk'
-            columns: ['workflow_id']
-            isOneToOne: false
-            referencedRelation: 'workflows'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'jobs_analysis_id_analyses_id_fk'
-            columns: ['analysis_id']
-            isOneToOne: false
-            referencedRelation: 'analyses'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'workflows_user_id_user_id_fk'
-            columns: ['user_id']
-            isOneToOne: false
-            referencedRelation: 'user'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       analysis_inputs_with_storage_path: {
         Row: {
           analysis_id: number | null

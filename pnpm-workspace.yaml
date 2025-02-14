@@ -23,7 +23,7 @@ catalog:
   '@nuxt/ui': https://pkg.pr.new/@nuxt/ui@3413608
   '@nuxtjs/supabase': ^1.4.5
   '@release-it/conventional-changelog': ^10.0.0
-  '@tailwindcss/typography': ^0.5.15
+  '@tailwindcss/typography': ^0.5.16
   '@types/node': ^22.10.2
   '@vitest/coverage-v8': ^2.1.8
   '@vue/test-utils': ^2.4.6

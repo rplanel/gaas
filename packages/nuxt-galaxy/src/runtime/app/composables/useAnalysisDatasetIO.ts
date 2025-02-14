@@ -8,11 +8,45 @@ export async function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefin
   inputs: Ref<AnalysisInputsWithStoratePath[] | null>
   outputs: Ref<AnalysisOutputsWithStoratePath[] | null>
   analysis: Ref<AnalysisDetail | null>
+  // jobs: Ref<AnalysisJobs[] | null>
   refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 }> {
   const supabase = useSupabaseClient<Database>()
   const user = useSupabaseUser()
 
+  // const { data: jobs } = await useAsyncData(
+  //   `analysis-jobd-${toValue(analysisId)}`,
+  //   async () => {
+  //     const analysisVal = toValue(analysisId)
+  //     const userVal = toValue(user)
+  //     if (!userVal) {
+  //       throw createError({
+  //         statusCode: 401,
+  //         statusMessage: 'Unauthorized: User not found',
+  //       })
+  //     }
+  //     if (!analysisVal) {
+  //       throw createError({
+  //         statusCode: 404,
+  //         statusMessage: 'Analysis not found',
+  //       })
+  //     }
+  //     const { data, error } = await supabase
+  //       .schema('galaxy')
+  //       .from('jobs')
+  //       .select('*, analysis(*)')
+  //       .eq('analysis_id', analysisVal)
+  //       .returns<AnalysisJobs[]>()
+
+  //     if (error) {
+  //       throw createError({
+  //         statusMessage: error.message,
+  //         statusCode: Number.parseInt(error.code),
+  //       })
+  //     }
+  //     return data
+  //   },
+  // )
   const { data: inputs } = await useAsyncData<AnalysisInputsWithStoratePath[] | null>(
     `analysis-inputs-${toValue(analysisId)}`,
     async () => {
@@ -46,7 +80,6 @@ export async function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefin
       return data
     },
   )
-
   const { data: outputs } = await useAsyncData<AnalysisOutputsWithStoratePath[] | null>(
     `analysis-outputs-${toValue(analysisId)}`,
     async () => {
@@ -80,7 +113,6 @@ export async function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefin
       return data
     },
   )
-
   const { data: analysis, refresh } = await useAsyncData<AnalysisDetail | null>(
     `analysis-details-${toValue(analysisId)}`,
     async () => {
@@ -102,16 +134,13 @@ export async function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefin
       const { data, error } = await supabase
         .schema('galaxy')
         .from('analyses')
-        .select(
-          `
+        .select(`
           *,
           histories(*),
           jobs(*),
-          workflows(*),
-      `,
-        )
+          workflows(*)
+          `)
         .eq('id', analysisVal)
-        .limit(1)
         .returns<AnalysisDetail[]>()
 
       if (error) {

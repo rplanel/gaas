@@ -1,5 +1,5 @@
 {
-  "id": "f35a58e8-42df-418f-b812-22502fba4b2f",
+  "id": "427c8e32-5ccf-4d01-9b6b-08b2e2ffeb1a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1419,158 +1419,6 @@
   "roles": {},
   "policies": {},
   "views": {
-    "galaxy.analysis_details": {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "state": {
-          "name": "state",
-          "type": "job_state",
-          "typeSchema": "galaxy",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "parameters": {
-          "name": "parameters",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "datamap": {
-          "name": "datamap",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "owner_id": {
-          "name": "owner_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "history_id": {
-          "name": "history_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "workflow_id": {
-          "name": "workflow_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "galaxy_id": {
-          "name": "galaxy_id",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "stderr": {
-          "name": "stderr",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "stdout": {
-          "name": "stdout",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "invocation": {
-          "name": "invocation",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_sync": {
-          "name": "is_sync",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_deleted": {
-          "name": "is_deleted",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "annotation": {
-          "name": "annotation",
-          "type": "varchar(200)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tool_id": {
-          "name": "tool_id",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "exit_code": {
-          "name": "exit_code",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "step_id": {
-          "name": "step_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "analysis_id": {
-          "name": "analysis_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "version": {
-          "name": "version",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 1
-        },
-        "definition": {
-          "name": "definition",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "definition": "select \"galaxy\".\"workflows\".\"id\", \"galaxy\".\"workflows\".\"name\", \"galaxy\".\"jobs\".\"state\", \"galaxy\".\"analyses\".\"parameters\", \"galaxy\".\"analyses\".\"datamap\", \"galaxy\".\"jobs\".\"created_at\", \"galaxy\".\"jobs\".\"owner_id\", \"galaxy\".\"analyses\".\"history_id\", \"galaxy\".\"analyses\".\"workflow_id\", \"galaxy\".\"workflows\".\"galaxy_id\", \"galaxy\".\"jobs\".\"stderr\", \"galaxy\".\"jobs\".\"stdout\", \"galaxy\".\"analyses\".\"invocation\", \"galaxy\".\"jobs\".\"is_sync\", \"galaxy\".\"workflows\".\"user_id\", \"galaxy\".\"histories\".\"is_deleted\", \"galaxy\".\"workflows\".\"annotation\", \"galaxy\".\"jobs\".\"tool_id\", \"galaxy\".\"jobs\".\"exit_code\", \"galaxy\".\"jobs\".\"step_id\", \"galaxy\".\"jobs\".\"analysis_id\", \"galaxy\".\"workflows\".\"version\", \"galaxy\".\"workflows\".\"definition\" from \"galaxy\".\"analyses\" inner join \"galaxy\".\"histories\" on \"galaxy\".\"analyses\".\"history_id\" = \"galaxy\".\"histories\".\"id\" inner join \"galaxy\".\"jobs\" on \"galaxy\".\"analyses\".\"id\" = \"galaxy\".\"jobs\".\"analysis_id\" inner join \"galaxy\".\"workflows\" on \"galaxy\".\"analyses\".\"workflow_id\" = \"galaxy\".\"workflows\".\"id\"",
-      "name": "analysis_details",
-      "schema": "galaxy",
-      "isExisting": false,
-      "materialized": false
-    },
     "galaxy.analysis_inputs_with_storage_path": {
       "columns": {
         "id": {
@@ -1793,12 +1641,6 @@
     },
     "galaxy.datasets_with_storage_path": {
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
         "owner_id": {
           "name": "owner_id",
           "type": "uuid",
@@ -1860,6 +1702,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -1873,7 +1721,7 @@
           "notNull": false
         }
       },
-      "definition": "select \"storage\".\"objects\".\"id\", \"galaxy\".\"datasets\".\"owner_id\", \"galaxy\".\"datasets\".\"history_id\", \"galaxy\".\"datasets\".\"storage_object_id\", \"storage\".\"objects\".\"created_at\", \"galaxy\".\"datasets\".\"uuid\", \"galaxy\".\"datasets\".\"extension\", \"galaxy\".\"datasets\".\"data_lines\", \"galaxy\".\"datasets\".\"dataset_name\", \"galaxy\".\"datasets\".\"galaxy_id\", \"galaxy\".\"datasets\".\"annotation\", \"storage\".\"objects\".\"name\", \"storage\".\"objects\".\"metadata\" from \"galaxy\".\"datasets\" inner join \"storage\".\"objects\" on \"galaxy\".\"datasets\".\"storage_object_id\" = \"storage\".\"objects\".\"id\"",
+      "definition": "select \"galaxy\".\"datasets\".\"owner_id\", \"galaxy\".\"datasets\".\"history_id\", \"galaxy\".\"datasets\".\"storage_object_id\", \"storage\".\"objects\".\"created_at\", \"galaxy\".\"datasets\".\"uuid\", \"galaxy\".\"datasets\".\"extension\", \"galaxy\".\"datasets\".\"data_lines\", \"galaxy\".\"datasets\".\"dataset_name\", \"galaxy\".\"datasets\".\"galaxy_id\", \"galaxy\".\"datasets\".\"annotation\", \"storage\".\"objects\".\"id\", \"storage\".\"objects\".\"name\", \"storage\".\"objects\".\"metadata\" from \"galaxy\".\"datasets\" inner join \"storage\".\"objects\" on \"galaxy\".\"datasets\".\"storage_object_id\" = \"storage\".\"objects\".\"id\"",
       "name": "datasets_with_storage_path",
       "schema": "galaxy",
       "isExisting": false,
