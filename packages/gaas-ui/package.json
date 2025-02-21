@@ -2,6 +2,7 @@
   "name": "gaas-ui",
   "type": "module",
   "version": "0.0.3-alpha.5",
+  "packageManager": "pnpm@10.4.1",
   "main": "./nuxt.config.ts",
   "scripts": {
     "dev": "nuxi dev .playground",
@@ -13,7 +14,7 @@
     "test": "vitest",
     "release:publish": "pnpm publish --access public",
     "typecheck": "vue-tsc --noEmit",
-    "cleandep": "rm -rf node_modules && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules"
+    "cleandep": "rm -rf node_modules && rm -rf .data && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules && rm -rf .playground/.data"
   },
   "dependencies": {
     "@iconify-json/ep": "catalog:",
@@ -26,6 +27,8 @@
     "@iconify-json/streamline": "catalog:",
     "@iconify-json/svg-spinners": "catalog:",
     "@iconify-json/tabler": "catalog:",
+    "@nuxt/content": "catalog:",
+    "@nuxt/image": "catalog:",
     "@nuxt/ui-pro": "catalog:",
     "@tailwindcss/typography": "catalog:",
     "@vueuse/core": "catalog:",
@@ -47,11 +50,6 @@
     "vitest": "catalog:",
     "vue": "latest",
     "vue-tsc": "^2.2.0"
-  },
-  "resolutions": {
-    "@tailwindcss/node": "4.0.4",
-    "@tailwindcss/postcss": "4.0.4",
-    "@tailwindcss/vite": "4.0.4",
-    "tailwindcss": "4.0.4"
   }
+
 }

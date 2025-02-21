@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "dev:prepare": "nuxt prepare",
-    "cleandep": "rm -rf node_modules && rm -rf .nuxt && rm -rf .output"
+    "cleandep": "rm -rf node_modules && rm -rf .nuxt && rm -rf .output && rm -rf .data"
   },
   "dependencies": {
     "nuxt": "catalog:",

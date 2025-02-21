@@ -38,15 +38,14 @@ function updatePageSize(pageSize: number) {
     <UCard :ui="{ body: 'p-0 sm:p-0' }" class="mb-4">
       <div class="w-full space-y-4 pb-4">
         <div class="flex p-3 w-full">
-          <UInput ref="filterInput" v-model="globalFilter" size="lg" icon="lucide:filter" class="w-full" placeholder="Filter...">
+          <UInput
+            ref="filterInput" v-model="globalFilter" size="lg" icon="lucide:filter" class="w-full"
+            placeholder="Filter..."
+          >
             <template #trailing>
               <template v-if="globalFilter?.length">
                 <UButton
-                  color="neutral"
-                  variant="link"
-
-                  icon="lucide:circle-x"
-                  aria-label="Clear input"
+                  color="neutral" variant="link" icon="lucide:circle-x" aria-label="Clear input"
                   @click="globalFilter = ''"
                 />
               </template>
@@ -57,19 +56,11 @@ function updatePageSize(pageSize: number) {
           </UInput>
         </div>
         <UTable
-          ref="table"
-          v-model:pagination="pagination"
-          v-model:global-filter="globalFilter"
-          :pagination-options="{
+          ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" :pagination-options="{
             getPaginationRowModel: getPaginationRowModel(),
-          }"
-          v-bind="utableProps"
-          class="flex-1"
+          }" v-bind="utableProps" class="flex-1"
         >
-          <template
-            v-for="(_, slotName) in $slots"
-            #[slotName]="slotProps"
-          >
+          <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
             <slot :name="slotName" v-bind="slotProps ?? {}" />
           </template>
         </UTable>
@@ -81,10 +72,8 @@ function updatePageSize(pageSize: number) {
             @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
           />
           <USelect
-            :model-value="table?.tableApi?.getState().pagination.pageSize"
-            :items="pageSizeOptions"
-            variant="soft"
-            @update:model-value="updatePageSize"
+            :model-value="table?.tableApi?.getState().pagination.pageSize" :items="pageSizeOptions"
+            variant="soft" @update:model-value="updatePageSize"
           />
         </div>
       </div>

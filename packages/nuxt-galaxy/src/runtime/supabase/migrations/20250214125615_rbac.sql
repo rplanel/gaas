@@ -34,7 +34,7 @@ as $$
     -- Return the modified or original event
     return event;
   end;
-$$;
+$$ language plpgsql stable security definer set search_path = '';
 
 grant usage on schema galaxy to supabase_auth_admin;
 
