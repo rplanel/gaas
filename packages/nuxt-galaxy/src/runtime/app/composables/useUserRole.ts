@@ -18,6 +18,9 @@ export function useUserRole(supabase: SupabaseClient<Database>): { userRole: Ref
       const payloadVal = toValue(payload) as JwtPayloadWithRole | null
       userRole.value = payloadVal?.user_role
     }
+    else {
+      // throw createError('No supabase session has been found')
+    }
   })
 
   return { userRole }

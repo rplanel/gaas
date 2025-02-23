@@ -63,11 +63,7 @@ const userItems = ref<DropdownMenuItem[]>([
 </script>
 
 <template>
-  <UHeader
-    :ui="{ left: 'min-w-0', toggle: '-mr-1.5' }"
-    mode="drawer"
-    :menu="{ shouldScaleBackground: true }"
-  >
+  <UHeader :ui="{ left: 'min-w-0', toggle: '-mr-1.5' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
       <NuxtLink
         to="/"
@@ -77,16 +73,10 @@ const userItems = ref<DropdownMenuItem[]>([
         Gaas
       </NuxtLink>
     </template>
-    <UNavigationMenu
-      :items="computedItems"
-      variant="link"
-    />
+    <UNavigationMenu :items="computedItems" variant="link" />
 
     <template #right>
-      <UTooltip
-        text="Search"
-        :kbds="['meta', 'K']"
-      >
+      <UTooltip text="Search" :kbds="['meta', 'K']">
         <!-- <UContentSearchButton /> -->
       </UTooltip>
       <UColorModeSelect />
@@ -94,27 +84,15 @@ const userItems = ref<DropdownMenuItem[]>([
         :content="{
           align: 'end',
           side: 'bottom',
-        }"
-        :items="userItems"
-        :ui="{
+        }" :items="userItems" :ui="{
           content: 'w-48',
         }"
       >
-        <UButton
-          icon="mdi:user"
-          variant="subtle"
-          color="neutral"
-          size="xl"
-          class="rounded-full"
-        />
+        <UButton icon="mdi:user" variant="subtle" color="neutral" size="xl" class="rounded-full" />
       </UDropdownMenu>
     </template>
     <template #content>
-      <UNavigationMenu
-        orientation="vertical"
-        :items="computedItems"
-        class="-mx-2.5"
-      />
+      <UNavigationMenu orientation="vertical" :items="computedItems" class="-mx-2.5" />
     </template>
   </UHeader>
 </template>
