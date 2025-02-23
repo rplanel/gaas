@@ -4,15 +4,13 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
-    'nuxt-galaxy',
-    '@nuxt/image',
     '@nuxt/ui-pro',
+    'nuxt-galaxy',
     '@nuxt/test-utils/module',
-    '@nuxt/content',
   ],
-  // routeRules: {
-  //   '/': { prerender: true },
-  // },
+  routeRules: {
+    '/': { prerender: true },
+  },
   future: {
     compatibilityVersion: 4,
   },
