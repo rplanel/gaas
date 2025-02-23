@@ -60,8 +60,6 @@ const userItems = ref<DropdownMenuItem[]>([
     onSelect: logout,
   },
 ])
-
-// const items = computed(() => computedItems.value.map(({icon, ...item }) => item))
 </script>
 
 <template>

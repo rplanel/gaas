@@ -14,7 +14,7 @@
     "test": "vitest",
     "release:publish": "pnpm publish --access public",
     "typecheck": "vue-tsc --noEmit",
-    "cleandep": "rm -rf node_modules && rm -rf .data && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules && rm -rf .playground/.data"
+    "cleandep": "rm -rf node_modules && rm -rf .data && rm -rf .nuxt && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules && rm -rf .playground/.data"
   },
   "dependencies": {
     "@iconify-json/ep": "catalog:",
@@ -27,8 +27,6 @@
     "@iconify-json/streamline": "catalog:",
     "@iconify-json/svg-spinners": "catalog:",
     "@iconify-json/tabler": "catalog:",
-    "@nuxt/content": "catalog:",
-    "@nuxt/image": "catalog:",
     "@nuxt/ui-pro": "catalog:",
     "@tailwindcss/typography": "catalog:",
     "@vueuse/core": "catalog:",

@@ -2,6 +2,8 @@
 create or replace function galaxy.custom_access_token_hook(event jsonb)
 returns jsonb
 language plpgsql
+set search_path = ''
+security definer
 stable
 as $$
   declare
@@ -34,7 +36,7 @@ as $$
     -- Return the modified or original event
     return event;
   end;
-$$ language plpgsql stable security definer set search_path = '';
+$$;
 
 grant usage on schema galaxy to supabase_auth_admin;
 
@@ -78,7 +80,12 @@ using (true);
 create or replace function galaxy.authorize(
   requested_permission galaxy.role_permissions_type
 )
-returns boolean as $$
+returns boolean 
+language plpgsql
+set search_path = ''
+security definer
+stable
+as $$
 declare
   bind_permissions int;
   user_role galaxy.role_type;
@@ -97,4 +104,4 @@ begin
 
   return bind_permissions > 0;
 end;
-$$ language plpgsql stable security definer set search_path = '';
+$$;
