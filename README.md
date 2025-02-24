@@ -1,4 +1,4 @@
-# GAAS Monorepo
+# GaaS Monorepo
 
 ## Overview
 
