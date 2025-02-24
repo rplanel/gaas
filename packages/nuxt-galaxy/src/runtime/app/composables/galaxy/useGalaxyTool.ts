@@ -9,7 +9,7 @@ export interface ToolQuery {
   toolVersion: string
 }
 
-export function useGalaxyTools(toolParamQueries: MaybeRef<ToolQuery[]>) {
+export function useGalaxyTool(toolParamQueries: MaybeRef<ToolQuery[]>) {
   // State
   const tools = ref<Record<string, GalaxyTool>>({})
   const isLoading = ref(false)

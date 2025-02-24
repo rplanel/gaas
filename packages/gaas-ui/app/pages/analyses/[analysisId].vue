@@ -83,7 +83,7 @@ const {
   workflowToolIds,
   stepToTool,
 } = useGalaxyWorkflow(workflowGalaxyId)
-const { tools, toolInputParameters } = useGalaxyTools(workflowToolIds)
+const { tools, toolInputParameters } = useGalaxyTool(workflowToolIds)
 const { getToolParameters, getParametersInputComponent } = useAnalysisTools()
 const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
 
@@ -268,8 +268,7 @@ await useFetch('/sync')
 
 <template>
   <PageHeader
-    v-if="analysis" :page-header-props="pageHeaderProps"
-    :breadcrumbs-items="computedBreadcrumbsItems"
+    v-if="analysis" :page-header-props="pageHeaderProps" :breadcrumbs-items="computedBreadcrumbsItems"
     icon="i-streamline:code-analysis"
   >
     <template #description="{ description }">
@@ -306,9 +305,7 @@ await useFetch('/sync')
         </h2>
       </div>
 
-      <UPageAccordion
-        :items="jobsAccordionItems"
-      >
+      <UPageAccordion :items="jobsAccordionItems">
         <template #leading="{ item }">
           <div>
             <GalaxyStatus :state="item?.value && jobsMap ? jobsMap[item.value]?.state : undefined" size="25" />
@@ -317,9 +314,7 @@ await useFetch('/sync')
         <template #body="{ item }">
           <!-- item.value is step_id as string -->
           <div v-if="jobDetailsAccordionItems && item.value" class="p-4">
-            <UPageAccordion
-              :items="jobDetailsAccordionItems[item.value]?.details"
-            >
+            <UPageAccordion :items="jobDetailsAccordionItems[item.value]?.details">
               <template #parameters>
                 <div
                   v-if="
@@ -330,8 +325,7 @@ await useFetch('/sync')
                 >
                   <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]">
                     <GalaxyWorkflowStep
-                      variant="display"
-                      :workflow-step="workflowSteps[item.value]"
+                      variant="display" :workflow-step="workflowSteps[item.value]"
                       :tool-parameters="getToolParameters(item.value)"
                       :parameters-inputs-component="getParametersInputComponent(item.value)"
                       :workflow-parameters-model=" workflowParametersModel[item.value] "

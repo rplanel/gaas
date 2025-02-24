@@ -286,7 +286,7 @@ const {
   workflowParametersModel,
 } = useGalaxyWorkflow(workflowGalaxyId)
 
-const { tools, toolInputParameters } = useGalaxyTools(workflowToolIds)
+const { tools, toolInputParameters } = useGalaxyTool(workflowToolIds)
 
 watchEffect(() => {
   const dbAnalysisVal = toValue(dbAnalysis) as Record<string, any>

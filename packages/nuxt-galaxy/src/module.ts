@@ -1,4 +1,5 @@
 import process from 'node:process'
+
 import {
   addImports,
   addImportsDir,
@@ -12,7 +13,6 @@ import {
   installModule,
   logger,
 } from '@nuxt/kit'
-
 import { defu } from 'defu'
 
 const log = logger.withTag('nuxt-galaxy')
@@ -129,14 +129,29 @@ export default defineNuxtModule<ModuleOptions>({
 
     // From the runtime directory
 
-    addImports({
-      name: 'useUserRole', // name of the composable to be used
-      as: 'useUserRole',
-      from: resolver.resolve('runtime/app/composables/useUserRole'), // path of composable
-    })
+    const composables = [
+      { name: 'useUserRole', path: './runtime/app/composables/useUserRole' },
+      { name: 'useSupabaseCookie', path: './runtime/app/composables/useSupabaseCookie' },
+      { name: 'useFileSize', path: './runtime/app/composables/useFileSize' },
+      { name: 'useErrorStatus', path: './runtime/app/composables/useErrorStatus' },
+      { name: 'useErrorMessage', path: './runtime/app/composables/useErrorMessage' },
+      { name: 'useAnalysisDatasetIO', path: './runtime/app/composables/useAnalysisDatasetIO' },
+      { name: 'useGalaxyHint', path: './runtime/app/composables/galaxy/useGalaxyHint' },
+      { name: 'useGalaxyTool', path: './runtime/app/composables/galaxy/useGalaxyTool' },
+      { name: 'useGalaxyWorkflow', path: './runtime/app/composables/galaxy/useGalaxyWorkflow' },
 
-    addImportsDir(resolver.resolve('./runtime/app/composables'))
-    addImportsDir(resolver.resolve('./runtime/app/composables/galaxy'))
+    ]
+
+    for (const composable of composables) {
+      addImports({
+        name: composable.name, // name of the composable to be used
+        as: composable.name,
+        from: resolver.resolve(composable.path), // path of composable
+      })
+    }
+
+    // addImportsDir(resolver.resolve('./runtime/app/composables'))
+    // addImportsDir(resolver.resolve('./runtime/app/composables/galaxy'))
     addImportsDir(resolver.resolve('./runtime/app/utils'))
 
     addServerImportsDir(resolver.resolve('./runtime/server/utils'))
