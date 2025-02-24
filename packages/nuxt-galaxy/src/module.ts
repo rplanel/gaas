@@ -1,5 +1,6 @@
 import process from 'node:process'
 import {
+  addImports,
   addImportsDir,
   addRouteMiddleware,
   addServerHandler,
@@ -127,6 +128,13 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // From the runtime directory
+
+    addImports({
+      name: 'useUserRole', // name of the composable to be used
+      as: 'useUserRole',
+      from: resolver.resolve('runtime/app/composables/useUserRole'), // path of composable
+    })
+
     addImportsDir(resolver.resolve('./runtime/app/composables'))
     addImportsDir(resolver.resolve('./runtime/app/composables/galaxy'))
     addImportsDir(resolver.resolve('./runtime/app/utils'))
