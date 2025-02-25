@@ -1,5 +1,5 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
-import type { UseSeoMetaInput } from '@unhead/vue'
+// import type { UseSeoMetaInput } from '@unhead/vue'
 
 export default defineAppConfig({
   gaasUi: {
@@ -56,20 +56,20 @@ export default defineAppConfig({
 export interface OrderedNavigationMenuItem extends NavigationMenuItem {
   order: number
 }
-declare module '@nuxt/schema' {
-  interface AppConfigInput {
-    gaasUi?: {
-      /** Project name */
-      name?: string
-      navigationMenuItems?: OrderedNavigationMenuItem[]
-      footerItems?: NavigationMenuItem[]
-      seo: UseSeoMetaInput
-    }
-    toaster: {
-      position: string
-      expand: boolean
-      duration: number
-    }
-  }
-}
-export {}
+// declare module '@nuxt/schema' {
+//   interface AppConfigInput {
+//     gaasUi?: {
+//       /** Project name */
+//       name?: string
+//       navigationMenuItems?: OrderedNavigationMenuItem[]
+//       footerItems?: NavigationMenuItem[]
+//       seo: UseSeoMetaInput
+//     }
+//     toaster: {
+//       position: string
+//       expand: boolean
+//       duration: number
+//     }
+//   }
+// }
+// export {}
