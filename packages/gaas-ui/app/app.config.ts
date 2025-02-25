@@ -3,7 +3,7 @@ import type { UseSeoMetaInput } from '@unhead/vue'
 
 export default defineAppConfig({
   gaasUi: {
-    name: 'Hello from Nuxt layer',
+    name: 'GaaS',
     seo: {
       title: 'GaaS',
       titleTemplate: '%s - GaaS',

@@ -2,7 +2,7 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 import type { OrderedNavigationMenuItem } from '../app.config'
 
-const { gaasUi: { navigationMenuItems, footerItems } } = useAppConfig()
+const { gaasUi: { navigationMenuItems, footerItems, name } } = useAppConfig()
 const navigationMenuItemsRef: Ref<OrderedNavigationMenuItem[]> = toRef(navigationMenuItems)
 const footerItemsRef: Ref<NavigationMenuItem[]> = toRef(footerItems)
 const supabase = useSupabaseClient()
@@ -66,7 +66,7 @@ const computedLinks = computed<OrderedNavigationMenuItem[][]>(() => {
       :ui="{ footer: 'lg:border-t lg:border-(--ui-border)' }"
     >
       <template #header="{ collapsed }">
-        <TeamsMenu :collapsed="collapsed" />
+        <span v-if="!collapsed"> {{ name }}</span>
       </template>
 
       <template #default="{ collapsed }">

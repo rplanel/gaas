@@ -6,7 +6,7 @@ import { getErrorMessage, getStatusCode } from 'blendtype'
 const supabase = useSupabaseClient()
 const { userRole } = useUserRole(supabase)
 
-const { gaasUi: { navigationMenuItems } } = useAppConfig()
+const { gaasUi: { navigationMenuItems, name } } = useAppConfig()
 
 async function logout() {
   const { error } = await supabase.auth.signOut()
@@ -70,7 +70,7 @@ const userItems = ref<DropdownMenuItem[]>([
         class="flex items-end gap-2 font-bold text-xl text-[var(--ui-text-highlighted)] min-w-0 focus-visible:outline-[var(--ui-primary)] shrink-0"
         aria-label="Gass"
       >
-        Gaas
+        {{ name }}
       </NuxtLink>
     </template>
     <UNavigationMenu :items="computedItems" variant="link" />
