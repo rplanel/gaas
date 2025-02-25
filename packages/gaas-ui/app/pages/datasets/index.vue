@@ -12,79 +12,18 @@ const props = withDefaults(defineProps<Props>(), {
 definePageMeta({
   middleware: 'auth',
 })
+type DatasetColumn = Database['galaxy']['Views']['uploaded_datasets_with_storage_path']['Row']
 
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
+  datasets?: DatasetColumn[]
 }
 const { breadcrumbsItems } = toRefs(props)
-const user = useSupabaseUser()
-const supabase = useSupabaseClient<Database>()
-const uploadingFile = ref(false)
 const ColumnTableSort = resolveComponent('ColumnTableSort')
-const schema = z.object({
-  file: z.any(),
-})
 
 const fileMetadataSchema = z.object({
   size: z.number(),
 })
-
-type Schema = z.output<typeof schema>
-type DatasetColumn = Database['galaxy']['Views']['uploaded_datasets_with_storage_path']['Row']
-const state = reactive<Partial<Schema>>({
-  file: undefined,
-})
-
-const { data, refresh: refreshDatasets } = await useAsyncData<DatasetColumn[] | null | undefined>(
-  'analysis-input-datasets',
-  async () => {
-    const userVal = toValue(user)
-    if (userVal) {
-      const { data } = await supabase
-        .schema('galaxy')
-        .from(`uploaded_datasets_with_storage_path`)
-        .select()
-        .returns<DatasetColumn[]>()
-      return data
-    }
-  },
-)
-
-async function uploadFile(event: any) {
-  const selectedFile = event.target.files?.[0]
-  const userVal = toValue(user)
-
-  if (selectedFile && userVal) {
-    uploadingFile.value = true
-    const { data: uploadedFile, error: uploadError } = await supabase.storage
-      .from('analysis_files')
-      .upload(`${crypto.randomUUID()}/${selectedFile.name}`, selectedFile)
-
-    if (uploadError) {
-      uploadingFile.value = false
-      throw createError(
-        'There was an error uploading the file. Please try again.',
-      )
-    }
-    else {
-      uploadingFile.value = false
-      refreshDatasets()
-      state.file = undefined
-    }
-    if (uploadedFile) {
-      await supabase
-        .schema('galaxy')
-        .from('uploaded_datasets')
-        .insert({
-          owner_id: userVal.id,
-          storage_object_id: uploadedFile.id,
-          dataset_name: selectedFile.name,
-        })
-        .select()
-      refreshDatasets()
-    }
-  }
-}
 
 interface Dataset {
   name: string | null | undefined
@@ -92,9 +31,8 @@ interface Dataset {
   rawSize?: number | undefined
 }
 
-const datasets = computed<Dataset[] | undefined>(() => {
-  const dataVal = toValue(data)
-  // const storageObjectsMapVal = toValue(storageObjectsMap)
+const sanitizedDatasets = computed<Dataset[] | undefined>(() => {
+  const dataVal = toValue(props.datasets)
   if (dataVal) {
     return dataVal.map((d) => {
       let size: string | undefined
@@ -105,7 +43,6 @@ const datasets = computed<Dataset[] | undefined>(() => {
         const { fileSize } = useFileSize(rawSize)
         size = toValue(fileSize)
       }
-
       return {
         name,
         size,
@@ -136,7 +73,7 @@ const columns = ref<TableColumn<Dataset>[]>([
 const utableProps = computed(() => {
   return {
     columns: toValue(columns),
-    data: toValue(datasets),
+    data: toValue(sanitizedDatasets),
   }
 })
 
@@ -153,62 +90,21 @@ const pageHeaderProps = computed(() => {
 </script>
 
 <template>
-  <div>
-    <PageHeader
-      :page-header-props
-      :breadcrumbs-items="breadcrumbsItems"
-      icon="i-lucide-files"
-    />
-
-    <div class="grid grid-flow-row auto-rows-max gap-6 mt-6">
-      <div>
-        <USeparator icon="lucide:upload" />
-        <div class="py-3">
-          <UForm
-            :schema="schema"
-            :state="state"
-          >
-            <UFormField
-              label="Upload a dataset"
-              name="file"
-              required
-              class="text-lg"
-              size="xl"
-            >
-              <UInput
-                v-model="state.file"
-                type="file"
-                icon="i-lucide:paperclip"
-                :disabled="uploadingFile"
-                :loading="uploadingFile"
-                @change="uploadFile"
-              />
-            </UFormField>
-          </UForm>
-        </div>
-      </div>
-      <div v-if="datasets" class="mt-2">
-        <USeparator icon="i-lucide:file" />
-        <div class="py-3">
-          <TableGeneric
-            :utable-props
-            title="Datasets"
-          >
-            <template #rawSize-cell="{ row }">
-              <UBadge :label="row.original.size" variant="soft" />
-            </template>
-          </TableGeneric>
-
-          <div class="flex my-2 py-3 justify-end">
-            <UPageCard
-              title="Run a workflow"
-              description="Select a workflow and run it with one of the datasets listed above."
-              icon="tabler:square-rounded-arrow-right"
-              to="/workflows"
-              variant="soft"
-              class="w-64"
-            />
-          </div>
+  <PageHeader :page-header-props :breadcrumbs-items="breadcrumbsItems" icon="i-lucide-files" />
+  <div class="grid grid-flow-row auto-rows-max gap-6 mt-6">
+    <div v-if="sanitizedDatasets" class="mt-2">
+      <div class="py-3">
+        <TableGeneric :utable-props>
+          <template #rawSize-cell="{ row }">
+            <UBadge :label="row.original.size" variant="soft" />
+          </template>
+        </TableGeneric>
+        <div class="flex my-2 py-3 justify-end">
+          <UPageCard
+            title="Run a workflow"
+            description="Select a workflow and run it with one of the datasets listed above."
+            icon="tabler:square-rounded-arrow-right" to="/workflows" variant="soft" class="w-64"
+          />
         </div>
       </div>
     </div>

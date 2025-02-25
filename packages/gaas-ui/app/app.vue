@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useState } from '#imports'
 
-const { toaster } = useAppConfig()
+const appConfig = useAppConfig()
 
 // const highlight = ref(true)
 useHead({
   meta: [
+    { charset: 'utf-8' },
+
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
   ],
   link: [
@@ -16,21 +18,22 @@ useHead({
     lang: 'en',
   },
 })
+
+useSeoMeta({
+  ...appConfig?.gaasUi.seo,
+})
+
 useState('showWorkflowStepParameter', () => true)
 </script>
 
 <template>
   <div>
-    <UApp :toaster>
+    <UApp>
       <!-- <Banner /> -->
-      <AppHeader />
-      <UMain>
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
-      </UMain>
-      <USeparator type="dashed" class="h-px" />
-      <AppFooter />
+      <NuxtLoadingIndicator />
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
     </UApp>
   </div>
 </template>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard',
+})
 const breadcrumbsItems = ref([
   {
     // label: 'Home',
@@ -15,7 +18,22 @@ const breadcrumbsItems = ref([
 </script>
 
 <template>
-  <div>
-    <NuxtPage :breadcrumbs-items="breadcrumbsItems" />
-  </div>
+  <UDashboardPanel id="analyses" title="Analyses">
+    <template #header>
+      <UDashboardNavbar title="Analyses" :ui="{ right: 'gap-3' }">
+        <template #leading>
+          <UDashboardSidebarCollapse />
+        </template>
+
+        <template #right>
+          <UButton icon="i-lucide-plus" size="md" class="rounded-full" to="/workflows" />
+        </template>
+      </UDashboardNavbar>
+    </template>
+    <template #body>
+      <UPage>
+        <NuxtPage :breadcrumbs-items="breadcrumbsItems" />
+      </UPage>
+    </template>
+  </UDashboardPanel>
 </template>

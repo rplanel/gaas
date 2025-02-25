@@ -1,8 +1,13 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
+import type { UseSeoMetaInput } from '@unhead/vue'
 
 export default defineAppConfig({
   gaasUi: {
     name: 'Hello from Nuxt layer',
+    seo: {
+      title: 'GaaS',
+      titleTemplate: '%s - GaaS',
+    },
     navigationMenuItems: [
       {
         label: 'Datasets',
@@ -28,12 +33,15 @@ export default defineAppConfig({
         label: 'Issues',
         to: 'https://github.com/rplanel/gaas/issues',
         target: '_blank',
+        trailingIcon: 'octicon:issue-opened-24',
       },
       {
         label: 'Releases',
         to: 'https://github.com/rplanel/gaas/releases',
         target: '_blank',
+        trailingIcon: 'lucide:tag',
       },
+      { label: 'Code', trailingIcon: 'i-simple-icons-github', to: 'https://github.com/rplanel/gaas', target: '_blank' },
     ],
   },
   toaster: {
@@ -55,6 +63,7 @@ declare module '@nuxt/schema' {
       name?: string
       navigationMenuItems?: OrderedNavigationMenuItem[]
       footerItems?: NavigationMenuItem[]
+      seo: UseSeoMetaInput
     }
     toaster: {
       position: string

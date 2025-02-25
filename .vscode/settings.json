@@ -48,5 +48,6 @@
     "postcss"
   ],
   "nuxtr.defaultPackageManager": "pnpm",
-  "nuxtr.vueFiles.style.addStyleTag": false
+  "nuxtr.vueFiles.style.addStyleTag": false,
+  "eslint.format.enable": true
 }

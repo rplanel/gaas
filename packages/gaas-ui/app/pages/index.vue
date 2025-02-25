@@ -1,24 +1,27 @@
-<script lang="ts"></script>
+<script setup lang="ts">
+const links = ref([
+  {
+    label: 'Get started',
+    to: '/datasets',
+    icon: 'i-lucide-square-play',
+    trailing: true,
+    size: 'xl',
+  },
+])
+</script>
 
 <template>
   <div>
-    <UAlert
-      color="neutral"
-      variant="soft"
-      class="my-6"
+    <UPageHero
+      title="Welcome to GaaS" description="This layer let you plug a galaxy instance to your Nuxt app"
+      :links="links"
     >
-      <template #title>
-        <h1 class="text-4xl mb-6">
-          Welcome to Galaxy Webservice
-        </h1>
+      <template #top>
+        <div
+          class="absolute rounded-full dark:bg-(--ui-primary) blur-[300px] size-60 sm:size-80 transform -translate-x-1/2 left-1/2 -translate-y-80"
+        />
+        <StarsBg />
       </template>
-      <template #description>
-        This layer let you plug a galaxy instance to your Nuxt app
-      </template>
-    </UAlert>
-
-    <UButton to="/datasets">
-      Get started
-    </UButton>
+    </UPageHero>
   </div>
 </template>
