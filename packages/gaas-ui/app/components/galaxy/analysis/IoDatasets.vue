@@ -32,10 +32,13 @@ const sanitizedItems = computed(() => {
         }
       })
   }
-  return undefined
+  return []
 })
 
-async function downloadFile(storageId: string) {
+async function downloadFile(storageId: string | null) {
+  if (!storageId) {
+    throw createError('Storage ID is missing')
+  }
   const { data: storageObject } = await supabase
     .schema('storage')
     .from('objects')
@@ -69,8 +72,7 @@ async function downloadFile(storageId: string) {
 <template>
   <div>
     <div
-      v-for="(dataset) in sanitizedItems"
-      :key="dataset?.id"
+      v-for="(dataset, i) in sanitizedItems" :key="dataset?.dataset_name ?? i"
       class="w-full border-b border-[var(--ui-border)] last:border-none"
     >
       <div
@@ -78,24 +80,21 @@ async function downloadFile(storageId: string) {
         class="p-3 grid grid-flow-col auto-cols-max items-center justify-between rounded-[calc(var(--ui-radius))] hover:bg-[var(--ui-bg-elevated)]"
         @click="downloadFile(dataset?.storage_object_id)"
       >
-        <div
-          class="grid grid-flow-col auto-cols-max items-center justify-items-start gap-2"
-        >
-          <div><UAvatar icon="i-mdi:download" /></div>
+        <div class="grid grid-flow-col auto-cols-max items-center justify-items-start gap-2">
+          <div>
+            <UAvatar icon="i-mdi:download" />
+          </div>
 
           <div>{{ dataset.dataset_name }}</div>
         </div>
         <div class="grid grid-flow-col-dense gap-1">
-          <UBadge
-            variant="soft"
-            color="info"
-          >
+          <UBadge variant="soft" color="info">
             {{ dataset.extension }}
           </UBadge>
           <UBadge variant="soft">
             {{ dataset.humanFileSize }}
           </UBadge>
-          <GalaxyStatus :state="dataset.state" />
+          <GalaxyStatus v-if="dataset?.state" :state="dataset.state" />
         </div>
       </div>
     </div>
