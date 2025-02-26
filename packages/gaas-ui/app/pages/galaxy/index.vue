@@ -25,23 +25,11 @@ const { data: galaxyInstanceDetails } = await useFetch<GalaxyTypes.GalaxyInstanc
 
 <template>
   <div>
-    <PageHeader
-      :page-header-props
-      :breadcrumbs-items="breadcrumbsItems"
-      icon="i-file-icons:galaxy"
-    />
-    <UAlert
-      v-if="galaxyInstanceDetails"
-      color="info"
-      variant="soft"
-      class="m-5"
-    >
+    <PageHeader :page-header-props :breadcrumbs-items="breadcrumbsItems" icon="i-file-icons:galaxy" />
+    <UAlert v-if="galaxyInstanceDetails" color="info" variant="soft" class="m-5">
       <template #description>
         This web application will use the Galaxy Instance @
-        <ULink
-          target="_blank"
-          :href="galaxyInstanceDetails.url"
-        >
+        <ULink target="_blank" :href="galaxyInstanceDetails.url">
           {{
             galaxyInstanceDetails.url
           }}
