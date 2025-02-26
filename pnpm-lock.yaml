@@ -155,7 +155,7 @@ catalogs:
       version: 1.5.4
     unbuild:
       specifier: ^3.0.1
-      version: 3.3.1
+      version: 3.4.0
     vitest:
       specifier: ^3.0.4
       version: 3.0.7
@@ -261,7 +261,7 @@ importers:
         version: 5.7.3
       unbuild:
         specifier: 'catalog:'
-        version: 3.3.1(typescript@5.7.3)(vue-tsc@2.2.4(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))
+        version: 3.4.0(typescript@5.7.3)(vue-tsc@2.2.4(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))
       vitest:
         specifier: 'catalog:'
         version: 3.0.7(@types/debug@4.1.12)(@types/node@22.13.5)(happy-dom@16.8.1)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
@@ -5654,6 +5654,9 @@ packages:
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
 
+  pkg-types@2.0.0:
+    resolution: {integrity: sha512-W+831FxieJW1CIAh3JMmHaMhK/SiSeyCqbSWqLjjvbjaPDDY0cRkspIfOx4vLkFNgfxnzSxxGFUiMHMm6QpvYA==}
+
   playwright-core@1.50.1:
     resolution: {integrity: sha512-ra9fsNWayuYumt+NiM069M6OkcRb1FZSK8bgi66AtpFoWkg2+y0bJSNmkFrWhMbEBbVKC/EruAHH3g0zmtwGmQ==}
     engines: {node: '>=18'}
@@ -6614,8 +6617,8 @@ packages:
       typescript:
         optional: true
 
-  unbuild@3.3.1:
-    resolution: {integrity: sha512-/5OeeHmW1JlWEyQw3SPkB9BV16lzr6C5i8D+O17NLx6ETgvCZ3ZlyXfWkVVfG2YCsv8xAVQCqJNJtbEAGwHg7A==}
+  unbuild@3.4.0:
+    resolution: {integrity: sha512-FWVvN3LYU+rEL+hm3jqd1KlMpCbjSkmJFzjXEwQSxDq0LQ4MV67gvb91WF4AxAZWTBEQKSBxXhndRKg7iGGosA==}
     hasBin: true
     peerDependencies:
       typescript: ^5.7.3
@@ -14217,6 +14220,11 @@ snapshots:
       mlly: 1.7.4
       pathe: 2.0.3
 
+  pkg-types@2.0.0:
+    dependencies:
+      confbox: 0.1.8
+      pathe: 2.0.3
+
   playwright-core@1.50.1: {}
 
   pluralize@8.0.0: {}
@@ -15234,7 +15242,7 @@ snapshots:
       - supports-color
       - vue-tsc
 
-  unbuild@3.3.1(typescript@5.7.3)(vue-tsc@2.2.4(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3)):
+  unbuild@3.4.0(typescript@5.7.3)(vue-tsc@2.2.4(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3)):
     dependencies:
       '@rollup/plugin-alias': 5.1.1(rollup@4.34.8)
       '@rollup/plugin-commonjs': 28.0.2(rollup@4.34.8)
@@ -15245,14 +15253,14 @@ snapshots:
       citty: 0.1.6
       consola: 3.4.0
       defu: 6.1.4
-      esbuild: 0.24.2
+      esbuild: 0.25.0
       hookable: 5.5.3
       jiti: 2.4.2
       magic-string: 0.30.17
       mkdist: 2.2.0(typescript@5.7.3)(vue-tsc@2.2.4(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))
       mlly: 1.7.4
       pathe: 2.0.3
-      pkg-types: 1.3.1
+      pkg-types: 2.0.0
       pretty-bytes: 6.1.1
       rollup: 4.34.8
       rollup-plugin-dts: 6.1.1(rollup@4.34.8)(typescript@5.7.3)

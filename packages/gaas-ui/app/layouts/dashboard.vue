@@ -22,7 +22,10 @@ const links: OrderedNavigationMenuItem[] = [{
 }]
 
 const isAdmin = computed(() => {
-  return userRole.value === 'admin'
+  const userRoleVal = toValue(userRole)
+  if (!userRoleVal)
+    return false
+  return userRoleVal === 'admin'
 })
 
 const { data: analyses } = await useAsyncData('search-analyses', async () => {
@@ -110,9 +113,11 @@ const analysesSearchGroups = computed<CommandPaletteGroup<CommandPaletteItem>>((
   return {
     id: 'analyses',
     label: 'Analyses',
-    items: analysesVal?.map(({ name, id }) => {
-      return { label: name, to: `/analyses/${id}/results` }
-    }) ?? [],
+    items: analysesVal
+      ? analysesVal?.map(({ name, id }) => {
+        return { label: name, to: `/analyses/${id}/results` }
+      })
+      : [],
   }
 })
 
