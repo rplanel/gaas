@@ -1,5 +1,5 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
-// import type { UseSeoMetaInput } from '@unhead/vue'
+import type { UseSeoMetaInput } from '@unhead/vue'
 
 export default defineAppConfig({
   gaasUi: {
@@ -36,12 +36,6 @@ export default defineAppConfig({
         target: '_blank',
         trailingIcon: 'octicon:issue-opened-24',
       },
-      {
-        label: 'Releases',
-        to: 'https://github.com/rplanel/gaas/releases',
-        target: '_blank',
-        trailingIcon: 'lucide:tag',
-      },
       { label: 'Code', trailingIcon: 'i-simple-icons-github', to: 'https://github.com/rplanel/gaas', target: '_blank' },
     ],
   },
@@ -57,20 +51,20 @@ export default defineAppConfig({
 export interface OrderedNavigationMenuItem extends NavigationMenuItem {
   order: number
 }
-// declare module '@nuxt/schema' {
-//   interface AppConfigInput {
-//     gaasUi?: {
-//       /** Project name */
-//       name?: string
-//       navigationMenuItems?: OrderedNavigationMenuItem[]
-//       footerItems?: NavigationMenuItem[]
-//       seo: UseSeoMetaInput
-//     }
-//     toaster: {
-//       position: string
-//       expand: boolean
-//       duration: number
-//     }
-//   }
-// }
-// export {}
+declare module '@nuxt/schema' {
+  interface AppConfigInput {
+    gaasUi?: {
+      /** Project name */
+      name?: string
+      navigationMenuItems?: OrderedNavigationMenuItem[]
+      footerItems?: NavigationMenuItem[]
+      seo: UseSeoMetaInput
+    }
+    toaster: {
+      position: string
+      expand: boolean
+      duration: number
+    }
+  }
+}
+export {}
