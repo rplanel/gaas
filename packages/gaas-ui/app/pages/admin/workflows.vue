@@ -12,7 +12,6 @@ import {
 
 type Database = SupabaseTypes.Database
 
-type GalaxyInstanceRow = Database['galaxy']['Tables']['instances']['Row']
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
 }
@@ -109,12 +108,12 @@ function getRowItems(row: Row<GalaxyWorkflowsItem>) {
     },
     {
       icon: 'i-lucide:plus',
-      label: 'Add to web app',
+      label: 'Add to webservice',
       onSelect() {
         addToDb({ id: row.original.id })
 
         toast.add({
-          title: 'Workflow added to app',
+          title: 'Workflow added to the webservice',
           color: 'success',
           icon: 'i-lucide-circle-check',
         })
@@ -162,7 +161,7 @@ const { data: galaxyInstance } = await useAsyncData(
         .select()
         .eq('url', galaxyInstanceUrl)
         .limit(1)
-        .returns<GalaxyInstanceRow[]>()
+        // .returns<GalaxyInstanceRow[]>()
         // .then(takeUniqueOrThrow)
 
       if (error) {
@@ -210,7 +209,7 @@ const pageHeaderProps = computed(() => {
       />
     </div>
     <div v-else>
-      <UAlert title="tettee" />
+      <UAlert title="No Galaxy instance defined" />
     </div>
   </div>
 </template>

@@ -33,6 +33,9 @@ type Schema = z.output<typeof schema>
 const state = reactive<Partial<Schema>>({
   file: undefined,
 })
+
+const { refreshDatasetsCount } = inject('datasetsCount')
+
 const { data, refresh: refreshDatasets } = await useAsyncData<DatasetColumn[] | null | undefined>(
   'analysis-input-datasets',
   async () => {
@@ -66,6 +69,7 @@ async function uploadFile(event: any) {
     else {
       uploadingFile.value = false
       refreshDatasets()
+      refreshDatasetsCount()
     }
     if (uploadedFile) {
       await supabase
@@ -78,6 +82,7 @@ async function uploadFile(event: any) {
         })
         .select()
       refreshDatasets()
+      refreshDatasetsCount()
     }
   }
 }

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SupabaseTypes } from '#build/types/database'
+
 import {
   createError,
   navigateTo,
@@ -7,9 +9,12 @@ import {
   useSupabaseUser,
 } from '#imports'
 import { ref, watchEffect } from 'vue'
+
 import { z } from 'zod'
 
-const supabase = useSupabaseClient()
+type Database = SupabaseTypes.Database
+
+const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 const { query } = useRoute()
 const showPassword = ref(false)
@@ -79,58 +84,26 @@ async function handleSignUp() {
         Log in to
       </h2>
     </template>
-    <UForm
-      :schema="schema"
-      :state="state"
-      class="space-y-4"
-    >
-      <UFormField
-        label="Email address"
-        name="email"
-        required
-      >
-        <UInput
-          v-model="state.email"
-          placeholder="johndoe@gmail.com"
-          type="email"
-        />
+    <UForm :schema="schema" :state="state" class="space-y-4">
+      <UFormField label="Email address" name="email" required>
+        <UInput v-model="state.email" placeholder="johndoe@gmail.com" type="email" />
       </UFormField>
-      <UFormField
-        label="Password"
-        name="password"
-        help="Enter your password to access this website"
-        required
-      >
-        <UInput
-          v-model="state.password"
-          :type="showPassword ? 'text' : 'password'"
-        >
+      <UFormField label="Password" name="password" help="Enter your password to access this website" required>
+        <UInput v-model="state.password" :type="showPassword ? 'text' : 'password'">
           <template #trailing>
             <UButton
-              color="neutral"
-              variant="link"
-              size="sm"
-              :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-              aria-label="show ? 'Hide password' : 'Show password'"
-              :aria-pressed="showPassword"
-              aria-controls="password"
-              @click="showPassword = !showPassword"
+              color="neutral" variant="link" size="sm" :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+              aria-label="show ? 'Hide password' : 'Show password'" :aria-pressed="showPassword"
+              aria-controls="password" @click="showPassword = !showPassword"
             />
           </template>
         </UInput>
       </UFormField>
 
-      <UButton
-        loading-auto
-        class="mr-3"
-        @click="handleSignIn"
-      >
+      <UButton loading-auto class="mr-3" @click="handleSignIn">
         Sign In
       </UButton>
-      <UButton
-        variant="subtle"
-        @click="handleSignUp"
-      >
+      <UButton variant="subtle" @click="handleSignUp">
         Sign Up
       </UButton>
     </UForm>

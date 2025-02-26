@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { SupabaseTypes } from '#build/types/database'
 import type { DropdownMenuItem } from '@nuxt/ui'
 
+type Database = SupabaseTypes.Database
 interface Props {
   collapsed?: boolean
   isAdmin?: boolean
@@ -16,7 +18,7 @@ const appConfig = useAppConfig()
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
-const supabase = useSupabaseClient()
+const supabase = useSupabaseClient<Database>()
 const supabaseUser = useSupabaseUser()
 
 const user = computed(() => {

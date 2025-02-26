@@ -26,6 +26,7 @@ export default defineAppConfig({
         icon: 'i-streamline:code-analysis',
         to: '/analyses',
         order: 3,
+        children: [],
       },
     ],
     footerItems: [

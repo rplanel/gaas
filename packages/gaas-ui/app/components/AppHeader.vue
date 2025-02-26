@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import type { SupabaseTypes } from '#build/types/database'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { OrderedNavigationMenuItem } from '../app.config'
 import { getErrorMessage, getStatusCode } from 'blendtype'
 
-const supabase = useSupabaseClient()
+type Database = SupabaseTypes.Database
+
+const supabase = useSupabaseClient<Database>()
 const { userRole } = useUserRole(supabase)
 
 const { gaasUi: { navigationMenuItems, name } } = useAppConfig()
