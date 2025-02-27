@@ -133,7 +133,7 @@ provide('datasetsCount', {
 
 <template>
   <UDashboardGroup>
-    <UDashboardSearch :groups="searchGroups" />
+    <UDashboardSearch v-if="searchGroups" :groups="searchGroups" />
     <UDashboardSidebar
       collapsible resizable class="bg-(--ui-bg-elevated)/25"
       :ui="{ footer: 'lg:border-t lg:border-(--ui-border)' }"
@@ -145,9 +145,9 @@ provide('datasetsCount', {
       <template #default="{ collapsed }">
         <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-(--ui-border)" />
 
-        <UNavigationMenu :collapsed="collapsed" :items="computedLinks[0]" orientation="vertical" />
+        <UNavigationMenu v-if="computedLinks?.[0]" :collapsed="collapsed" :items="computedLinks[0]" orientation="vertical" />
 
-        <UNavigationMenu :collapsed="collapsed" :items="computedLinks[1]" orientation="vertical" class="mt-auto" />
+        <UNavigationMenu v-if="computedLinks?.[1]" :collapsed="collapsed" :items="computedLinks[1]" orientation="vertical" class="mt-auto" />
       </template>
 
       <template #footer="{ collapsed }">

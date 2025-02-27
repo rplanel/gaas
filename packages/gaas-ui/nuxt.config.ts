@@ -8,15 +8,10 @@ export default defineNuxtConfig({
     'nuxt-galaxy',
     '@nuxt/test-utils/module',
   ],
-  nitro: {
-    prerender: {
-      ignore: ['/api/galaxy/instance'],
-    },
-  },
-  routeRules: {
-    '/': { prerender: true },
-    '/galaxy/**': { prerender: false },
-  },
+  // routeRules: {
+  // '/': { prerender: true },
+  // '/galaxy/**': { prerender: false },
+  // },
   future: {
     compatibilityVersion: 4,
   },
