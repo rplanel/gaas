@@ -17,11 +17,11 @@ const pagination = ref({
   pageSize: pageSizeOptions.value[0],
 })
 const globalFilter = ref('')
-// defineShortcuts({
-//   '/': () => {
-//     filterInput.value?.inputRef?.focus()
-//   },
-// })
+defineShortcuts({
+  '/': () => {
+    filterInput.value?.inputRef?.focus()
+  },
+})
 
 function updatePageSize(pageSize: number) {
   const tableVal = toValue(table)
