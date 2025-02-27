@@ -20,7 +20,8 @@
   "dependencies": {
     "@nuxt/ui": "catalog:",
     "@nuxt/ui-pro": "catalog:",
-    "blendtype": "workspace:*"
+    "blendtype": "workspace:*",
+    "supabase": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
@@ -34,10 +35,10 @@
     "simple-git-hooks": "catalog:"
   },
   "resolutions": {
-    "@tailwindcss/node": "4.0.4",
-    "@tailwindcss/postcss": "4.0.4",
-    "@tailwindcss/vite": "4.0.4",
-    "tailwindcss": "4.0.4"
+    "@tailwindcss/node": "4.0.7",
+    "@tailwindcss/postcss": "4.0.7",
+    "@tailwindcss/vite": "4.0.7",
+    "tailwindcss": "4.0.7"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"

@@ -50,7 +50,8 @@
     "dotenv": "catalog:",
     "drizzle-orm": "catalog:",
     "jwt-decode": "catalog:",
-    "postgres": "catalog:"
+    "postgres": "catalog:",
+    "supabase": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
