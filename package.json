@@ -18,7 +18,6 @@
     "release": "pnpm run lint && pnpm run typecheck && pnpm run test && changelogen --output CHANGELOG.md && jiti scripts/release.ts && pnpm -r run release:publish && git push --follow-tags"
   },
   "dependencies": {
-    "@nuxt/ui": "catalog:",
     "@nuxt/ui-pro": "catalog:",
     "blendtype": "workspace:*",
     "supabase": "catalog:"
@@ -34,8 +33,16 @@
     "lint-staged": "catalog:",
     "simple-git-hooks": "catalog:"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "simple-git-hooks",
+      "supabase",
+      "vue-demi"
+    ]
+  },
   "resolutions": {
-    "@tailwindcss/node": "4.0.7",
     "@tailwindcss/postcss": "4.0.7",
     "@tailwindcss/vite": "4.0.7",
     "tailwindcss": "4.0.7"
