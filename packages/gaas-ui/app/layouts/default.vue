@@ -6,7 +6,7 @@ useState('showWorkflowStepParameter', () => true)
 
 <template>
   <div>
-    <AppHeader />
+    <!-- <AppHeader /> -->
     <UMain>
       <slot />
     </UMain>
