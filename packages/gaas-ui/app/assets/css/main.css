@@ -5,5 +5,3 @@
   --font-sans: 'Public Sans', sans-serif;
   --header-height: 5rem;
 }
-
-@plugin "@tailwindcss/typography";

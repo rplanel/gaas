@@ -17,6 +17,7 @@
     "cleandep": "rm -rf node_modules && rm -rf .data && rm -rf .nuxt && rm -rf .playground/.nuxt && rm -rf .playground/.output && rm -rf .playground/node_modules && rm -rf .playground/.data"
   },
   "dependencies": {
+    "@iconify-json/eos-icons": "catalog:",
     "@iconify-json/ep": "catalog:",
     "@iconify-json/lucide": "catalog:",
     "@iconify-json/majesticons": "catalog:",
@@ -29,7 +30,6 @@
     "@iconify-json/svg-spinners": "catalog:",
     "@iconify-json/tabler": "catalog:",
     "@nuxt/ui-pro": "catalog:",
-    "@tailwindcss/typography": "catalog:",
     "@vueuse/core": "catalog:",
     "drizzle-kit": "catalog:",
     "jwt-decode": "catalog:",

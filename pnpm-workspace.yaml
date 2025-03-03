@@ -3,6 +3,7 @@ packages:
   - playground
 catalog:
   '@antfu/eslint-config': ^4.2.0
+  '@iconify-json/eos-icons': ^1.2.2
   '@iconify-json/ep': ^1.2.2
   '@iconify-json/lucide': ^1.2.20
   '@iconify-json/material-symbols': ^1.2.12
@@ -24,7 +25,6 @@ catalog:
   '@nuxt/ui-pro': ^3.0.0-beta.2
   '@nuxtjs/supabase': ^1.4.5
   '@release-it/conventional-changelog': ^10.0.0
-  '@tailwindcss/typography': ^0.5.16
   '@types/node': ^22.10.2
   '@vitest/coverage-v8': ^3.0.7
   '@vue/test-utils': ^2.4.6
