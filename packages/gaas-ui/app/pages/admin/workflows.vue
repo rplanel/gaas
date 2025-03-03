@@ -205,7 +205,7 @@ const pageHeaderProps = computed(() => {
 
       <UTable
         v-if="allWorkflows" sticky :data="allWorkflows" :columns="galaxyWorkflowGalaxyColumns"
-        class="flex-1 max-h-[500px] ring ring-[var(--ui-border-muted)] rounded-[calc(var(--ui-radius)*1.5)]"
+        class="flex-1 max-h-[500px]"
       />
     </div>
     <div v-else>

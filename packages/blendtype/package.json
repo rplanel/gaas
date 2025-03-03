@@ -54,7 +54,7 @@
     "eslint-config-unjs": "catalog:",
     "jiti": "catalog:",
     "simple-git-hooks": "catalog:",
-    "typescript": "^5.7.2",
+    "typescript": "catalog:",
     "unbuild": "catalog:",
     "vitest": "catalog:"
   },

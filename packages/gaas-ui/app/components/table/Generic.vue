@@ -35,7 +35,7 @@ function updatePageSize(pageSize: number) {
     <h2 v-if="title" class="text-lg font-bold mb-2">
       {{ title }}
     </h2>
-    <UCard :ui="{ body: 'p-0 sm:p-0' }" class="mb-4">
+    <UPageCard variant="ghost">
       <div class="w-full space-y-4 pb-4">
         <div class="flex p-3 w-full">
           <UInput
@@ -64,7 +64,7 @@ function updatePageSize(pageSize: number) {
             <slot :name="slotName" v-bind="slotProps ?? {}" />
           </template>
         </UTable>
-        <div class="flex justify-center border-t border-[var(--ui-border)] pt-4 gap-2">
+        <div class="flex justify-center px-4 gap-2">
           <UPagination
             :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
             :items-per-page="table?.tableApi?.getState().pagination.pageSize"
@@ -77,6 +77,6 @@ function updatePageSize(pageSize: number) {
           />
         </div>
       </div>
-    </UCard>
+    </UPageCard>
   </div>
 </template>

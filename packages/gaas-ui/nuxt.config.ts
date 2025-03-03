@@ -4,19 +4,15 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
-    '@nuxt/ui-pro',
-    'nuxt-galaxy',
     '@nuxt/test-utils/module',
+    'nuxt-galaxy',
+    '@nuxt/ui-pro',
   ],
-  // routeRules: {
-  // '/': { prerender: true },
-  // '/galaxy/**': { prerender: false },
-  // },
   future: {
     compatibilityVersion: 4,
   },
   experimental: {
     typedPages: true,
   },
-  css: ['../app/assets/css/main.css'],
+  css: ['./app/assets/css/main.css'],
 })

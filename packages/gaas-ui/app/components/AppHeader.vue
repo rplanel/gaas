@@ -1,31 +1,16 @@
 <script setup lang="ts">
 import type { SupabaseTypes } from '#build/types/database'
-import type { DropdownMenuItem } from '@nuxt/ui'
 import type { OrderedNavigationMenuItem } from '../app.config'
-import { getErrorMessage, getStatusCode } from 'blendtype'
 
 type Database = SupabaseTypes.Database
 
 const supabase = useSupabaseClient<Database>()
 const { userRole } = useUserRole(supabase)
-
 const { gaasUi: { navigationMenuItems, name } } = useAppConfig()
-
-async function logout() {
-  const { error } = await supabase.auth.signOut()
-  if (error) {
-    throw createError({ statusMessage: getErrorMessage(error), statusCode: getStatusCode(error) })
-  }
-
-  await navigateTo('/login')
-}
-
 const navigationMenuItemsRef = toRef(navigationMenuItems)
-
 const computedItems = computed<OrderedNavigationMenuItem[]>(() => {
   const userRoleVal = toValue(userRole)
   const itemsVal = toValue(navigationMenuItemsRef)
-
   if (userRoleVal === 'admin') {
     return [
       ...itemsVal,
@@ -49,20 +34,10 @@ const computedItems = computed<OrderedNavigationMenuItem[]>(() => {
           },
         ],
       },
-
     ].sort((a, b) => a.order - b.order)
   }
   return itemsVal.sort((a, b) => a.order - b.order)
 })
-
-const userItems = ref<DropdownMenuItem[]>([
-  {
-    label: 'Logout',
-    type: 'link',
-    icon: 'tabler:logout',
-    onSelect: logout,
-  },
-])
 </script>
 
 <template>
@@ -79,20 +54,8 @@ const userItems = ref<DropdownMenuItem[]>([
     <UNavigationMenu :items="computedItems" variant="link" />
 
     <template #right>
-      <UTooltip text="Search" :kbds="['meta', 'K']">
-        <!-- <UContentSearchButton /> -->
-      </UTooltip>
-      <UColorModeSelect />
-      <UDropdownMenu
-        :content="{
-          align: 'end',
-          side: 'bottom',
-        }" :items="userItems" :ui="{
-          content: 'w-48',
-        }"
-      >
-        <UButton icon="mdi:user" variant="subtle" color="neutral" size="xl" class="rounded-full" />
-      </UDropdownMenu>
+      <UTooltip text="Search" :kbds="['meta', 'K']" />
+      <UColorModeButton />
     </template>
     <template #content>
       <UNavigationMenu orientation="vertical" :items="computedItems" class="-mx-2.5" />

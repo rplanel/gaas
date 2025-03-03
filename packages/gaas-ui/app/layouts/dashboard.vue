@@ -139,15 +139,25 @@ provide('datasetsCount', {
       :ui="{ footer: 'lg:border-t lg:border-(--ui-border)' }"
     >
       <template #header="{ collapsed }">
-        <span v-if="!collapsed"> {{ name }}</span>
+        <NuxtLink v-if="!collapsed" to="/">
+          <h1 class="text-2xl antialiased font-bold font-mono">
+            {{ name }}
+          </h1>
+        </NuxtLink>
       </template>
 
       <template #default="{ collapsed }">
         <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-(--ui-border)" />
 
-        <UNavigationMenu v-if="computedLinks?.[0]" :collapsed="collapsed" :items="computedLinks[0]" orientation="vertical" />
+        <UNavigationMenu
+          v-if="computedLinks?.[0]" :collapsed="collapsed" :items="computedLinks[0]"
+          orientation="vertical"
+        />
 
-        <UNavigationMenu v-if="computedLinks?.[1]" :collapsed="collapsed" :items="computedLinks[1]" orientation="vertical" class="mt-auto" />
+        <UNavigationMenu
+          v-if="computedLinks?.[1]" :collapsed="collapsed" :items="computedLinks[1]"
+          orientation="vertical" class="mt-auto"
+        />
       </template>
 
       <template #footer="{ collapsed }">

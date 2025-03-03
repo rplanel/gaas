@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import type { SupabaseTypes } from '#build/types/database'
+
 definePageMeta({
   layout: 'dashboard',
 })
+
+type Database = SupabaseTypes.Database
+const supabase = useSupabaseClient<Database>()
+const { userRole } = useUserRole(supabase)
+
 const breadcrumbsItems = ref([
   {
     disabled: false,
@@ -24,8 +31,8 @@ const breadcrumbsItems = ref([
           <UDashboardSidebarCollapse />
         </template>
 
-        <template #right>
-          test
+        <template v-if="userRole === 'admin'" #right>
+          <UButton icon="i-lucide-plus" size="md" class="rounded-full" to="/admin/workflows" />
         </template>
       </UDashboardNavbar>
     </template>

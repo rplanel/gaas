@@ -77,70 +77,27 @@ const sanitizedDbWorkflows = computed(() => {
 const pageHeaderProps = computed(() => {
   return {
     title: 'Workflows',
-    description: 'Select a workflow in order to run your analysis',
+    description: 'Select a workflow in order to start an analysis',
   }
 })
 </script>
 
 <template>
-  <div>
-    <PageHeader
-      :page-header-props
-      icon="i-lucide:workflow"
-      :breadcrumbs-items="breadcrumbsItems"
-    />
+  <PageHeader :page-header-props icon="i-lucide:workflow" :breadcrumbs-items="breadcrumbsItems" />
 
-    <div class="grid grid-flow-row auto-rows-max gap-6 my-3">
-      <div>
-        <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
-          <UPageList divide>
-            <UPageCard
-              v-for="(workflow) in sanitizedDbWorkflows"
-              :key="workflow.id"
-              orientation="horizontal"
-              variant="ghost"
-              icon="tabler:square-rounded-arrow-right"
-              :to="`/workflows/${workflow.id}/run`"
-              :title="workflow.name"
-              :description=" workflow.definition.annotation"
-
-              :ui="{ container: 'lg:grid-cols-1' }"
-            >
-              <template #footer>
-                <VersionBadge :version="workflow.version.toString()" variant="soft" />
-              </template>
-
-              <!-- <template #body>
-                      <div class="grid grid-flow-col auto-cols-max items-center justify-between">
-                        <div class="grid grid-flow-col auto-cols-max items-center place-items-start">
-                          <span class="mr-3">
-                            <UAvatar :text="String(i + 1)" />
-                          </span>
-                          <div class="grid grid-flow-row auto-rows-max">
-                            <div>
-                              <span class="font-bold text-lg">{{
-                                workflow.name
-                              }}</span>
-                            </div>
-                            <div v-if="workflow?.definition">
-                              <span class="font-medium text-sm opacity-60">{{
-                                workflow.definition.annotation
-                              }}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="place-items-end">
-                          <VersionBadge :version="workflow.version.toString()" />
-                        </div>
-                      </div>
-                    </template> -->
-            </UPageCard>
-
-            <!-- <UCard class="my-2 hoverWorkflow" @click="runWorkflowPage(workflow.id)">
-                  </UCard> -->
-          </UPageList>
-        </div>
-      </div>
+  <div class="grid grid-flow-row auto-rows-max mt-8">
+    <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
+      <UPageList divide>
+        <UPageCard
+          v-for="(workflow) in sanitizedDbWorkflows" :key="workflow.id" orientation="horizontal"
+          variant="ghost" :to="`/workflows/${workflow.id}/run`" :title="workflow.name"
+          :description="workflow.definition.annotation" :ui="{ leadingIcon: 'size-8' }"
+        >
+          <template #footer>
+            <VersionBadge :version="workflow.version.toString()" variant="soft" />
+          </template>
+        </UPageCard>
+      </UPageList>
     </div>
   </div>
 </template>

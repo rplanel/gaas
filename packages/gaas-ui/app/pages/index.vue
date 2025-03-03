@@ -14,9 +14,9 @@ const links = ref([
 </script>
 
 <template>
-  <div>
+  <div class="relative">
     <UPageHero
-      title="Welcome to GaaS" description="This layer let you plug a galaxy instance to your Nuxt app"
+      title="Welcome to GaaS" description="Is a set to enable usage and integration of Galaxy within Nuxt"
       :links="links"
     >
       <template #top>

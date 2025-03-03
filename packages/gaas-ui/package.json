@@ -45,10 +45,9 @@
     "happy-dom": "catalog:",
     "nuxt": "catalog:",
     "playwright-core": "catalog:",
-    "typescript": "^5.7.2",
+    "typescript": "catalog:",
     "vitest": "catalog:",
     "vue": "latest",
     "vue-tsc": "^2.2.0"
   }
-
 }
