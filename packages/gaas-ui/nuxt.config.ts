@@ -1,12 +1,18 @@
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config'
+
+const currentDir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
+    '@nuxt/ui-pro',
     '@nuxt/test-utils/module',
     'nuxt-galaxy',
-    '@nuxt/ui-pro',
+
   ],
   future: {
     compatibilityVersion: 4,
@@ -14,5 +20,5 @@ export default defineNuxtConfig({
   experimental: {
     typedPages: true,
   },
-  css: ['./app/assets/css/main.css'],
+  css: [join(currentDir, './app/assets/css/main.css')],
 })

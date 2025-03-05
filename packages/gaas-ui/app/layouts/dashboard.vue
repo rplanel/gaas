@@ -58,9 +58,9 @@ const sanitizedNavigationMenuItems = computed<OrderedNavigationMenuItem[]>(() =>
         ...item,
         defaultOpen: true,
         badge: analysesVal.length,
-        children: analysesVal.map(({ name, id }) => {
-          return { label: name, to: `/analyses/${id}/results` }
-        }),
+        // children: analysesVal.map(({ name, id }) => {
+        //   return { label: name, to: `/analyses/${id}/results` }
+        // }),
       }
     }
     if (item.label === 'Datasets') {

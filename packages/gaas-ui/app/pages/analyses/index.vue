@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem, TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
-import { ColumnTableSort } from '#components'
+import type { Database } from '../../types'
 
+import { ColumnTableSort } from '#components'
 import {
   definePageMeta,
   useAsyncData,
@@ -12,8 +12,6 @@ import {
 } from '#imports'
 // import { getErrorMessage, getStatusCode } from 'blendtype'
 import { toValue } from 'vue'
-
-type Database = SupabaseTypes.Database
 
 interface Props {
   breadcrumbsItems?: BreadcrumbItem[] | undefined
@@ -28,11 +26,11 @@ const user = useSupabaseUser()
 const toast = useToast()
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UButton = resolveComponent('UButton')
-type Analysis = Pick<
+export type ListAnalysis = Pick<
   Database['galaxy']['Tables']['analyses']['Row'],
   'id' | 'name' | 'state' | 'is_sync'
 >
-interface AnalysisWithWorkflow extends Analysis {
+export interface ListAnalysisWithWorkflow extends ListAnalysis {
   workflows: Database['galaxy']['Tables']['workflows']['Row']
   histories: Pick<
     Database['galaxy']['Tables']['histories']['Row'],
@@ -40,7 +38,7 @@ interface AnalysisWithWorkflow extends Analysis {
   >
 }
 
-interface SanitizedAnalysis extends Analysis {
+export interface SanitizedAnalysis extends ListAnalysis {
   workflows: string
 }
 
@@ -98,7 +96,7 @@ const { data: analyses, refresh: refreshAnalyses } = await useAsyncData(
         `,
       )
       .order('id', { ascending: true })
-      .returns<AnalysisWithWorkflow[]>()
+      .returns<ListAnalysisWithWorkflow[]>()
     if (error) {
       throw createError({
         statusMessage: error.message,

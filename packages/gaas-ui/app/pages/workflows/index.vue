@@ -85,20 +85,17 @@ const pageHeaderProps = computed(() => {
 <template>
   <PageHeader :page-header-props icon="i-lucide:workflow" :breadcrumbs-items="breadcrumbsItems" />
 
-  <div class="grid grid-flow-row auto-rows-max mt-8">
-    <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
-      <UPageList divide>
-        <UPageCard
-          v-for="(workflow) in sanitizedDbWorkflows" :key="workflow.id" orientation="horizontal"
-          variant="ghost" :to="`/workflows/${workflow.id}/run`" :title="workflow.name"
-          :description="workflow.definition.annotation" :ui="{ leadingIcon: 'size-8' }"
-        >
-          <template #footer>
-            <VersionBadge :version="workflow.version.toString()" variant="soft" />
-          </template>
-        </UPageCard>
-      </UPageList>
-    </div>
+  <div v-if="dbWorkflows" class="grid grid-flow-row auto-rows-max">
+    <UPageList divide>
+      <UPageCard
+        v-for="(workflow) in sanitizedDbWorkflows" :key="workflow.id" variant="ghost"
+        :to="`/workflows/${workflow.id}/run`" :title="workflow.name" :description="workflow.definition.annotation" :ui="{ container: 'lg:grid-cols-1 lg:items-center' }"
+      >
+        <template #leading>
+          <VersionBadge :version="workflow.version.toString()" variant="soft" />
+        </template>
+      </UPageCard>
+    </UPageList>
   </div>
 </template>
 
