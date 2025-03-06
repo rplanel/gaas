@@ -3,7 +3,8 @@
 
 @source "../../../.playground/.nuxt/ui";
 @source "../../../.playground/.nuxt/ui-pro";
-
+@source "../../../../@nuxt/ui";
+@source "../../../../@nuxt/ui-pro";
 @theme {
   --font-sans: 'Public Sans', sans-serif;
   --header-height: 5rem;
