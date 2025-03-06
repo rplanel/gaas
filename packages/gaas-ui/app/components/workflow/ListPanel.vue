@@ -21,26 +21,15 @@ watch(selectedWorkflow, () => {
     ref.scrollIntoView({ block: 'nearest' })
   }
 })
-// const pageHeaderProps = computed(() => {
-//   return {
-//     title: 'Workflows',
-//     description: 'Select a workflow in order to start an analysis',
-//     headline: 'List',
-//     ui: { root: 'border-b-0' },
-
-//   }
-// })
 </script>
 
 <template>
   <div class="overflow-y-auto divide-y divide-(--ui-border)">
-    <!-- <PageHeader :page-header-props icon="i-lucide:workflow" /> -->
-
     <div
       v-for="(workflow, index) in workflows" :key="index"
     >
       <div
-        class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
+        class="p-4 sm:px-6 cursor-pointer border-l-2 transition-colors"
         :class="[
 
           selectedWorkflow && selectedWorkflow.id === workflow.id ? 'border-(--ui-primary) bg-(--ui-primary)/10' : 'border-(--ui-bg) hover:border-(--ui-primary) hover:bg-(--ui-primary)/5',
@@ -48,12 +37,12 @@ watch(selectedWorkflow, () => {
         @click="selectedWorkflow = workflow"
       >
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 font-bold">
             {{ workflow.name }}
           </div>
           <span><VersionBadge :version="workflow.version.toString()" /></span>
         </div>
-        <p class="text-(--ui-text-dimmed) line-clamp-1">
+        <p class="text-(--ui-text-dimmed) text-sm">
           {{ workflow.definition.annotation }}
         </p>
       </div>

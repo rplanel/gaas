@@ -94,14 +94,12 @@ const isMobile = breakpoints.smaller('lg')
 
   <WorkflowRunPanel v-if="selectedWorkflow" :workflow="selectedWorkflow" @close="selectedWorkflow = undefined" />
   <div v-else class="hidden lg:flex flex-1 items-center justify-center">
-    <UIcon name="i-lucide-inbox" class="size-32 text-(--ui-text-dimmed)" />
+    <UIcon name="i-lucide:workflow" class="size-32 text-(--ui-text-dimmed)" />
   </div>
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isWorkflowRunPanelOpen">
       <template #content>
-        <div v-if="selectedWorkflow" :mail="selectedWorkflow" @close="selectedWorkflow = undefined">
-          is a mobile
-        </div>
+        <WorkflowRunPanel v-if="selectedWorkflow" :workflow="selectedWorkflow" @close="selectedWorkflow = undefined" />
       </template>
     </USlideover>
   </ClientOnly>

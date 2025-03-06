@@ -11,3 +11,5 @@ export type GalaxyWorkflowExportSchema = z.infer<typeof galaxyWorkflowExportSche
 export interface SanitizedWorkflowDbItem extends Omit<RowWorkflow, 'definition'> {
   definition: GalaxyWorkflowExportSchema
 }
+
+export type RowAnalysisJob = GalaxyTypes.RowAnalysisJob
