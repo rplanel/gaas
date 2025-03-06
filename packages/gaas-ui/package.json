@@ -34,7 +34,6 @@
     "drizzle-kit": "catalog:",
     "jwt-decode": "catalog:",
     "nuxt-galaxy": "workspace:*",
-    "tailwindcss": "^4.0.9",
     "zod": "catalog:",
     "zod-validation-error": "catalog:"
   },
