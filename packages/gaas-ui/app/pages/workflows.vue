@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Database, GalaxyWorkflowExportSchema, RowWorkflow, SanitizedWorkflowDbItem } from '../types'
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { galaxyWorkflowExportSchema } from 'blendtype'
 import { z } from 'zod'
 import { fromError } from 'zod-validation-error'
@@ -13,30 +12,6 @@ const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 
 const { userRole } = useUserRole(supabase)
-
-const selectedWorkflow = ref<SanitizedWorkflowDbItem | undefined>()
-const isWorkflowRunPanelOpen = computed({
-  get() {
-    return !!selectedWorkflow.value
-  },
-  set(value: boolean) {
-    if (!value) {
-      selectedWorkflow.value = undefined
-    }
-  },
-})
-const breadcrumbsItems = ref([
-  {
-    disabled: false,
-    icon: 'lucide:house',
-    to: '/',
-  },
-  {
-    label: 'Workflows',
-    disabled: true,
-    to: '/workflows',
-  },
-])
 
 const { data: dbWorkflows } = await useAsyncData('workflows-auth', async () => {
   const userVal = toValue(user)
@@ -72,8 +47,19 @@ const sanitizedDbWorkflows = computed<SanitizedWorkflowDbItem[] | null>(() => {
   }
   return null
 })
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const isMobile = breakpoints.smaller('lg')
+
+// onBeforeRouteUpdate((to) => {
+//   // debugger
+//   if (to.name === 'workflows')
+//     selectedWorkflowId.value = undefined
+// })
+
+// watch(selectedWorkflowId, () => {
+//   // debugger
+//   if (selectedWorkflowId.value !== undefined) {
+//     router.push(`/workflows/${selectedWorkflowId.value}/run`)
+//   }
+// })
 </script>
 
 <template>
@@ -89,18 +75,7 @@ const isMobile = breakpoints.smaller('lg')
         <UButton icon="i-lucide-plus" size="md" class="rounded-full" to="/admin/workflows" />
       </template>
     </UDashboardNavbar>
-    <WorkflowListPanel v-model="selectedWorkflow" :workflows="sanitizedDbWorkflows" :breadcrumbs-items="breadcrumbsItems" />
+    <WorkflowListPanel :workflows="sanitizedDbWorkflows" />
   </UDashboardPanel>
-
-  <WorkflowRunPanel v-if="selectedWorkflow" :workflow="selectedWorkflow" @close="selectedWorkflow = undefined" />
-  <div v-else class="hidden lg:flex flex-1 items-center justify-center">
-    <UIcon name="i-lucide:workflow" class="size-32 text-(--ui-text-dimmed)" />
-  </div>
-  <ClientOnly>
-    <USlideover v-if="isMobile" v-model:open="isWorkflowRunPanelOpen">
-      <template #content>
-        <WorkflowRunPanel v-if="selectedWorkflow" :workflow="selectedWorkflow" @close="selectedWorkflow = undefined" />
-      </template>
-    </USlideover>
-  </ClientOnly>
+  <NuxtPage />
 </template>

@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { SanitizedWorkflowDbItem } from '../../types'
-
 defineProps<{
-  workflow: SanitizedWorkflowDbItem
+  workflowId: number
 }>()
 
 const emits = defineEmits(['close'])
@@ -44,8 +42,8 @@ const emits = defineEmits(['close'])
     <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-(--ui-border)">
       <div class="flex items-start gap-4 sm:my-1.5">
         <GalaxyWorkflowInvokeForm
-          v-if="workflow"
-          :workflow-id="workflow.id"
+          v-if="workflowId"
+          :workflow-id="workflowId"
         />
       </div>
     </div>

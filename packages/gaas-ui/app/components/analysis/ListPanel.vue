@@ -5,19 +5,21 @@ interface Props {
   analyses?: SanitizedAnalysis[] | null
 }
 const props = withDefaults(defineProps<Props>(), { analyses: undefined })
-
-const selectedAnalysis = defineModel<SanitizedAnalysis | undefined>()
+const route = useRoute()
 
 const { analyses } = toRefs(props)
-const analysesRefs = ref<Element[]>([])
-watch(selectedAnalysis, () => {
-  if (!selectedAnalysis.value) {
-    return
+
+const analysisId = computed(() => {
+  if (route?.params && 'analysisId' in route.params) {
+    const analysisId = route.params.analysisId
+    if (Array.isArray(analysisId))
+      return 0
+    if (analysisId) {
+      return Number.parseInt(analysisId)
+    }
+    return analysisId
   }
-  const ref = analysesRefs.value[selectedAnalysis.value.id]
-  if (ref) {
-    ref.scrollIntoView({ block: 'nearest' })
-  }
+  return undefined
 })
 </script>
 
@@ -26,24 +28,24 @@ watch(selectedAnalysis, () => {
     <div
       v-for="(analysis, index) in analyses" :key="index"
     >
-      <div
-        class="p-4 sm:px-6 cursor-pointer border-l-2 transition-colors"
-        :class="[
-
-          selectedAnalysis && selectedAnalysis.id === analysis.id ? 'border-(--ui-primary) bg-(--ui-primary)/10' : 'border-(--ui-bg) hover:border-(--ui-primary) hover:bg-(--ui-primary)/5',
-        ]"
-        @click="selectedAnalysis = analysis"
+      <NuxtLink
+        :to="`/analyses/${analysis.id}`"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3 font-bold">
-            {{ analysis.name }}
+        <div
+          class="p-4 sm:px-6 cursor-pointer border-l-2 transition-colors"
+          :class="[analysisId && analysisId === analysis.id ? 'border-(--ui-primary) bg-(--ui-primary)/10' : 'border-(--ui-bg) hover:border-(--ui-primary) hover:bg-(--ui-primary)/5']"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3 font-bold">
+              {{ analysis.name }}
+            </div>
+            <span>{{ analysis.state }}</span>
           </div>
-          <span>{{ analysis.state }}</span>
-        </div>
         <!-- <p class="text-(--ui-text-dimmed) text-sm">
           {{  }} -->
         <!-- </p> -->
-      </div>
+        </div>
+      </NuxtLink>
     </div>
   </div>
 </template>

@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import type { BreadcrumbItem } from '@nuxt/ui'
 import type { SanitizedWorkflowDbItem } from '../../types'
 
 interface Props {
   workflows?: SanitizedWorkflowDbItem[] | null
-  breadcrumbsItems?: BreadcrumbItem[] | undefined
 }
 const props = withDefaults(defineProps<Props>(), { workflows: undefined })
-const selectedWorkflow = defineModel<SanitizedWorkflowDbItem | undefined>()
-
+const route = useRoute()
 const { workflows } = toRefs(props)
-const workflowsRefs = ref<Element[]>([])
 
-watch(selectedWorkflow, () => {
-  if (!selectedWorkflow.value) {
-    return
+const workflowId = computed(() => {
+  if (route?.params && 'workflowId' in route.params) {
+    const workflowId = route.params.workflowId
+    if (Array.isArray(workflowId))
+      return 0
+    if (workflowId) {
+      return Number.parseInt(workflowId)
+    }
+    return workflowId
   }
-  const ref = workflowsRefs.value[selectedWorkflow.value.id]
-  if (ref) {
-    ref.scrollIntoView({ block: 'nearest' })
-  }
+  return undefined
 })
 </script>
 
@@ -28,24 +27,27 @@ watch(selectedWorkflow, () => {
     <div
       v-for="(workflow, index) in workflows" :key="index"
     >
-      <div
-        class="p-4 sm:px-6 cursor-pointer border-l-2 transition-colors"
-        :class="[
+      <NuxtLink
 
-          selectedWorkflow && selectedWorkflow.id === workflow.id ? 'border-(--ui-primary) bg-(--ui-primary)/10' : 'border-(--ui-bg) hover:border-(--ui-primary) hover:bg-(--ui-primary)/5',
-        ]"
-        @click="selectedWorkflow = workflow"
+        :to="`/workflows/${workflow.id}/run`"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3 font-bold">
-            {{ workflow.name }}
+        <div
+          class="p-4 sm:px-6 cursor-pointer border-l-2 transition-colors"
+          :class="[
+            workflowId && workflowId === workflow.id ? 'border-(--ui-primary) bg-(--ui-primary)/10' : 'border-(--ui-bg) hover:border-(--ui-primary) hover:bg-(--ui-primary)/5',
+          ]"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3 font-bold">
+              {{ workflow.name }}
+            </div>
+            <span><VersionBadge :version="workflow.version.toString()" /></span>
           </div>
-          <span><VersionBadge :version="workflow.version.toString()" /></span>
+          <p class="text-(--ui-text-dimmed) text-sm">
+            {{ workflow.definition.annotation }}
+          </p>
         </div>
-        <p class="text-(--ui-text-dimmed) text-sm">
-          {{ workflow.definition.annotation }}
-        </p>
-      </div>
+      </NuxtLink>
     </div>
   </div>
 </template>

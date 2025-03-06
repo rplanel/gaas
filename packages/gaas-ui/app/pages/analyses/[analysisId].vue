@@ -1,31 +1,27 @@
 <script setup lang="ts">
 import type { SupabaseTypes } from '#build/types/database'
-import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
-import type { AccordionItem, BreadcrumbItem } from '@nuxt/ui'
-import type { GalaxyTool } from 'blendtype'
-import type { GalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
+// import type { GalaxyTypes } from '#build/types/nuxt-galaxy'
 import { useGalaxyDecodeParameters } from '../../composables/galaxy/useGalaxyDecodeParameters'
-import { useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 
 type Database = SupabaseTypes.Database
-export type InputDatasets = typeof inputs.value
-export type OutputDatasets = typeof outputs.value
-type RowAnalysisJob = GalaxyTypes.RowAnalysisJob
+// export type InputDatasets = typeof inputs.value
+// export type OutputDatasets = typeof outputs.value
+// type RowAnalysisJob = GalaxyTypes.RowAnalysisJob
 
-interface Props {
-  breadcrumbsItems?: BreadcrumbItem[] | undefined
-}
-const props = withDefaults(defineProps<Props>(), { breadcrumbsItems: undefined })
+// interface Props {
+//   breadcrumbsItems?: BreadcrumbItem[] | undefined
+// }
+// const props = withDefaults(defineProps<Props>(), { breadcrumbsItems: undefined })
 
 definePageMeta({
   middleware: 'auth',
   layout: 'dashboard',
 })
 
-const { breadcrumbsItems } = toRefs(props)
+// const { breadcrumbsItems } = toRefs(props)
 const route = useRoute()
 const supabase = useSupabaseClient<Database>()
-const user = useSupabaseUser()
+// const user = useSupabaseUser()
 const workflowParametersModel = ref<
   | Record<string, Record<string, string | string[] | Record<string, any>>>
   | undefined
@@ -43,49 +39,54 @@ const analysisId = computed(() => {
   return undefined
 })
 
-const { outputs, analysis, refresh: refreshAnalysis, inputs } = await useAnalysisDatasetIO(analysisId)
-
-const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
-  const userVal = toValue(user)
-  const analysisVal = toValue(analysis)
-  if (!userVal) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized: User not found',
-    })
-  }
-  if (!analysisVal) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found: Analysis not found',
-    })
-  }
-  const workflowIdVal = toValue(analysisVal.workflow_id)
-  const { data } = await supabase
-    .schema('galaxy')
-    .from('workflows')
-    .select('id, name, galaxy_id, definition')
-    .eq('id', workflowIdVal)
-    .limit(1)
-    .single()
-  return data
-})
-
-const workflowGalaxyId = computed(() => {
-  const dbWorkflowVal = toValue(dbWorkflow)
-  if (dbWorkflowVal)
-    return dbWorkflowVal.galaxy_id
-  return undefined
-})
 const {
-  workflow,
-  workflowSteps,
-  workflowToolIds,
-  stepToTool,
-} = useGalaxyWorkflow(workflowGalaxyId)
-const { tools, toolInputParameters } = useGalaxyTool(workflowToolIds)
-const { getToolParameters, getParametersInputComponent } = useAnalysisTools()
-const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
+  // outputs,
+  analysis,
+  refresh: refreshAnalysis,
+  // inputs
+} = await useAnalysisDatasetIO(analysisId)
+
+// const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
+//   const userVal = toValue(user)
+//   const analysisVal = toValue(analysis)
+//   if (!userVal) {
+//     throw createError({
+//       statusCode: 401,
+//       statusMessage: 'Unauthorized: User not found',
+//     })
+//   }
+//   if (!analysisVal) {
+//     throw createError({
+//       statusCode: 404,
+//       statusMessage: 'Not Found: Analysis not found',
+//     })
+//   }
+//   const workflowIdVal = toValue(analysisVal.workflow_id)
+//   const { data } = await supabase
+//     .schema('galaxy')
+//     .from('workflows')
+//     .select('id, name, galaxy_id, definition')
+//     .eq('id', workflowIdVal)
+//     .limit(1)
+//     .single()
+//   return data
+// })
+
+// const workflowGalaxyId = computed(() => {
+//   const dbWorkflowVal = toValue(dbWorkflow)
+//   if (dbWorkflowVal)
+//     return dbWorkflowVal.galaxy_id
+//   return undefined
+// })
+// const {
+//   workflow,
+//   workflowSteps,
+//   workflowToolIds,
+//   stepToTool,
+// } = useGalaxyWorkflow(workflowGalaxyId)
+// const { tools, toolInputParameters } = useGalaxyTool(workflowToolIds)
+// const { getToolParameters, getParametersInputComponent } = useAnalysisTools()
+// const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
 
 // Listen to job updates
 supabase
@@ -112,146 +113,146 @@ function handleUpdates() {
   refreshAnalysis()
 }
 
-const computedBreadcrumbsItems = computed(() => {
-  const analysisVal = toValue(analysis)
-  const breadcrumbsItemsVal = toValue(breadcrumbsItems)
-  if (analysisVal && breadcrumbsItemsVal) {
-    return [
-      ...breadcrumbsItemsVal.map(breadcrumb => ({ ...breadcrumb, disabled: false })),
-      {
-        label: analysisVal.name,
-        disabled: true,
-        to: `/analyses/${toValue(analysisId)}`,
-      },
-    ]
-  }
-  return breadcrumbsItemsVal
-})
+// const computedBreadcrumbsItems = computed(() => {
+//   const analysisVal = toValue(analysis)
+//   const breadcrumbsItemsVal = toValue(breadcrumbsItems)
+//   if (analysisVal && breadcrumbsItemsVal) {
+//     return [
+//       ...breadcrumbsItemsVal.map(breadcrumb => ({ ...breadcrumb, disabled: false })),
+//       {
+//         label: analysisVal.name,
+//         disabled: true,
+//         to: `/analyses/${toValue(analysisId)}`,
+//       },
+//     ]
+//   }
+//   return breadcrumbsItemsVal
+// })
 
-const history = computed(() => {
-  const analysisVal = toValue(analysis)
-  if (analysisVal && analysisVal.histories) {
-    return analysisVal.histories
-  }
-  return undefined
-})
+// const history = computed(() => {
+//   const analysisVal = toValue(analysis)
+//   if (analysisVal && analysisVal.histories) {
+//     return analysisVal.histories
+//   }
+//   return undefined
+// })
 
-function useAnalysisJob() {
-  const jobs = computed<RowAnalysisJob[] | undefined>(() => {
-    const analysisVal = toValue(analysis)
-    if (analysisVal && analysisVal?.jobs) {
-      return analysisVal.jobs
-    }
-    return undefined
-  })
+// function useAnalysisJob() {
+//   const jobs = computed<RowAnalysisJob[] | undefined>(() => {
+//     const analysisVal = toValue(analysis)
+//     if (analysisVal && analysisVal?.jobs) {
+//       return analysisVal.jobs
+//     }
+//     return undefined
+//   })
 
-  const jobsAccordionItems = computed<AccordionItem[] | undefined>(() => {
-    const jobsVal = toValue(jobs)
-    const toolsVal = toValue(tools)
-    if (jobsVal && toolsVal) {
-      return jobsVal.map((job): AccordionItem => {
-        return {
-          label: `${toolsVal[job.tool_id]?.name ?? 'no tool name'} - ${
-            toolsVal[job.tool_id]?.version ?? 'no tool version'
-          }`,
-          icon: 'i-mdi:tools',
-          value: String(job.step_id),
-        }
-      })
-    }
-    return undefined
-  })
+//   const jobsAccordionItems = computed<AccordionItem[] | undefined>(() => {
+//     const jobsVal = toValue(jobs)
+//     const toolsVal = toValue(tools)
+//     if (jobsVal && toolsVal) {
+//       return jobsVal.map((job): AccordionItem => {
+//         return {
+//           label: `${toolsVal[job.tool_id]?.name ?? 'no tool name'} - ${
+//             toolsVal[job.tool_id]?.version ?? 'no tool version'
+//           }`,
+//           icon: 'i-mdi:tools',
+//           value: String(job.step_id),
+//         }
+//       })
+//     }
+//     return undefined
+//   })
 
-  const jobsMap = computed(() => {
-    const jobsVal = toValue(jobs) as RowAnalysisJob[]
-    if (jobsVal) {
-      const jobM: Record<string, RowAnalysisJob> = {}
-      for (const job of jobsVal) {
-        jobM[String(job.step_id)] = job
-      }
-      return jobM
-    }
-    return {}
-  })
+//   const jobsMap = computed(() => {
+//     const jobsVal = toValue(jobs) as RowAnalysisJob[]
+//     if (jobsVal) {
+//       const jobM: Record<string, RowAnalysisJob> = {}
+//       for (const job of jobsVal) {
+//         jobM[String(job.step_id)] = job
+//       }
+//       return jobM
+//     }
+//     return {}
+//   })
 
-  const jobDetailsAccordionItems = computed(() => {
-    const jobsVal = toValue(jobs)
-    const perJobItems: Record<string, { details: AccordionItem[] }> = {}
-    if (jobsVal) {
-      for (const job of jobsVal) {
-        perJobItems[job.step_id] = {
-          details: [
-            { label: 'Parameters', slot: 'parameters' },
-            { label: 'Stdout', slot: 'stdout' },
-            { label: 'Stderr', slot: 'stderr' },
-          ],
-        }
-      }
-      return perJobItems
-    }
-    return undefined
-  })
+//   const jobDetailsAccordionItems = computed(() => {
+//     const jobsVal = toValue(jobs)
+//     const perJobItems: Record<string, { details: AccordionItem[] }> = {}
+//     if (jobsVal) {
+//       for (const job of jobsVal) {
+//         perJobItems[job.step_id] = {
+//           details: [
+//             { label: 'Parameters', slot: 'parameters' },
+//             { label: 'Stdout', slot: 'stdout' },
+//             { label: 'Stderr', slot: 'stderr' },
+//           ],
+//         }
+//       }
+//       return perJobItems
+//     }
+//     return undefined
+//   })
 
-  return { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems }
-}
+//   return { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems }
+// }
 
-function useAnalysisTools() {
-  function getToolParameters(stepId: string) {
-    const stepToolsVal = toValue(stepToTool)
-    const toolInputParametersVal = toValue(toolInputParameters)
-    const toolName = stepToolsVal[stepId]
-    if (toolName) {
-      return toolInputParametersVal[toolName]
-    }
-  }
+// function useAnalysisTools() {
+//   function getToolParameters(stepId: string) {
+//     const stepToolsVal = toValue(stepToTool)
+//     const toolInputParametersVal = toValue(toolInputParameters)
+//     const toolName = stepToolsVal[stepId]
+//     if (toolName) {
+//       return toolInputParametersVal[toolName]
+//     }
+//   }
 
-  const toolInputParameterComponent = computed(() => {
-    const toolsVal = toValue(tools)
-    if (toolsVal) {
-      return Object.entries(toolsVal).reduce(
-        (
-          acc: Record<string, Record<string, GalaxyToolInputComponent>>,
-          curr,
-        ) => {
-        // toolInput.
-          const [toolId, tool] = curr as [string, GalaxyTool]
-          const { inputComponentsObject } = useGalaxyToolInputComponent(
-            tool.inputs,
-          )
-          if (inputComponentsObject.value)
-            acc[toolId] = inputComponentsObject.value
-          return acc
-        },
-        {} as Record<string, Record<string, GalaxyToolInputComponent>>,
-      )
-    }
-    return undefined
-  })
-  function getParametersInputComponent(stepId: string) {
-    const toolName = toValue(stepToTool)[stepId]
-    const computedParameterInputComponentObjectVal = toValue(toolInputParameterComponent)
-    if (toolName && computedParameterInputComponentObjectVal) {
-      return computedParameterInputComponentObjectVal[toolName]
-    }
-  }
+//   const toolInputParameterComponent = computed(() => {
+//     const toolsVal = toValue(tools)
+//     if (toolsVal) {
+//       return Object.entries(toolsVal).reduce(
+//         (
+//           acc: Record<string, Record<string, GalaxyToolInputComponent>>,
+//           curr,
+//         ) => {
+//         // toolInput.
+//           const [toolId, tool] = curr as [string, GalaxyTool]
+//           const { inputComponentsObject } = useGalaxyToolInputComponent(
+//             tool.inputs,
+//           )
+//           if (inputComponentsObject.value)
+//             acc[toolId] = inputComponentsObject.value
+//           return acc
+//         },
+//         {} as Record<string, Record<string, GalaxyToolInputComponent>>,
+//       )
+//     }
+//     return undefined
+//   })
+//   function getParametersInputComponent(stepId: string) {
+//     const toolName = toValue(stepToTool)[stepId]
+//     const computedParameterInputComponentObjectVal = toValue(toolInputParameterComponent)
+//     if (toolName && computedParameterInputComponentObjectVal) {
+//       return computedParameterInputComponentObjectVal[toolName]
+//     }
+//   }
 
-  return { tools, getToolParameters, getParametersInputComponent }
-}
+//   return { tools, getToolParameters, getParametersInputComponent }
+// }
 
-const pageHeaderProps = computed(() => {
-  const analysisVal = toValue(analysis)
-  const props = {
-    title: 'Analysis',
-    description: 'Analysis perform with workflow',
-    ui: {
-      root: 'relative border-b-0 border-[var(--ui-border)] py-8',
-    },
-  }
-  if (analysisVal) {
-    return { ...props, title: analysisVal.name }
-  }
-  return props
-})
+// const pageHeaderProps = computed(() => {
+//   const analysisVal = toValue(analysis)
+//   const props = {
+//     title: 'Analysis',
+//     description: 'Analysis perform with workflow',
+//     ui: {
+//       root: 'relative border-b-0 border-[var(--ui-border)] py-8',
+//     },
+//   }
+//   if (analysisVal) {
+//     return { ...props, title: analysisVal.name }
+//   }
+//   return props
+// })
 
 watchEffect(() => {
   const dbAnalysisVal = toValue(analysis) as Record<string, any> | undefined
@@ -267,7 +268,10 @@ await useFetch('/sync')
 </script>
 
 <template>
-  <PageHeader
+  <div>
+    <NuxtPage :analysis-id />
+  </div>
+  <!-- <PageHeader
     v-if="analysis" :page-header-props="pageHeaderProps" :breadcrumbs-items="computedBreadcrumbsItems"
     icon="i-streamline:code-analysis"
   >
@@ -286,8 +290,8 @@ await useFetch('/sync')
         <GalaxyStatus :state="history.state" :size="40" />
       </div>
     </template>
-  </PageHeader>
-  <div>
+  </PageHeader> -->
+  <!-- <div>
     <USeparator :id="`input-${analysisId}`" icon="i-lucide:file" />
     <div class="py-4">
       <h2 class="text-lg font-bold">
@@ -312,7 +316,6 @@ await useFetch('/sync')
           </div>
         </template>
         <template #body="{ item }">
-          <!-- item.value is step_id as string -->
           <div v-if="jobDetailsAccordionItems && item.value" class="p-4">
             <UPageAccordion :items="jobDetailsAccordionItems[item.value]?.details">
               <template #parameters>
@@ -352,8 +355,6 @@ await useFetch('/sync')
         </template>
       </UPageAccordion>
     </div>
-
-    <!-- outputs -->
     <USeparator :id="`output-${analysisId}`" icon="i-lucide:file" />
     <div v-if="outputs">
       <div class="py-4">
@@ -365,5 +366,5 @@ await useFetch('/sync')
     </div>
 
     <NuxtPage :breadcrumbs-items="computedBreadcrumbsItems" :analysis-id="analysisId" />
-  </div>
+  </div> -->
 </template>

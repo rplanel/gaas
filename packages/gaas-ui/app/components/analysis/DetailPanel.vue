@@ -2,17 +2,16 @@
 import type { AccordionItem } from '@nuxt/ui'
 import type { GalaxyTool } from 'blendtype'
 import type { GalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
-import type { SanitizedAnalysis } from '../../pages/analyses/index.vue'
 import type { Database, RowAnalysisJob } from '../../types'
 import { useGalaxyDecodeParameters } from '../../composables/galaxy/useGalaxyDecodeParameters'
 import { useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 
 const props = defineProps<{
-  analysis: SanitizedAnalysis
+  analysisId: number
 }>()
 
 const emits = defineEmits(['close'])
-const { analysis } = toRefs(props)
+// const { analysis } = toRefs(props)
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 const workflowParametersModel = ref<
@@ -21,7 +20,7 @@ const workflowParametersModel = ref<
 >(undefined)
 const { outputs, analysis: detailedAnalysis,
   //  refresh: refreshAnalysis,
-  inputs } = await useAnalysisDatasetIO(props.analysis.id)
+  inputs } = await useAnalysisDatasetIO(props.analysisId)
 
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
@@ -188,7 +187,7 @@ watchEffect(() => {
 
 <template>
   <UDashboardPanel id="analysis-detail-1">
-    <UDashboardNavbar :title="analysis.name" :toggle="false">
+    <UDashboardNavbar :title="detailedAnalysis.name" :toggle="false">
       <template #leading>
         <UButton icon="i-lucide-x" color="neutral" variant="ghost" class="-ms-1.5" @click="emits('close')" />
       </template>

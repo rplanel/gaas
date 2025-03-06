@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import type { BreadcrumbItem, TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/vue-table'
+// import type {
+//   BreadcrumbItem,
+//   TableColumn,
+// } from '@nuxt/ui'
 import type { Database } from '../../types'
 
-import { ColumnTableSort } from '#components'
+// import { ColumnTableSort } from '#components'
 import {
   definePageMeta,
   useAsyncData,
@@ -13,19 +15,16 @@ import {
 // import { getErrorMessage, getStatusCode } from 'blendtype'
 import { toValue } from 'vue'
 
-interface Props {
-  breadcrumbsItems?: BreadcrumbItem[] | undefined
-}
-const props = withDefaults(defineProps<Props>(), {
-  breadcrumbsItems: undefined,
-})
+// interface Props {
+//   breadcrumbsItems?: BreadcrumbItem[] | undefined
+// }
+// const props = withDefaults(defineProps<Props>(), {
+//   breadcrumbsItems: undefined,
+// })
 
-const { breadcrumbsItems } = toRefs(props)
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
-const toast = useToast()
-const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UButton = resolveComponent('UButton')
+// const toast = useToast()
 export type ListAnalysis = Pick<
   Database['galaxy']['Tables']['analyses']['Row'],
   'id' | 'name' | 'state' | 'is_sync'
@@ -46,32 +45,35 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const isEditingAnalyses = ref<Record<number, string>>({})
+// const isEditingAnalyses = ref<Record<number, string>>({})
 
-const galaxyAnalysesColumns = ref<TableColumn<SanitizedAnalysis>[]>([
-  {
-    accessorKey: 'name',
-    sortingFn: 'alphanumeric',
-    header: ({ column }) => {
-      return h(ColumnTableSort, { column, label: 'Name' })
-    },
-  },
-  { header: 'State', accessorKey: 'histories.state', id: 'historiesState' },
-  {
-    accessorKey: 'workflows',
-    sortingFn: 'alphanumeric',
-    header: ({ column }) => {
-      return h(ColumnTableSort, { column, label: 'Workflow' })
-    },
-  },
-  {
-    id: 'actions',
-  },
-])
+// const galaxyAnalysesColumns = ref<TableColumn<SanitizedAnalysis>[]>([
+//   {
+//     accessorKey: 'name',
+//     sortingFn: 'alphanumeric',
+//     header: ({ column }) => {
+//       return h(ColumnTableSort, { column, label: 'Name' })
+//     },
+//   },
+//   { header: 'State', accessorKey: 'histories.state', id: 'historiesState' },
+//   {
+//     accessorKey: 'workflows',
+//     sortingFn: 'alphanumeric',
+//     header: ({ column }) => {
+//       return h(ColumnTableSort, { column, label: 'Workflow' })
+//     },
+//   },
+//   {
+//     id: 'actions',
+//   },
+// ])
 
 // const router = useRouter()
 
-const { data: analyses, refresh: refreshAnalyses } = await useAsyncData(
+const {
+  // data: analyses,
+  refresh: refreshAnalyses,
+} = await useAsyncData(
   'analyses',
   async () => {
     const userVal = toValue(user)
@@ -107,22 +109,22 @@ const { data: analyses, refresh: refreshAnalyses } = await useAsyncData(
   },
 )
 
-const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {
-  const analysesVal = toValue(analyses)
-  if (analysesVal && Array.isArray(analysesVal)) {
-    return analysesVal?.map((a) => {
-      const { id, name, state, is_sync } = a
-      return {
-        id,
-        name,
-        state,
-        is_sync,
-        workflows: a.workflows.name,
-      }
-    })
-  }
-  return []
-})
+// const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {
+//   const analysesVal = toValue(analyses)
+//   if (analysesVal && Array.isArray(analysesVal)) {
+//     return analysesVal?.map((a) => {
+//       const { id, name, state, is_sync } = a
+//       return {
+//         id,
+//         name,
+//         state,
+//         is_sync,
+//         workflows: a.workflows.name,
+//       }
+//     })
+//   }
+//   return []
+// })
 
 function handleUpdates() {
   refreshAnalyses()
@@ -148,108 +150,100 @@ supabase
   )
   .subscribe()
 
-async function deleteItem(item: SanitizedAnalysis) {
-  try {
-    await $fetch(`/api/db/analyses/${item.id}`, { method: 'DELETE' })
-    // refreshAnalyses()
-    // debugger
-  }
-  catch (error) {
-    const { errorMessage } = useErrorMessage(error)
-    const { errorStatus } = useErrorStatus(error)
+// async function deleteItem(item: SanitizedAnalysis) {
+//   try {
+//     await $fetch(`/api/db/analyses/${item.id}`, { method: 'DELETE' })
+//     // refreshAnalyses()
+//     // debugger
+//   }
+//   catch (error) {
+//     const { errorMessage } = useErrorMessage(error)
+//     const { errorStatus } = useErrorStatus(error)
 
-    throw createError({
-      message: toValue(errorMessage),
-      statusCode: toValue(errorStatus),
-    })
-  }
-}
+//     throw createError({
+//       message: toValue(errorMessage),
+//       statusCode: toValue(errorStatus),
+//     })
+//   }
+// }
 
-function getRowItems(row: Row<SanitizedAnalysis>) {
-  return [
-    {
-      type: 'label',
-      label: 'Actions',
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Delete',
-      icon: 'i-mdi:delete',
-      color: 'error',
+// function getRowItems(row: Row<SanitizedAnalysis>) {
+//   return [
+//     {
+//       type: 'label',
+//       label: 'Actions',
+//     },
+//     {
+//       type: 'separator',
+//     },
+//     {
+//       label: 'Delete',
+//       icon: 'i-mdi:delete',
+//       color: 'error',
 
-      onSelect() {
-        deleteItem(row.original)
+//       onSelect() {
+//         deleteItem(row.original)
 
-        toast.add({
-          title: 'Analysis deleted',
-          color: 'success',
-          icon: 'i-lucide-circle-check',
-        })
-      },
-    },
-  ]
-}
+//         toast.add({
+//           title: 'Analysis deleted',
+//           color: 'success',
+//           icon: 'i-lucide-circle-check',
+//         })
+//       },
+//     },
+//   ]
+// }
 
-function setEditState(id: number, name: string) {
-  const isEditingAnalysesVal = toValue(isEditingAnalyses)
-  isEditingAnalysesVal[id] = name
-}
+// function setEditState(id: number, name: string) {
+//   const isEditingAnalysesVal = toValue(isEditingAnalyses)
+//   isEditingAnalysesVal[id] = name
+// }
 
-function resetEditAnalysis(id: number) {
-  const isEditingAnalysesVal = toValue(isEditingAnalyses)
-  if (isEditingAnalysesVal?.[id]) {
-    const { [id]: toRemove, ...rest } = isEditingAnalysesVal
-    isEditingAnalyses.value = rest
-  }
-}
+// function resetEditAnalysis(id: number) {
+//   const isEditingAnalysesVal = toValue(isEditingAnalyses)
+//   if (isEditingAnalysesVal?.[id]) {
+//     const { [id]: toRemove, ...rest } = isEditingAnalysesVal
+//     isEditingAnalyses.value = rest
+//   }
+// }
 
-async function editAnalysisName(id: number) {
-  const isEditingAnalysesVal = toValue(isEditingAnalyses)
-  if (isEditingAnalysesVal?.[id]) {
-    const name = isEditingAnalysesVal[id]
-    const { error } = await supabase
-      .schema('galaxy')
-      .from('analyses')
-      .update({ name })
-      .eq('id', id)
-      .select()
-    if (error) {
-      const { errorMessage } = useErrorMessage(error)
-      const { errorStatus } = useErrorStatus(error)
-      throw createError({
-        statusCode: toValue(errorStatus),
-        statusMessage: toValue(errorMessage),
-      })
-    }
-    const { [id]: toRemove, ...rest } = isEditingAnalyses.value
-    isEditingAnalyses.value = rest
-  }
-}
+// async function editAnalysisName(id: number) {
+//   const isEditingAnalysesVal = toValue(isEditingAnalyses)
+//   if (isEditingAnalysesVal?.[id]) {
+//     const name = isEditingAnalysesVal[id]
+//     const { error } = await supabase
+//       .schema('galaxy')
+//       .from('analyses')
+//       .update({ name })
+//       .eq('id', id)
+//       .select()
+//     if (error) {
+//       const { errorMessage } = useErrorMessage(error)
+//       const { errorStatus } = useErrorStatus(error)
+//       throw createError({
+//         statusCode: toValue(errorStatus),
+//         statusMessage: toValue(errorMessage),
+//       })
+//     }
+//     const { [id]: toRemove, ...rest } = isEditingAnalyses.value
+//     isEditingAnalyses.value = rest
+//   }
+// }
 await useFetch('/sync')
 
-const pageHeaderProps = computed(() => {
-  return {
-    title: 'Analysis',
-    description: 'All analyses that has been run',
-    ui: {
-      root: 'relative border-b-0 border-[var(--ui-border)] py-8',
-    },
-
-  }
-})
-
-const utableProps = computed(() => {
-  return {
-    columns: galaxyAnalysesColumns.value,
-    data: sanitizedAnalyses.value,
-  }
-})
+// const utableProps = computed(() => {
+//   return {
+//     columns: galaxyAnalysesColumns.value,
+//     data: sanitizedAnalyses.value,
+//   }
+// })
 </script>
 
 <template>
-  <div>
+  <div class="hidden lg:flex flex-1 items-center justify-center">
+    <UIcon name="i-lucide:workflow" class="size-32 text-(--ui-text-dimmed)" />
+  </div>
+  <!-- <div>
     <PageHeader
       :page-header-props
       :breadcrumbs-items="breadcrumbsItems"
@@ -323,5 +317,5 @@ const utableProps = computed(() => {
         </div>
       </template>
     </TableGeneric>
-  </div>
+  </div> -->
 </template>
