@@ -44,25 +44,7 @@ const invokeWorkflowParameterModel = ref<Record<string, WorkflowToolParameters>>
 const user = useSupabaseUser()
 const supabase = useSupabaseClient<Database>()
 
-// onMounted(() => {
-//   const dbAnalysisVal = toValue(dbAnalysis) as Record<string, any>
-//   // const workflowStepsVal = toValue(workflowSteps)
-//   if (props.analysisId && dbAnalysisVal) {
-//     state.analysisName = `Copy of ${dbAnalysisVal.name}`
-//     const { decodedParameters } = useGalaxyDecodeParameters(
-//       dbAnalysisVal.parameters,
-//     )
-//     invokeWorkflowParameterModel.value = decodedParameters.value
-//     workflowInputDatasetsModel.value = dbAnalysisVal.datamap
-//   }
-//   else {
-//     invokeWorkflowParameterModel.value = workflowParametersModel.value
-//   }
-// })
-
-// const workflowParametersModel = computed(() => {
-//   return Object.entries(toValue(workflowToolSteps))
-// })
+const { refreshAnalysesList } = inject('analysesList')
 
 const schema = z.object({
   analysisName: z.string().max(256, 'Must be less than 256'),
@@ -198,6 +180,8 @@ async function runAnalysis() {
           body: payload,
         })
         $fetch('/sync')
+        refreshAnalysesList()
+
         router.push(`/analyses/${newAnalysisId}`)
       }
       catch (error) {

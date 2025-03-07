@@ -28,7 +28,7 @@ const isAdmin = computed(() => {
   return userRoleVal === 'admin'
 })
 
-const { data: analyses } = await useAsyncData('search-analyses', async () => {
+const { data: analyses, refresh: refreshAnalyses } = await useAsyncData('search-analyses', async () => {
   const { data } = await supabase
     .schema('galaxy')
     .from('analyses')
@@ -58,9 +58,7 @@ const sanitizedNavigationMenuItems = computed<OrderedNavigationMenuItem[]>(() =>
         ...item,
         defaultOpen: true,
         badge: analysesVal.length,
-        // children: analysesVal.map(({ name, id }) => {
-        //   return { label: name, to: `/analyses/${id}/results` }
-        // }),
+
       }
     }
     if (item.label === 'Datasets') {
@@ -128,6 +126,10 @@ const searchGroups = computed(() => {
 provide('datasetsCount', {
   datasetsCount,
   refreshDatasetsCount,
+})
+provide('analysesList', {
+  analysesList: analyses,
+  refreshAnalysesList: refreshAnalyses,
 })
 </script>
 
