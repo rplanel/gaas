@@ -112,7 +112,7 @@ watch(analysisId, () => {
 defineShortcuts({
   arrowdown: () => {
     const index = sanitizedAnalyses.value.findIndex(analysis => analysis.id === analysisId.value)
-    if (index === -1) {
+    if (index === -1 || index === sanitizedAnalyses.value.length - 1) {
       const curr = sanitizedAnalyses.value[0]
       if (curr)
         router.push(`/analyses/${curr.id}`)

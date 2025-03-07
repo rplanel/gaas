@@ -18,9 +18,15 @@ const workflowParametersModel = ref<
   | Record<string, Record<string, string | string[] | Record<string, any>>>
   | undefined
 >(undefined)
-const { outputs, analysis: detailedAnalysis,
-  //  refresh: refreshAnalysis,
-  inputs } = await useAnalysisDatasetIO(props.analysisId)
+const { outputs, analysis: detailedAnalysis, inputs } = await useAnalysisDatasetIO(props.analysisId)
+const tabItems = [{
+  label: 'Parameters',
+  value: 'params',
+}, {
+  label: 'Results',
+  value: 'res',
+}]
+const selectedTab = ref('res')
 
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
@@ -55,7 +61,6 @@ const workflowGalaxyId = computed(() => {
   return undefined
 })
 const {
-  workflow,
   workflowSteps,
   workflowToolIds,
   stepToTool,
@@ -63,14 +68,6 @@ const {
 const { tools, toolInputParameters } = useGalaxyTool(workflowToolIds)
 const { getToolParameters, getParametersInputComponent } = useAnalysisTools()
 const { jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
-
-const history = computed(() => {
-  const analysisVal = toValue(detailedAnalysis)
-  if (analysisVal && analysisVal.histories) {
-    return analysisVal.histories
-  }
-  return undefined
-})
 
 function useAnalysisJob() {
   const jobs = computed<RowAnalysisJob[] | undefined>(() => {
@@ -196,16 +193,21 @@ watchEffect(() => {
 
 <template>
   <UDashboardPanel id="analysis-detail-1" class="overflow-auto">
-    <UDashboardNavbar v-if="detailedAnalysis" :title="detailedAnalysis.name" :toggle="false">
+    <UDashboardNavbar v-if="detailedAnalysis" :title="detailedAnalysis.name" :toggle="true">
       <template #leading>
         <UButton icon="i-lucide-x" color="neutral" variant="ghost" class="-ms-1.5" @click="emits('close')" />
       </template>
       <template #trailing>
-        <UBadge :label="workflow?.name" variant="subtle" />
+        <UTabs
+          v-model="selectedTab"
+          :items="tabItems"
+          class="w-42"
+          :content="false"
+          size="xs"
+        />
       </template>
-
       <template #right>
-        <GalaxyStatus v-if="history" :state="history.state" :size="30" />
+        <!-- <GalaxyStatus v-if="history" :state="history.state" :size="30" /> -->
         <UTooltip text="Rerun">
           <UButton
             icon="lucide:refresh-ccw"
