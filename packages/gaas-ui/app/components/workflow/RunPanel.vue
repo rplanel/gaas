@@ -1,31 +1,12 @@
 <script setup lang="ts">
-defineProps<{
+withDefaults(defineProps<{
   workflowId: number
-}>()
+  analysisId?: number | undefined
+}>(), {
+  analysisId: undefined,
+})
 
 const emits = defineEmits(['close'])
-
-// const toast = useToast()
-
-// const reply = ref('')
-// const loading = ref(false)
-
-// function onSubmit() {
-//   loading.value = true
-
-//   setTimeout(() => {
-//     reply.value = ''
-
-//     toast.add({
-//       title: 'Email sent',
-//       description: 'Your email has been sent successfully',
-//       icon: 'i-lucide-check-circle',
-//       color: 'success',
-//     })
-
-//     loading.value = false
-//   }, 1000)
-// }
 </script>
 
 <template>
@@ -44,6 +25,7 @@ const emits = defineEmits(['close'])
         <GalaxyWorkflowInvokeForm
           v-if="workflowId"
           :workflow-id="workflowId"
+          :analysis-id="analysisId"
         />
       </div>
     </div>

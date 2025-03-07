@@ -30,22 +30,11 @@ useState('showWorkflowStepParameter', () => true)
 </script>
 
 <template>
-  <div>
-    <UApp>
-      <!-- <Banner /> -->
-      <NuxtLoadingIndicator />
-      <UMain>
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
-      </UMain>
-
-      <!--      <template v-if="files && navigation">
-        <ClientOnly>
-          <LazyUContentSearch :files="files" :navigation="navigation" />
-        </ClientOnly>
-      </template>
--->
-    </UApp>
-  </div>
+  <UApp>
+    <!-- <Banner /> -->
+    <NuxtLoadingIndicator />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </UApp>
 </template>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'landing',
+})
 const links = ref([
   {
     label: 'Get started',

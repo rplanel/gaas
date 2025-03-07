@@ -4,10 +4,6 @@ import { galaxyWorkflowExportSchema } from 'blendtype'
 import { z } from 'zod'
 import { fromError } from 'zod-validation-error'
 
-definePageMeta({
-  layout: 'dashboard',
-})
-
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 

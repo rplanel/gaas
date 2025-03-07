@@ -1,8 +1,4 @@
 <script setup lang="ts">
-// import type {
-//   BreadcrumbItem,
-//   TableColumn,
-// } from '@nuxt/ui'
 import type { Database } from '../../types'
 
 // import { ColumnTableSort } from '#components'
@@ -14,13 +10,6 @@ import {
 } from '#imports'
 // import { getErrorMessage, getStatusCode } from 'blendtype'
 import { toValue } from 'vue'
-
-// interface Props {
-//   breadcrumbsItems?: BreadcrumbItem[] | undefined
-// }
-// const props = withDefaults(defineProps<Props>(), {
-//   breadcrumbsItems: undefined,
-// })
 
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
@@ -108,23 +97,6 @@ const {
     return data
   },
 )
-
-// const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {
-//   const analysesVal = toValue(analyses)
-//   if (analysesVal && Array.isArray(analysesVal)) {
-//     return analysesVal?.map((a) => {
-//       const { id, name, state, is_sync } = a
-//       return {
-//         id,
-//         name,
-//         state,
-//         is_sync,
-//         workflows: a.workflows.name,
-//       }
-//     })
-//   }
-//   return []
-// })
 
 function handleUpdates() {
   refreshAnalyses()
@@ -230,18 +202,11 @@ supabase
 //   }
 // }
 await useFetch('/sync')
-
-// const utableProps = computed(() => {
-//   return {
-//     columns: galaxyAnalysesColumns.value,
-//     data: sanitizedAnalyses.value,
-//   }
-// })
 </script>
 
 <template>
   <div class="hidden lg:flex flex-1 items-center justify-center">
-    <UIcon name="i-lucide:workflow" class="size-32 text-(--ui-text-dimmed)" />
+    <UIcon name="i-streamline:code-analysis" class="size-32 text-(--ui-text-dimmed)" />
   </div>
   <!-- <div>
     <PageHeader

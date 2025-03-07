@@ -71,37 +71,13 @@ async function downloadFile(storageId: string | null) {
 
 <template>
   <div>
-    <UPageList divide>
+    <UPageList>
       <UPageCard
         v-for="(dataset, i) in sanitizedItems" :key="dataset?.dataset_name ?? i"
-        :title="dataset?.dataset_name ? dataset.dataset_name : undefined" variant="ghost"
+        :description="dataset?.dataset_name ? dataset.dataset_name : undefined" variant="ghost"
         icon="i-mdi:download"
         @click="downloadFile(dataset?.storage_object_id)"
-      >
-        <!-- <template #body>
-          <div class="w-full">
-            <div
-              v-if="dataset"
-              class="p-3 grid grid-flow-col auto-cols-max items-center justify-between rounded-[calc(var(--ui-radius))] hover:bg-[var(--ui-bg-elevated)]"
-            >
-              <div class="grid grid-flow-col auto-cols-max items-center justify-items-start gap-2">
-                <div>
-                  <UAvatar icon="i-mdi:download" />
-                </div>
-              </div>
-              <div class="grid grid-flow-col-dense gap-1">
-                <UBadge variant="soft" color="info">
-                  {{ dataset.extension }}
-                </UBadge>
-                <UBadge variant="soft">
-                  {{ dataset.humanFileSize }}
-                </UBadge>
-                <GalaxyStatus v-if="dataset?.state" :state="dataset.state" />
-              </div>
-            </div>
-          </div>
-        </template> -->
-      </UPageCard>
+      />
     </UPageList>
   </div>
 </template>

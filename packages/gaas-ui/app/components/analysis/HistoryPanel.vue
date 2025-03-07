@@ -6,9 +6,9 @@ import type { Database, RowAnalysisJob } from '../../types'
 import { useGalaxyDecodeParameters } from '../../composables/galaxy/useGalaxyDecodeParameters'
 import { useGalaxyToolInputComponent } from '../../composables/galaxy/useGalaxyToolInputComponent'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   analysisId: number
-}>()
+}>(), {})
 
 const emits = defineEmits(['close'])
 // const { analysis } = toRefs(props)
@@ -62,7 +62,7 @@ const {
 } = useGalaxyWorkflow(workflowGalaxyId)
 const { tools, toolInputParameters } = useGalaxyTool(workflowToolIds)
 const { getToolParameters, getParametersInputComponent } = useAnalysisTools()
-const { jobs, jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
+const { jobsAccordionItems, jobsMap, jobDetailsAccordionItems } = useAnalysisJob()
 
 const history = computed(() => {
   const analysisVal = toValue(detailedAnalysis)
@@ -97,6 +97,15 @@ function useAnalysisJob() {
     }
     return undefined
   })
+
+  // const activeAccordionItem = computed(() => {
+  //   const jobsAccordionItemsVal = toValue(jobsAccordionItems)
+  //   if (jobsAccordionItemsVal) {
+  //     return jobsAccordionItemsVal.map(() => true)
+  //   }
+  //   return []
+  // })
+  // const activeAccordionItem = ref(0)
 
   const jobsMap = computed(() => {
     const jobsVal = toValue(jobs) as RowAnalysisJob[]
@@ -186,8 +195,8 @@ watchEffect(() => {
 </script>
 
 <template>
-  <UDashboardPanel id="analysis-detail-1">
-    <UDashboardNavbar :title="detailedAnalysis.name" :toggle="false">
+  <UDashboardPanel id="analysis-detail-1" class="overflow-auto">
+    <UDashboardNavbar v-if="detailedAnalysis" :title="detailedAnalysis.name" :toggle="false">
       <template #leading>
         <UButton icon="i-lucide-x" color="neutral" variant="ghost" class="-ms-1.5" @click="emits('close')" />
       </template>
@@ -206,72 +215,58 @@ watchEffect(() => {
         </UTooltip>
       </template>
     </UDashboardNavbar>
-    <UPage>
-      <UPageBody class="px-4">
-        <UPageCard title="Inputs" variant="ghost">
-          <GalaxyAnalysisIoDatasets :items="inputs" />
-        </UPageCard>
-
-        <!-- <div class="py-4">
-          <h2 class="text-lg font-bold">
-            Inputs
-          </h2> -->
-
-        <!-- </div> -->
-
-        <UPageCard v-if="jobs" title="Tools" variant="ghost">
-          <UPageAccordion :items="jobsAccordionItems">
-            <template #leading="{ item }">
-              <div>
-                <GalaxyStatus :state="item?.value && jobsMap ? jobsMap[item.value]?.state : undefined" size="25" />
-              </div>
-            </template>
-            <template #body="{ item }">
-              <!-- item.value is step_id as string -->
-              <div v-if="jobDetailsAccordionItems && item.value" class="p-4">
-                <UPageAccordion :items="jobDetailsAccordionItems[item.value]?.details">
-                  <template #parameters>
-                    <div
-                      v-if="
-                        workflowSteps
-                          && workflowParametersModel
-                          && item.value
-                      " class="p-2"
-                    >
-                      <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)]">
-                        <GalaxyWorkflowStep
-                          variant="display" :workflow-step="workflowSteps[item.value]"
-                          :tool-parameters="getToolParameters(item.value)"
-                          :parameters-inputs-component="getParametersInputComponent(item.value)"
-                          :workflow-parameters-model=" workflowParametersModel[item.value] "
-                        />
-                      </div>
+    <UPageList divide>
+      <UPageCard title="Inputs" variant="ghost" :ui="{ container: 'lg:grid-cols-1' }">
+        <GalaxyAnalysisIoDatasets :items="inputs" />
+      </UPageCard>
+      <UPageCard title="Jobs" variant="ghost" :ui="{ container: 'lg:grid-cols-1' }">
+        <UPageAccordion :default-value="[jobsAccordionItems?.[0]?.value ?? '0']" :items="jobsAccordionItems">
+          <template #leading="{ item }">
+            <div>
+              <GalaxyStatus :state="item?.value && jobsMap ? jobsMap[item.value]?.state : undefined" size="25" />
+            </div>
+          </template>
+          <template #body="{ item }">
+            <div v-if="jobDetailsAccordionItems && item.value" class="p-4">
+              <UPageAccordion :default-value="['0']" :items="jobDetailsAccordionItems[item.value]?.details">
+                <template #parameters>
+                  <div
+                    v-if="
+                      workflowSteps
+                        && workflowParametersModel
+                        && item.value
+                    " class="p-2"
+                  >
+                    <GalaxyWorkflowStep
+                      variant="display" :workflow-step="workflowSteps[item.value]"
+                      :tool-parameters="getToolParameters(item.value)"
+                      :parameters-inputs-component="getParametersInputComponent(item.value)"
+                      :workflow-parameters-model=" workflowParametersModel[item.value] "
+                    />
+                  </div>
+                </template>
+                <template #stdout>
+                  <div class="p-1">
+                    <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-8 overflow-x-auto">
+                      <pre v-if="jobsMap" class="text-nowrap"> {{ jobsMap[item.value]?.stdout }}</pre>
                     </div>
-                  </template>
-                  <template #stdout>
-                    <div class="p-1">
-                      <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-8 overflow-x-auto">
-                        <pre v-if="jobsMap" class="text-nowrap"> {{ jobsMap[item.value]?.stdout }}</pre>
-                      </div>
+                  </div>
+                </template>
+                <template #stderr>
+                  <div class="p-1">
+                    <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-8 overflow-x-auto">
+                      <pre v-if="jobsMap"> {{ jobsMap[item.value]?.stderr }}</pre>
                     </div>
-                  </template>
-                  <template #stderr>
-                    <div class="p-1">
-                      <div class="ring ring-[var(--ui-border)] rounded-[calc(var(--ui-radius)*2)] p-8 overflow-x-auto">
-                        <pre v-if="jobsMap"> {{ jobsMap[item.value]?.stderr }}</pre>
-                      </div>
-                    </div>
-                  </template>
-                </UPageAccordion>
-              </div>
-            </template>
-          </UPageAccordion>
-        </UPageCard>
-
-        <UPageCard v-if="outputs" title="Outputs" variant="ghost">
-          <GalaxyAnalysisIoDatasets :items="outputs" />
-        </UPageCard>
-      </UPageBody>
-    </UPage>
+                  </div>
+                </template>
+              </UPageAccordion>
+            </div>
+          </template>
+        </UPageAccordion>
+      </UPageCard>
+      <UPageCard title="Outputs" variant="ghost" :ui="{ container: 'lg:grid-cols-1' }">
+        <GalaxyAnalysisIoDatasets :items="outputs" />
+      </UPageCard>
+    </UPageList>
   </UDashboardPanel>
 </template>

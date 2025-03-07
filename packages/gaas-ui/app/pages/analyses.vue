@@ -2,10 +2,6 @@
 import type { Database } from '../types'
 import type { ListAnalysisWithWorkflow, SanitizedAnalysis } from './analyses/index.vue'
 
-definePageMeta({
-  layout: 'dashboard',
-})
-
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 

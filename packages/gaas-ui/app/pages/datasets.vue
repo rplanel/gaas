@@ -3,9 +3,6 @@ import type { SupabaseTypes } from '#build/types/database'
 import type { BreadcrumbItem } from '#ui/types'
 import { z } from 'zod'
 
-definePageMeta({
-  layout: 'dashboard',
-})
 type Database = SupabaseTypes.Database
 
 const breadcrumbsItems = ref<BreadcrumbItem[]>([

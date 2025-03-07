@@ -3,9 +3,7 @@
 import type { BreadcrumbItem } from '@nuxt/ui'
 
 withDefaults(defineProps<Props>(), { breadcrumbsItems: undefined })
-definePageMeta({
-  layout: 'dashboard',
-})
+
 // type Database = SupabaseTypes.Database
 
 interface Props {
@@ -76,7 +74,5 @@ const workflowId = computed(() => {
 </script>
 
 <template>
-  <div>
-    <NuxtPage :workflow-id />
-  </div>
+  <NuxtPage :workflow-id />
 </template>
