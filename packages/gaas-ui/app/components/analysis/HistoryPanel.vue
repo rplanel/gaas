@@ -18,7 +18,7 @@ const workflowParametersModel = ref<
   | Record<string, Record<string, string | string[] | Record<string, any>>>
   | undefined
 >(undefined)
-const { outputs, analysis: detailedAnalysis, inputs } = await useAnalysisDatasetIO(props.analysisId)
+const { outputs, analysis: detailedAnalysis, inputs } = useAnalysisDatasetIO(props.analysisId)
 const tabItems = [{
   label: 'Parameters',
   value: 'params',

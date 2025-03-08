@@ -206,7 +206,7 @@ supabase
     handleUpdates,
   )
   .subscribe()
-await useFetch('/sync')
+$fetch('/sync')
 </script>
 
 <template>

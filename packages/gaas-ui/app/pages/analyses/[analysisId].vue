@@ -32,7 +32,7 @@ const {
   analysis,
   refresh: refreshAnalysis,
   // inputs
-} = await useAnalysisDatasetIO(analysisId)
+} = useAnalysisDatasetIO(analysisId)
 
 // Listen to job updates
 supabase
@@ -69,7 +69,7 @@ watchEffect(() => {
   }
 })
 
-await useFetch('/sync')
+$fetch('/sync')
 </script>
 
 <template>
