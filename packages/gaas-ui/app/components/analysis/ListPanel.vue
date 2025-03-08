@@ -78,7 +78,7 @@ const { data: analyses, refresh: refreshAnalyses } = await useAsyncData(
         statusCode: Number.parseInt(error.code),
       })
     }
-    return data
+    return data || []
   },
 )
 const sanitizedAnalyses = computed<SanitizedAnalysis[]>(() => {

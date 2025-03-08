@@ -22,10 +22,6 @@ useHead({
 useSeoMeta({
   ...appConfig?.gaasUi.seo,
 })
-
-// const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('content'))
-// const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('content'), { server: false,
-// })
 useState('showWorkflowStepParameter', () => true)
 </script>
 

@@ -77,6 +77,9 @@ export async function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefin
           statusCode: Number.parseInt(error.code),
         })
       }
+      if (data === null) {
+        throw createError({ statusMessage: 'No input datasets found', statusCode: 404 })
+      }
       return data
     },
   )
@@ -109,6 +112,9 @@ export async function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefin
           statusMessage: error.message,
           statusCode: Number.parseInt(error.code),
         })
+      }
+      if (data === null) {
+        throw createError({ statusMessage: 'No output datasets found', statusCode: 404 })
       }
       return data
     },

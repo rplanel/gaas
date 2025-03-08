@@ -197,33 +197,67 @@ async function runAnalysis() {
 const { data: dbWorkflow } = await useAsyncData('workflow-db', async () => {
   const userVal = toValue(user)
   const workflowIdVal = toValue(props.workflowId)
-  if (userVal && workflowIdVal) {
-    const { data } = await supabase
-      .schema('galaxy')
-      .from('workflows')
-      .select('id, name, galaxy_id, definition')
-      .eq('id', workflowIdVal)
-      .limit(1)
-      .single()
-    return data
+  if (!userVal) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized: User not found',
+    })
   }
+  if (!workflowIdVal) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Not Found: Workflow not found',
+    })
+  }
+  const { data, error } = await supabase
+    .schema('galaxy')
+    .from('workflows')
+    .select('id, name, galaxy_id, definition')
+    .eq('id', workflowIdVal)
+    .limit(1)
+    .single()
+  if (data === null) {
+    throw createError({ statusMessage: 'No workflow found', statusCode: 404 })
+  }
+  if (error) {
+    throw createError({ statusCode: getStatusCode(error), statusMessage: getErrorMessage(error) })
+  }
+  return data
 })
 
 const { data: dbAnalysis } = await useAsyncData('analysis-db', async () => {
   const userVal = toValue(user)
-
-  // const workflowIdVal = toValue(props.workflowId);
   const analysisId = toValue(props.analysisId)
-  if (userVal && analysisId) {
-    const { data } = await supabase
-      .schema('galaxy')
-      .from('analyses')
-      .select(`*,jobs(*)`)
-      .eq('id', analysisId)
-      .limit(1)
-      .single()
-    return data
+
+  if (!userVal) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized: User not found',
+    })
   }
+  if (!analysisId) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Not Found: Analysis not found',
+    })
+  }
+  // const workflowIdVal = toValue(props.workflowId);
+  const { data, error } = await supabase
+    .schema('galaxy')
+    .from('analyses')
+    .select(`*,jobs(*)`)
+    .eq('id', analysisId)
+    .limit(1)
+    .single()
+
+  if (data === null) {
+    throw createError({ statusMessage: 'No analysis found', statusCode: 404 })
+  }
+  if (error) {
+    throw createError({ statusCode: getStatusCode(error), statusMessage: getErrorMessage(error) })
+  }
+
+  return data
 })
 
 const workflowGalaxyId = computed(() => {

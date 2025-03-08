@@ -33,7 +33,9 @@ const { data: analyses, refresh: refreshAnalyses } = await useAsyncData('search-
     .schema('galaxy')
     .from('analyses')
     .select('id, name')
-
+  if (data === null) {
+    throw createError({ statusMessage: 'No analysis found', statusCode: 404 })
+  }
   return data
 })
 
@@ -42,7 +44,9 @@ const { data: datasetsCount, refresh: refreshDatasetsCount } = await useAsyncDat
     .schema('galaxy')
     .from('uploaded_datasets')
     .select('*', { count: 'exact', head: true })
-
+  if (count === null) {
+    throw createError({ statusMessage: 'No datasets found', statusCode: 404 })
+  }
   return count
 })
 

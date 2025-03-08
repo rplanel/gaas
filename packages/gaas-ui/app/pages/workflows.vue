@@ -11,14 +11,27 @@ const { userRole } = useUserRole(supabase)
 
 const { data: dbWorkflows } = await useAsyncData('workflows-auth', async () => {
   const userVal = toValue(user)
-  if (userVal) {
-    const { data } = await supabase
-      .schema('galaxy')
-      .from('workflows')
-      .select()
-      .returns<RowWorkflow[]>()
-    return data
+  if (!userVal) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized: User not found',
+    })
   }
+
+  const { data, error } = await supabase
+    .schema('galaxy')
+    .from('workflows')
+    .select()
+    .returns<RowWorkflow[]>()
+
+  if (data === null) {
+    throw createError({ statusMessage: 'No uploaded dataset found', statusCode: 404 })
+  }
+  if (error) {
+    throw createError({ statusCode: getStatusCode(error), statusMessage: getErrorMessage(error) })
+  }
+
+  return data
 })
 
 const sanitizedDbWorkflows = computed<SanitizedWorkflowDbItem[] | null>(() => {
