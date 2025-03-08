@@ -2,7 +2,7 @@ import type { AsyncDataExecuteOptions } from '#app/composables/asyncData'
 import type { MaybeRef, Ref } from '#imports'
 import type { Database } from '../../types/database'
 import type { AnalysisDetail, AnalysisInputsWithStoratePath, AnalysisOutputsWithStoratePath } from '../../types/nuxt-galaxy'
-import { createError, toValue, useSupabaseClient, useSupabaseUser } from '#imports'
+import { createError, ref, toValue, useSupabaseClient, useSupabaseUser } from '#imports'
 
 export function useAnalysisDatasetIO(analysisId: MaybeRef<number | undefined>): {
   inputs: Ref<AnalysisInputsWithStoratePath[] | null>
